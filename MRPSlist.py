@@ -8,7 +8,7 @@ INPUT_PROTOCOL = mrjob.protocol.RawValueProtocol
 INTERNAL_PROTOCOL = mrjob.protocol.RawProtocol
 OUTPUT_PROTOCOL = mrjob.protocol.RawProtocol
 
-class MRImageInfo(MRJob):
+class MRPSlist(MRJob):
 
     def mapper(self, _, line):
         profile = ""
@@ -18,11 +18,14 @@ class MRImageInfo(MRJob):
         # Read the image file from HDFS and write to /dev/shm
         if utils.CopyHadoopLocal('hdfs:///user/cloudera/', '/dev/shm/', imgpath):
 
-            data = utils.RunVolatility('imageinfo', 'file:///dev/shm/'+imgpath)
+            data = utils.RunVolatility('pslist', 'file:///dev/shm/'+imgpath)
 
+            # Emit key,value for each output line
+            # (this is sent to the reducer function)
             for line in data:
                 yield imgpath, line.strip()
 
+            # Delete the temporary image copy
             os.remove('/dev/shm/'+imgpath)
 
     def reducer(self, key, values):
@@ -31,4 +34,4 @@ class MRImageInfo(MRJob):
                 yield key, value
 
 if __name__ == '__main__':
-    MRImageInfo.run()
+    MRPSlist.run()
