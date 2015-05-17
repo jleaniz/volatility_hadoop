@@ -54,7 +54,7 @@ class SparkVolatility:
         if self.CopyHadoopLocal('hdfs:///user/cloudera/', '/dev/shm/', img_path):
             output = self.RunVolatility('imageinfo', 'file:///dev/shm/' + img_path)
             os.remove('/dev/shm/' + img_path)
-            return output
+            return output #if this retunrs a tuple (key,value) we can use transformations in Pair RDDs
 
     def parseImageInfo(self, ImageInfoOutput):
         parsedOutput = []
@@ -64,6 +64,7 @@ class SparkVolatility:
                     (prefix, img_path, key, value) = line.split(':')
                     if 'KDBG' in key:
     #                    print "%s:%s:%s" % (img_path, key, value)
+                        # this will need rework if ImageInfo returns a tuple (key, vlue)
                         kdbg = "%s:%s:%s" % (img_path, key, value)
                         parsedOutput.append(kdbg)
         return parsedOutput
