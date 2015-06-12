@@ -1,23 +1,22 @@
 import utils
+import hdfs
 from pyspark import SparkContext
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
 
 if __name__ == '__main__':
 
-    sc = SparkContext("local", "SparkVolatility", pyFiles=['utils.py'])
-#    sqlContext = SQLContext(sc)
+    sc = SparkContext("local", "SparkVolatility", pyFiles=['utils.py','hdfs.py','parser.py'])
+    sqlContext = SQLContext(sc)
     images = sc.textFile('/user/cloudera/imgnames.txt')
 
-    modules = ['imageinfo']
-    volatility = utils.SparkVolatility(modules)
+    volatility = utils.SparkVolatility('imageinfo')
 
     rdd = images.map(volatility.Execute)
-    #volatilityOutput = rdd.collect() #volatilityOutput is a list of lists with the imageInfo output
+    rdd.cache()
 
-    if volatility.checkPathHadoop('hdfs:///user/cloudera/mytest'):
-        volatility.rmHadoop("hdfs:///user/cloudera/mytest")
+    df = rdd.toDF()
 
-    rdd.saveAsTextFile("hdfs:///user/cloudera/mytest")
+    df.save('Volatility/imageinfo', 'parquet', 'append')
 
     sc.stop()
