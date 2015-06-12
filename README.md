@@ -1,9 +1,9 @@
-# volatility_hadoop
-## Hadoop Volatility Forensics Framework
+# SparkVolatility
+## Spark Volatility Forensics Framework
 
-The Hadoop Volatility Forensics Framework aims to provide an easy way to run volatility on a Hadoop cluster.
+The Spark Volatility Forensics Framework aims to provide an easy way to run volatility on a Spark cluster.
 
-Hopefully, this will allow forensic analysts to run multiple memory dumps through different Volatility modules and get results much faster by leveraging Hadoop's parallel processing power.
+Hopefully, this will allow forensic analysts to run multiple memory dumps through different Volatility modules and get results much faster by leveraging Spark's parallel processing power.
 
 ### Dependencies:
 - CDH5+
