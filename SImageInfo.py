@@ -1,5 +1,4 @@
 import utils
-import hdfs
 from pyspark import SparkContext
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
