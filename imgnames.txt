@@ -1,1 +1,0 @@
-ds_fuzz_hidden_proc.img

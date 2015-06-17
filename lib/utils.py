@@ -5,8 +5,8 @@ import volatility.registry as registry
 import volatility.commands as commands
 import volatility.addrspace as addrspace
 import volatility.plugins.taskmods as taskmods
-import parser
-import hdfs
+import lib.parser as parser
+import lib.hdfs as hdfs
 from pyspark import SparkContext
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
