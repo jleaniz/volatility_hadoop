@@ -1,3 +1,4 @@
+import urllib2
 import re
 from pyspark.sql import Row
 
@@ -131,3 +132,55 @@ def parseIPTables(partition):
                 #flags = m.group(25)
                 )
 
+'''
+FREE SECURITY INTELLIGENCE FEEDS
+===================================
+http://mirror1.malwaredomains.com/files/domains.txt
+Google Safe Browsing Lookup API v2 key=AIzaSyD95TqDy9OpxnggJCTbG3aeVsmE_eUDRd4
+http://www.malwaredomainlist.com/hostslist/hosts.txt
+https://lists.malwarepatrol.net/cgi/getfile?receipt=f1434725867&product=8&list=dansguardian
+http://data.phishtank.com/data/<your app key>/online-valid.csv.bz2 181c91b14a9ec82fcaaa4683c3fbceb2c58b149def949298be81e5a1f3986978
+https://openphish.com/feed.txt
+http://www.dshield.org/ipsascii.html?limit=10000
+http://osint.bambenekconsulting.com/feeds/c2-masterlist.txt
+http://rules.emergingthreats.net/blockrules/emerging-botcc.rules
+http://rules.emergingthreats.net/blockrules/emerging-drop-BLOCK.rules
+http://rules.emergingthreats.net/blockrules/emerging-compromised.rules
+http://rules.emergingthreats.net/blockrules/emerging-compromised-BLOCK.rules
+http://rules.emergingthreats.net/blockrules/emerging-ciarmy.rules
+http://rules.emergingthreats.net/blockrules/emerging-tor.rules
+http://rules.emergingthreats.net/blockrules/compromised-ips.txt
+http://atlas.arbor.net/summary/fastflux.csv
+https://zeustracker.abuse.ch/blocklist.php?download=domainblocklist
+https://zeustracker.abuse.ch/blocklist.php?download=ipblocklist
+https://zeustracker.abuse.ch/blocklist.php?download=compromised
+https://sslbl.abuse.ch/downloads/ssl_extended.csv
+http://www.montanamenagerie.org/hostsfile/hosts.txt
+http://malc0de.com/bl/IP_Blacklist.txt
+http://reputation.alienvault.com/reputation.data
+'''
+
+def parseAlienVaultOTX(data):
+    for line in data:
+        params = data.split('#')
+        return Row(
+            ip = params[0],
+            reason = params[3]
+            )
+
+def parsec2(data):
+    VALID_DATA = '(\d+.\d+.\d+.\d+|(\S+\.\S+))'
+    m = re.search(VALID_DATA, data)
+    if m:
+        return Row(
+            host = data, 
+            reason = 'C2'
+            )
+    else:
+        return Row(host='', reason='')
+
+def parseOpenPhish(data):
+    return Row(
+        url = data.strip(),
+        reason = 'OpenPhish'
+        )
