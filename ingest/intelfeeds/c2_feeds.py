@@ -1,14 +1,12 @@
 import urllib
 import re
 #import netaddr
+import lib.parser as parser
+from pyspark import SparkContext
+from pyspark.sql import SQLContext
+from pyspark.sql.types import *
 
-#import lib.parser as parser
-#from pyspark import SparkContext
-#from pyspark.sql import SQLContext
-#from pyspark.sql.types import *
-
-def update_c2_feeds():
-#	sqlCtx = SQLContext(sContext)
+def get_c2_feeds():
 	results = []
 	urls = ['http://osint.bambenekconsulting.com/feeds/c2-masterlist.txt',
 			'http://rules.emergingthreats.net/fwrules/emerging-IPF-ALL.rules',
@@ -76,8 +74,11 @@ def update_c2_feeds():
 
 	return list(set(results))
 
-if __name__ == '__main__':
-	feed = update_c2_feeds()
-	print len(feed)
-
-
+def update_c2_feeds(sContext):
+	sqlCtx = SQLContext(sContext)
+	data = get_c2_feeds()
+	rdd = sContext.parallelize(data)
+	parsed_rdd = rdd.map(parser.parsec2)
+	parsed_rdd.collect()
+	df = parsed_rdd.toDF()
+	df.save('reputation/c2', 'parquet', 'overwrite')
