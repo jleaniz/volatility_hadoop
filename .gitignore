@@ -45,3 +45,4 @@ Temporary Items
 .project
 .pydevproject
 .idea
+*.pyc
