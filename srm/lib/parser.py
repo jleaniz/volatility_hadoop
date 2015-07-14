@@ -38,9 +38,6 @@ def parsePSList(img_path, lines):
         )
 
 def parseBCAccessLog(partition):
-	#    ACCESS_HTTP = '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+:\d+ msr-net-bcrep01) "(\w+-\w+-\w+)" "(\d+-\d+-\d+)" "(\d+:\d+:\d+)" "(\d+)" "(\d+.\d+.\d+.\d+)" "(\d+)" "(\S+)" "(\d+)" "(\d+)" "(\w+)" "(\w+)" "(\d+.\d+.\d+.\d+|\S+)" "(\d+)" "(\S+)" "(\S+)" "(\S+)" "(\S+)" "(\d+.\d+.\d+.\d+|\S+)" "(\S+)" "(\S+)" "([^"].*?)" "(\S+)" "([\s\S]*?)" "(\S+)" "(\d+.\d+.\d+.\d+)"'
-	#    ACCESS_HTTPS_INTERCEPT = '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+:\d+ msr-net-bcrep01) "(\w+-\w+-\w+)" (\d+-\d+-\d+) (\d+:\d+:\d+) (\d+) (\d+.\d+.\d+.\d+) (\d+) (\S+) (\d+) (\d+) (\w+) (\w+) (\d+.\d+.\d+.\d+|\S+) (\d+) (\S+) (\S+) (\S+) (\S+) (\d+.\d+.\d+.\d+|\S+) (\S+) (\S+) "?([^"].*?)"? (\S+) "([\s+\S+]*?)" (\S+) (\S+) (\d{3}|\S+) (\S+) (\d+.\d+.\d+.\d+)'
-    #ACCESS_HTTP = '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+:\d+ msr-net-bcrep01) "(\w+-\w+-\w+)" "(\d+)-(\d+)-(\d+)" "(\d+:\d+:\d+)" "(\d+)" "(\d+.\d+.\d+.\d+)" "(\d+)" "(\S+)" "(\d+)" "(\d+)" "(\w+)" "(\w+)" "(\d+.\d+.\d+.\d+|\S+)" "(\d+)" "(\S+)" "(\S+)" "(\S+)" "(\S+)" "(\d+.\d+.\d+.\d+|\S+)" "(\S+)" "(\S+)" "([^"].*?)" "(\S+)" "([\s\S]*?)" "(\S+)" "(\d+.\d+.\d+.\d+)"'
     ACCESS_HTTP = '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+:\d+ msr-net-bcrep01) (\w+-\w+-\w+|"\w+-\w+-\w+") "(\d+)-(\d+)-(\d+)" "(\d+:\d+:\d+)" "(\d+)" "(\d+.\d+.\d+.\d+)" "(\d+)" "(\S+)" "(\d+)" "(\d+)" "(\w+)" "(\w+)" "(\d+.\d+.\d+.\d+|\S+)" "(\d+)" "(\S+)" "(\S+)" "(\S+)" "(\S+)" "(\d+.\d+.\d+.\d+|\S+)" "(\S+)" "(\S+)" "([^"].*?)" "(\S+)" "([\s\S]*?)" "(\S+)" "(\d+.\d+.\d+.\d+)"'
     ACCESS_HTTPS_INTERCEPT = '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+:\d+ msr-net-bcrep01) (\w+-\w+-\w+|"\w+-\w+-\w+") (\d+)-(\d+)-(\d+) (\d+:\d+:\d+) (\d+) (\d+.\d+.\d+.\d+) (\d+) (\S+) (\d+) (\d+) (\w+) (\w+) (\d+.\d+.\d+.\d+|\S+) (\d+) (\S+) (\S+) (\S+) (\S+) (\d+.\d+.\d+.\d+|\S+) (\S+) (\S+) "?([^"].*?)"? (\S+) "([\s+\S+]*?)" (\S+) (\S+) (\d{3}|\S+) (\S+) (\d+.\d+.\d+.\d+)'
 
@@ -53,10 +50,6 @@ def parseBCAccessLog(partition):
                 if pattern == ACCESS_HTTP:
                     yield Row(
                             proxy = m.group(2),
-                            #date = m.group(3),
-                            #p_year = m.group(3),
-                            #p_month = m.group(4),
-                            #p_day = m.group(5),
                             time = m.group(6),
                             timetaken = m.group(7),
                             clientip = m.group(8), 
@@ -88,10 +81,6 @@ def parseBCAccessLog(partition):
                 elif pattern == ACCESS_HTTPS_INTERCEPT:
                     yield Row(
                             proxy = m.group(2),
-                            #date = m.group(3),
-                            #p_year = m.group(3),
-                            #p_month = m.group(4),
-                            #p_day = m.group(5),
                             time = m.group(6),
                             timetaken = m.group(7),
                             clientip = m.group(8), 
@@ -122,26 +111,21 @@ def parseBCAccessLog(partition):
 
 
 def parseIPTables(partition):
-    LOG = '(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+) (\S+) (\S+)(\s{1,2})IN=(\S+) OUT=(\S+) MAC=(\S+)  SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
+    LOG = '(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+) (\S+) (\S+)(\s{1,2})IN=(\S+) OUT=((\S+)?) MAC=(\S+)  SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
     for element in partition:
         m = re.search(LOG, element)
         if m:
             yield Row(
-                #date = m.group(1),
-                #year = m.group(1),
-                #month = m.group(2),
-                #day = m.group(3),
                 time = m.group(4),
                 source = m.group(5),
                 action = m.group(9),
-                srcip = m.group(14),
-                dstip = m.group(15),
-                len = m.group(16),
-                ttl = m.group(19),
-                proto = m.group(21),
-                srcport = m.group(22),
-                dstport = m.group(23)
-                #flags = m.group(25)
+                srcip = m.group(15),
+                dstip = m.group(16),
+                len = int(m.group(17)),
+                ttl = int(m.group(20)),
+                proto = m.group(22),
+                srcport = int(m.group(23)),
+                dstport = int(m.group(24))
                 )
 
 '''
