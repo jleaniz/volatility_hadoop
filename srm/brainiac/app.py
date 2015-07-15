@@ -13,21 +13,24 @@ app = Flask(__name__)
 def home():
     return "Hello, World!"  # return a string
 
+
 @app.route('/welcome')
 def welcome():
     return render_template('welcome.html')
 
+
 @app.route('/spark')
 def spark():
-	sc = SparkContext("local[8]", "SparkVolatility", pyFiles=['/home/cloudera/SparkVolatility/parser.py'])
-	sqlContext = SQLContext(sc)
-	df = sqlContext.load('BlueCoat/accessLog')
-	output = []
-	sqlContext.registerDataFrameAsTable(df, "accesslog")
-	data = sqlContext.sql("SELECT host, count(*) as hits FROM accesslog WHERE action LIKE '%DENIED%' GROUP BY host ORDER BY hits DESC") 
-	for i in data.take(10):
-		output.append(i)
-	return render_template('spark.html', output=output)
+    sc = SparkContext("local[8]", "SparkVolatility", pyFiles=['/home/cloudera/SparkVolatility/parser.py'])
+    sqlContext = SQLContext(sc)
+    df = sqlContext.load('BlueCoat/accessLog')
+    output = []
+    sqlContext.registerDataFrameAsTable(df, "accesslog")
+    data = sqlContext.sql(
+        "SELECT host, count(*) as hits FROM accesslog WHERE action LIKE '%DENIED%' GROUP BY host ORDER BY hits DESC")
+    for i in data.take(10):
+        output.append(i)
+    return render_template('spark.html', output=output)
 
 # start the server with the 'run()' method
 if __name__ == '__main__':

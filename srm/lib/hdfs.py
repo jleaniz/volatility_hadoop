@@ -1,5 +1,6 @@
 import mrjob.fs.hadoop
 
+
 def checkPathHadoop(hdfs_path):
     fs = mrjob.fs.hadoop.HadoopFilesystem(['hadoop'])
     try:
@@ -8,6 +9,7 @@ def checkPathHadoop(hdfs_path):
     except:
         return False
 
+
 def rmHadoop(hdfs_path):
     fs = mrjob.fs.hadoop.HadoopFilesystem(['hadoop'])
     try:
@@ -15,6 +17,7 @@ def rmHadoop(hdfs_path):
         return True
     except:
         return False
+
 
 def CopyHadoopLocal(hdfs_path, dest_path, img_name):
     # Read the image file from HDFS and write to /dev/shm

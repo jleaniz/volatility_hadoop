@@ -3,6 +3,7 @@ from pyspark import SparkContext
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
 
+
 def save_imageinfo(sContext):
     sqlContext = SQLContext(sContext)
     images = sContext.textFile('/user/cloudera/imgnames.txt')

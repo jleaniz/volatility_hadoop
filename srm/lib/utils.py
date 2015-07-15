@@ -12,8 +12,8 @@ from pyspark.sql import SQLContext
 from pyspark.sql.types import *
 from pyspark.sql import Row
 
-class SparkVolatility:
 
+class SparkVolatility:
     def __init__(self, volatilityModules):
         self.module = volatilityModules
         self.kdbg = ''
@@ -22,9 +22,9 @@ class SparkVolatility:
     def RunVolatility(self, img_path):
         data = ""
         lines_strip = []
-        row = Row(image='',kdbg='', profile='')
+        row = Row(image='', kdbg='', profile='')
 
-         # Volatility blackbox stuff
+        # Volatility blackbox stuff
         registry.PluginImporter()
         config = conf.ConfObject()
         registry.register_global_options(config, commands.Command)
@@ -37,12 +37,12 @@ class SparkVolatility:
             config.PROFILE = self.profile
 
         # Build volatility command and execute
-        cmds = registry.get_plugin_classes(commands.Command, lower = True)
+        cmds = registry.get_plugin_classes(commands.Command, lower=True)
         command = cmds[self.module](config)
         data = command.calculate()
 
         # Store output in a temporary file and read it
-        f = tempfile.NamedTemporaryFile(mode='w+',delete=True)
+        f = tempfile.NamedTemporaryFile(mode='w+', delete=True)
         command.render_text(f, data)
         f.seek(0)
         lines = f.readlines()
@@ -61,7 +61,7 @@ class SparkVolatility:
         if self.module == 'pslist':
             row = parser.parsePSList(img_path, lines_strip)
 
-        return row # this breaks the loop
+        return row  # this breaks the loop
 
     def Execute(self, data):
         if self.module == 'imageinfo':
@@ -69,7 +69,7 @@ class SparkVolatility:
             if hdfs.CopyHadoopLocal('hdfs:///user/cloudera/', '/dev/shm/', data):
                 output = self.RunVolatility('file:///dev/shm/' + data)
                 os.remove('/dev/shm/' + data)
-                return output #if this retunrs a tuple (key,value) we can use transformations in Pair RDDs
+                return output  # if this retunrs a tuple (key,value) we can use transformations in Pair RDDs
         else:
             # here data is each row in a dataframe that contains name, kdbg and profile
             if hdfs.CopyHadoopLocal('hdfs:///user/cloudera/', '/dev/shm/', data.image):
@@ -77,4 +77,4 @@ class SparkVolatility:
                 self.profile = data.profile
                 output = self.RunVolatility('file:///dev/shm/' + data.image)
                 os.remove('/dev/shm/' + data.image)
-                return output #if this retunrs a tuple (key,value) we can use transformations in Pair RDDs
+                return output  # if this retunrs a tuple (key,value) we can use transformations in Pair RDDs
