@@ -20,7 +20,7 @@ class Parser:
     def __init__(self, type):
         self.type = ''
 
-    def parseImageInfo(img_path, lines):
+    def parseImageInfo(self, img_path, lines):
         '''
         Parse Volatility framework imageinfo command output
         :return: pyspark.sql.Row
@@ -45,7 +45,7 @@ class Parser:
             kdbg=m_kdbg
         )
 
-    def parsePSList(img_path, lines):
+    def parsePSList(self, img_path, lines):
         '''
         Parse Volatility framework pslist command output
         :return: pyspark.sql.Row
@@ -64,7 +64,7 @@ class Parser:
             proclist=proclist
         )
 
-    def parseBCAccessLog(partition):
+    def parseBCAccessLog(self, partition):
         '''
         Parse ProxySG access logs
         :return: pyspark.sql.Row
@@ -152,7 +152,7 @@ class Parser:
                             proxyip=m.group(31)
                         )
 
-    def parseIPTables(partition):
+    def parseIPTables(self, partition):
         '''
         Parse Netfilter IPtables
         :return: pyspark.sql.Row
@@ -177,7 +177,7 @@ class Parser:
                     dstport=int(m.group(24))
                 )
 
-    def parseApacheAL(partition):
+    def parseApacheAL(self,partition):
         '''
         Parse Apache access logs
         :return: pyspark.sql.Row
@@ -199,7 +199,7 @@ class Parser:
                     content_size=long(m.group(9))
                 )
 
-    def parseAlienVaultOTX(data):
+    def parseAlienVaultOTX(self, data):
         '''
         Parse AlienVault OTX reputation data
         :return: pyspark.sql.Row
@@ -211,7 +211,7 @@ class Parser:
                 reason=params[3]
             )
 
-    def parsec2(data):
+    def parsec2(self, data):
         '''
         Parse c2 reputation database
         :return: pyspark.sql.Row
@@ -226,7 +226,7 @@ class Parser:
         else:
             return Row(host='', reason='')
 
-    def parseOpenPhish(data):
+    def parseOpenPhish(self, data):
         '''
         Parse OpenPhish reputation data
         :return: pyspark.sql.Row

@@ -10,6 +10,7 @@ def save_access_log(sContext, path):
     sqlCtx.setConf('spark.sql.parquet.compression.codec', 'snappy')
     local_path = '/mnt/hdfs/' + path
     years = os.listdir(local_path)
+    myParser = parser.Parser('bluecoat')
     for year in years:
         months = os.listdir(local_path + '/' + year)
         for month in months:
@@ -19,7 +20,7 @@ def save_access_log(sContext, path):
                     access_log_rdd = sContext.textFile(path + '/' + year + '/'
                                                        + month + '/' + day + '/*').repartition(
                         sContext.defaultParallelism)
-                    parsed_rdd = access_log_rdd.mapPartitions(parser.Parser.parseBCAccessLog)
+                    parsed_rdd = access_log_rdd.mapPartitions(myParser.parseBCAccessLog)
                     df = parsed_rdd.toDF()
                     df.save('/user/cloudera/proxy/accesslog/p_year=2015/p_month=' + str(int(month))
                             + '/p_day=' + str(int(day)), 'parquet', 'append')
