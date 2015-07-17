@@ -4,10 +4,27 @@ from pyspark.sql import Row
 
 
 class Parser():
+    '''
+    This class has methods to parse different types of data.
+    Currently support data is as follows:
+    - Volatility Framework (imageinfo, pslist)
+    - Netfilter IPtables (custom format)
+    - Blue Coat ProxySG access logs (custom format)
+    - Threat intelligence feeds:
+        Custom C2 database
+        OpenPhish
+        AlienVault OTX
+        TODO: C1fapp
+    '''
+
     def __init__(self, type):
         self.type = ''
 
     def parseImageInfo(img_path, lines):
+        '''
+        Parse Volatility framework imageinfo command output
+        :return: pyspark.sql.Row
+        '''
         PROFILES_PATTERN = "(\w+)(\s)(\w+)(\S+)(\s)(\:)(\s)(\S+)"
         KDBG_PATTERN = "(\KDBG)(\s:\s)(\w+)"
 
@@ -29,6 +46,10 @@ class Parser():
         )
 
     def parsePSList(img_path, lines):
+        '''
+        Parse Volatility framework pslist command output
+        :return: pyspark.sql.Row
+        '''
         PSLIST_PATTERN = "(\w+)(\s+)(\w+.+)(\s+)(\d+)(\s+)(\d+)(\s+)(\d+)(\s+)(\d+)(\s+)(\d+)(\s+)(\d+)(\s+)(\d{" \
                          "4}-\d\d-\d\d\s\d\d:\d\d:\d\d)"
         proclist = []
@@ -44,6 +65,11 @@ class Parser():
         )
 
     def parseBCAccessLog(partition):
+        '''
+        Parse ProxySG access logs
+        :return: pyspark.sql.Row
+        '''
+
         ACCESS_HTTP = re.compile(
             '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+:\d+ msr-net-bcrep01) (\w+-\w+-\w+|"\w+-\w+-\w+") "(\d+)-(\d+)-(\d+)" ' \
             '' \
@@ -127,6 +153,10 @@ class Parser():
                         )
 
     def parseIPTables(partition):
+        '''
+        Parse Netfilter IPtables
+        :return: pyspark.sql.Row
+        '''
         LOG = re.compile(
             '(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+) (\S+) (\S+)(' \
             '\s{1,2})IN=(\S+) OUT=((\S+)?) MAC=(\S+)  SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) ' \
@@ -148,6 +178,10 @@ class Parser():
                 )
 
     def parseApacheAL(partition):
+        '''
+        Parse Apache access logs
+        :return: pyspark.sql.Row
+        '''
         pattern = re.compile(
             "^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(\\S+) (\\S+) (\\S+)\" (\\d{3}) (\\d+)")
         for element in partition:
@@ -165,36 +199,11 @@ class Parser():
                     content_size=long(m.group(9))
                 )
 
-    '''
-    FREE SECURITY INTELLIGENCE FEEDS
-    ===================================
-    http://mirror1.malwaredomains.com/files/domains.txt
-    Google Safe Browsing Lookup API v2 key=AIzaSyD95TqDy9OpxnggJCTbG3aeVsmE_eUDRd4
-    http://www.malwaredomainlist.com/hostslist/hosts.txt
-    https://lists.malwarepatrol.net/cgi/getfile?receipt=f1434725867&product=8&list=dansguardian
-    http://data.phishtank.com/data/<your app key>/online-valid.csv.bz2
-    181c91b14a9ec82fcaaa4683c3fbceb2c58b149def949298be81e5a1f3986978
-    https://openphish.com/feed.txt
-    http://www.dshield.org/ipsascii.html?limit=10000
-    http://osint.bambenekconsulting.com/feeds/c2-masterlist.txt
-    http://rules.emergingthreats.net/blockrules/emerging-botcc.rules
-    http://rules.emergingthreats.net/blockrules/emerging-drop-BLOCK.rules
-    http://rules.emergingthreats.net/blockrules/emerging-compromised.rules
-    http://rules.emergingthreats.net/blockrules/emerging-compromised-BLOCK.rules
-    http://rules.emergingthreats.net/blockrules/emerging-ciarmy.rules
-    http://rules.emergingthreats.net/blockrules/emerging-tor.rules
-    http://rules.emergingthreats.net/blockrules/compromised-ips.txt
-    http://atlas.arbor.net/summary/fastflux.csv
-    https://zeustracker.abuse.ch/blocklist.php?download=domainblocklist
-    https://zeustracker.abuse.ch/blocklist.php?download=ipblocklist
-    https://zeustracker.abuse.ch/blocklist.php?download=compromised
-    https://sslbl.abuse.ch/downloads/ssl_extended.csv
-    http://www.montanamenagerie.org/hostsfile/hosts.txt
-    http://malc0de.com/bl/IP_Blacklist.txt
-    http://reputation.alienvault.com/reputation.data
-    '''
-
     def parseAlienVaultOTX(data):
+        '''
+        Parse AlienVault OTX reputation data
+        :return: pyspark.sql.Row
+        '''
         for line in data:
             params = data.split('#')
             return Row(
@@ -203,6 +212,10 @@ class Parser():
             )
 
     def parsec2(data):
+        '''
+        Parse c2 reputation database
+        :return: pyspark.sql.Row
+        '''
         VALID_DATA = '(\d+.\d+.\d+.\d+|(\S+\.\S+))'
         m = re.search(VALID_DATA, data)
         if m:
@@ -214,6 +227,10 @@ class Parser():
             return Row(host='', reason='')
 
     def parseOpenPhish(data):
+        '''
+        Parse OpenPhish reputation data
+        :return: pyspark.sql.Row
+        '''
         return Row(
             url=data.strip(),
             reason='OpenPhish'
