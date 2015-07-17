@@ -2,7 +2,7 @@ from pyspark import SparkConf
 
 
 class Config:
-    def __nit__(self):
+    def __init__(self):
         self.master = 'spark://mtl-srm-cdh01.ubisoft.org:7077'
         self.appName = 'BDSA 0.1 alpha'
         self.spark_driver_cores = '1'
