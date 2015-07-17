@@ -193,7 +193,7 @@ class Parser:
                     dstport=int(m.group(24))
                 )
 
-    def parseApacheAL(self,partition):
+    def parseApacheAL(self, partition):
         '''
         Parse Apache access logs
         :return: pyspark.sql.Row
