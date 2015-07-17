@@ -5,8 +5,8 @@ import volatility.conf as conf
 import volatility.registry as registry
 import volatility.commands as commands
 import volatility.addrspace as addrspace
-import lib.parser as parser
-import lib.hdfs as hdfs
+import bdsa.lib.parser as parser
+import bdsa.lib.hdfs as hdfs
 from pyspark.sql.types import *
 from pyspark.sql import Row
 

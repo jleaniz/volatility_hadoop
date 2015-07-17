@@ -1,6 +1,6 @@
 import os
 
-import lib.parser as parser
+import bdsa.lib.parser as parser
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
 
