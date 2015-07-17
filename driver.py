@@ -1,15 +1,13 @@
 import argparse
-import srm.ingest.firewall.iptables as iptables
-import srm.ingest.bluecoat.proxysg as proxysg
-import srm.ingest.intelfeeds.alienvault_otx as aotx
-import srm.ingest.intelfeeds.openphish as openphish
-import srm.ingest.intelfeeds.c2_feeds as c2
-import srm.config.config as conf
 
+import ingest.firewall.iptables as iptables
+import ingest.bluecoat.proxysg as proxysg
+import ingest.intelfeeds.alienvault_otx as aotx
+import ingest.intelfeeds.openphish as openphish
+import ingest.intelfeeds.c2_feeds as c2
+import config.config as conf
 from pyspark import SparkContext
-from pyspark import SparkConf
-from pyspark.sql import SQLContext
-from pyspark.sql.types import *
+
 
 def main():
     '''
@@ -20,17 +18,16 @@ def main():
     cliparser.add_argument('-i', '--ingest', action='append',
                            choices=['c2', 'openphish', 'alienvault_otx', 'bluecoat', 'iptables', 'imageinfo', 'pslist'],
                            required=True, help='Ingest raw logs into HDFS (saves Parquet files)')
-    cliparser.add_argument('-s', '--host', action='append',
+    cliparser.add_argument('-s', '--path', action='append',
                            required=True,
-                           help='hostname to ingest logs from, has to match dir in /home/cloudera/fw/raw')
+                           help='Path to the log data. Subdirs must be structured as /year/month/day')
     args = cliparser.parse_args()
 
-    '''Initialize Spark Context with default config
-    '''
+    '''Initialize Spark Context with default config'''
     appConfig = conf.Config()
-
     sc = SparkContext(conf=appConfig.setSparkConf())
 
+    '''Loop through the cli arguments'''
     for arg in args.ingest:
         if arg == 'iptables':
             for host in args.host:
@@ -49,7 +46,10 @@ def main():
             print 'Updating local c2 db...'
             c2.update_c2_feeds(sc)
 
+    '''Stop the SparkContext'''
     sc.stop()
 
+
+'''Main function'''
 if __name__ == '__main__':
     main()
