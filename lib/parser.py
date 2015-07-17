@@ -3,7 +3,7 @@ import re
 from pyspark.sql import Row
 
 
-class Parser():
+class Parser:
     '''
     This class has methods to parse different types of data.
     Currently support data is as follows:
