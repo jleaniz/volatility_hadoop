@@ -18,7 +18,14 @@ from pyspark import SparkConf
 
 
 class Config:
+    '''
+
+    '''
     def __init__(self):
+        '''
+        Init function with default attributes
+        :return:
+        '''
         self.master = 'spark://mtl-srm-cdh01.ubisoft.org:7077'
         self.appName = 'BDSA 0.1 alpha'
         self.spark_driver_cores = '1'
@@ -35,6 +42,10 @@ class Config:
         self.spark_default_parallelism = '60'
 
     def setSparkConf(self):
+        '''
+        This function configures a Spark Context
+        :return: sparkConf object
+        '''
         conf = (SparkConf()
                 .setMaster(self.master)
                 .setAppName(self.appName)
