@@ -21,6 +21,7 @@ class Config:
     '''
 
     '''
+
     def __init__(self):
         '''
         Init function with default attributes

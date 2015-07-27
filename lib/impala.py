@@ -17,11 +17,13 @@
 
 from impala.dbapi import connect
 
+
 class ImpalaDB:
     '''
     This class defines methods used to interact with
     an Impala database
     '''
+
     def __init__(self, host, port):
         self.host = host
         self.port = port
@@ -86,8 +88,8 @@ class ImpalaDB:
         try:
             cursor.execute(
                 'LOAD DATA INPATH %s INTO TABLE %s PARTITION (year=%s, month=%s, day=%s)' % (
-                path + '/year=' + partitions[0] + '/month=' + partitions[1] + '/day=' + partitions[2],
-                table, partitions[0], partitions[1], partitions[2])
+                    path + '/year=' + partitions[0] + '/month=' + partitions[1] + '/day=' + partitions[2],
+                    table, partitions[0], partitions[1], partitions[2])
             )
         except:
             pass

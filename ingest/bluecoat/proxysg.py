@@ -34,8 +34,8 @@ def save_access_log(sContext, path):
             for day in days:
                 if os.listdir(local_path + '/' + year + '/' + month + '/' + day):
                     access_log_rdd = sContext.textFile(path + '/' + year + '/'
-                                                       + month + '/' + day + '/*')#.repartition(
-                        #sContext.defaultParallelism)
+                                                       + month + '/' + day + '/*')  # .repartition(
+                    # sContext.defaultParallelism)
                     parsed_rdd = access_log_rdd.mapPartitions(myParser.parseBCAccessLog)
                     df = parsed_rdd.toDF()
                     df.save('/user/cloudera/proxy/accesslog/p_year=2015/p_month=' + str(int(month))

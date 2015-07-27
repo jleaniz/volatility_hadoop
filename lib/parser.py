@@ -193,6 +193,31 @@ class Parser:
                     dstport=int(m.group(24))
                 )
 
+    def parseBash(self, partition):
+        """
+        Parse bash logs
+        :param partition:
+        :return: Row
+        """
+        '''
+        2015-07-24T14:04:53+00:00 localhost bash: user: XXX as root from ip: 10.XXX.41.XX:pts/0 execs: 'yum install -y nginx'
+        2015-07-24T14:09:07+00:00 localhost bash: user: XXX as root from ip: 10.XXX.41.XX:pts/0 execs: 'ip a'
+        2015-07-24T14:09:23+00:00 localhost bash: user: XXX as root from ip: 10.XXX.41.XX:pts/0 execs: 'host 10.XXX.3.XX'
+
+        '''
+        bashlog = re.compile(
+            "(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) bash: user: (\S+) as (\S+) from ip: (\d+.\d+.\d+.\d+):pts\/(\d) execs: '(.*)")
+        for element in partition:
+            m = re.search(bashlog, element)
+            if m:
+                yield Row(
+                    logsrc=m.group(5),
+                    username=m.group(6),
+                    exec_as=m.group(7),
+                    srcip=m.group(8),
+                    command=m.group(10)
+                )
+
     def parseApacheAL(self, partition):
         '''
         Parse Apache access logs

@@ -35,4 +35,3 @@ def update_alienvault_otx(sContext):
     parsed_rdd.collect()
     df = parsed_rdd.toDF()
     df.save('reputation/otx', 'parquet', 'overwrite')
-
