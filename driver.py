@@ -21,6 +21,7 @@ import ingest.bluecoat.proxysg as proxysg
 import ingest.intelfeeds.alienvault_otx as aotx
 import ingest.intelfeeds.openphish as openphish
 import ingest.intelfeeds.c2_feeds as c2
+import ingest.bash.bash as bash
 import config.config as conf
 from pyspark import SparkContext
 
@@ -32,7 +33,8 @@ def main():
     '''
     cliparser = argparse.ArgumentParser(description='SRM Security Analytics')
     cliparser.add_argument('-i', '--ingest', action='append',
-                           choices=['c2', 'openphish', 'alienvault_otx', 'bluecoat', 'iptables', 'imageinfo', 'pslist'],
+                           choices=['c2', 'openphish', 'alienvault_otx', 'bluecoat', 'iptables', 'imageinfo', 'bashlog'
+                                                                                                              'pslist'],
                            required=True, help='Ingest raw logs into HDFS (saves Parquet files)')
     cliparser.add_argument('-p', '--path', action='append',
                            required=True,
@@ -62,6 +64,9 @@ def main():
         elif arg == 'c2':
             print 'Updating local c2 db...'
             c2.update_c2_feeds(sc)
+        elif arg == 'bashlog':
+            print 'Ingesting bash logs...'
+            bash.save_bashlog(sc)
 
     '''Stop the SparkContext'''
     sc.stop()

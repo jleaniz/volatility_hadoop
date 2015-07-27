@@ -21,29 +21,22 @@ from pyspark.sql import SQLContext
 from pyspark.sql.types import *
 
 
-def save_log(sContext, path):
+def save_bashlog(sContext, path):
     sqlCtx = SQLContext(sContext)
     sqlCtx.setConf('spark.sql.parquet.compression.codec', 'snappy')
     local_path = '/mnt/hdfs/' + path
     years = os.listdir(local_path)
-    myParser = parser.Parser('iptables')
+    myParser = parser.Parser('bash')
     for year in years:
         months = os.listdir(local_path + '/' + year)
         for month in months:
             days = os.listdir(local_path + '/' + year + '/' + month)
             for day in days:
                 if os.listdir(local_path + '/' + year + '/' + month + '/' + day):
-                    fw_log_rdd = sContext.textFile(path + '/' + year + '/'
+                    bash_log_rdd = sContext.textFile(path + '/' + year + '/'
                                                        + month + '/' + day + '/*')  # .repartition(
                     # sContext.defaultParallelism)
-                    parsed_rdd = fw_log_rdd.mapPartitions(myParser.parseIPTables)
+                    parsed_rdd = bash_log_rdd.mapPartitions(myParser.parseBash)
                     df = parsed_rdd.toDF()
-                    if 'onl' in path:
-                        df.save('/user/cloudera/fw/onl/year=2015/month=' + str(int(month))
-                                + '/day=' + str(int(day)), 'parquet', 'append')
-                    if 'onbe' in path:
-                        df.save('/user/cloudera/fw/onbe/year=2015/month=' + str(int(month))
-                                + '/day=' + str(int(day)), 'parquet', 'append')
-                    if 'off' in path:
-                        df.save('/user/cloudera/fw/corp/year=2015/month=' + str(int(month))
-                                + '/day=' + str(int(day)), 'parquet', 'append')
+                    df.save('/user/cloudera/proxy/linux/bashlog/p_year=2015/p_month=' + str(int(month))
+                            + '/p_day=' + str(int(day)), 'parquet', 'append')
