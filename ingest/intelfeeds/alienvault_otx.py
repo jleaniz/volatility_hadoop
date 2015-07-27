@@ -16,7 +16,7 @@
 #
 import urllib2
 
-import bdsa.lib.parser as parser
+import lib.parser as parser
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
 
