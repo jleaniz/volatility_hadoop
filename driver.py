@@ -16,12 +16,12 @@
 #
 import argparse
 
-import bdsa.ingest.firewall.iptables as iptables
-import bdsa.ingest.bluecoat.proxysg as proxysg
-import bdsa.ingest.intelfeeds.alienvault_otx as aotx
-import bdsa.ingest.intelfeeds.openphish as openphish
-import bdsa.ingest.intelfeeds.c2_feeds as c2
-import bdsa.config.config as conf
+import ingest.firewall.iptables as iptables
+import ingest.bluecoat.proxysg as proxysg
+import ingest.intelfeeds.alienvault_otx as aotx
+import ingest.intelfeeds.openphish as openphish
+import ingest.intelfeeds.c2_feeds as c2
+import config.config as conf
 from pyspark import SparkContext
 
 
