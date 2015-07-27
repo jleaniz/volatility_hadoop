@@ -26,6 +26,7 @@ def save_log(sContext, path):
     sqlCtx.setConf('spark.sql.parquet.compression.codec', 'snappy')
     local_path = '/mnt/hdfs/' + path
     years = os.listdir(local_path)
+    myParser = parser.Parser('iptables')
     for year in years:
         months = os.listdir(local_path + '/' + year)
         for month in months:
@@ -35,11 +36,14 @@ def save_log(sContext, path):
                     access_log_rdd = sContext.textFile(path + '/' + year + '/'
                                                        + month + '/' + day + '/*')#.repartition(
                         #sContext.defaultParallelism)
-                    parsed_rdd = access_log_rdd.mapPartitions(parser.Parser.parseIPTables)
+                    parsed_rdd = access_log_rdd.mapPartitions(myParser.parseIPTables)
                     df = parsed_rdd.toDF()
                     if 'onl' in path:
                         df.save('/user/cloudera/fw/onl/year=2015/month=' + str(int(month))
                                 + '/day=' + str(int(day)), 'parquet', 'append')
-                    else:
+                    if 'onbe' in path:
+                        df.save('/user/cloudera/fw/onbe/year=2015/month=' + str(int(month))
+                                + '/day=' + str(int(day)), 'parquet', 'append')
+                    if 'off' in path:
                         df.save('/user/cloudera/fw/corp/year=2015/month=' + str(int(month))
                                 + '/day=' + str(int(day)), 'parquet', 'append')
