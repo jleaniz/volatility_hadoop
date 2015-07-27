@@ -2,12 +2,12 @@
 Big Data Security Analytics
 
 ## Requirements
-Python 2.6+
+- Python 2.6+
 
-Spark 1.3.0+
+- Spark 1.3.0+
 
-mrjob 0.4+
+- mrjob 0.4+
 
-argparse
+- argparse
 
-setuptools
+- setuptools
