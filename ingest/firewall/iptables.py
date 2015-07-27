@@ -33,8 +33,8 @@ def save_log(sContext, path):
             for day in days:
                 if os.listdir(local_path + '/' + year + '/' + month + '/' + day):
                     access_log_rdd = sContext.textFile(path + '/' + year + '/'
-                                                       + month + '/' + day + '/*').repartition(
-                        sContext.defaultParallelism)
+                                                       + month + '/' + day + '/*')#.repartition(
+                        #sContext.defaultParallelism)
                     parsed_rdd = access_log_rdd.mapPartitions(parser.Parser.parseIPTables)
                     df = parsed_rdd.toDF()
                     if 'onl' in path:
