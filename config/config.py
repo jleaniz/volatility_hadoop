@@ -27,7 +27,7 @@ class Config:
         Init function with default attributes
         :return:
         '''
-        self.master = 'spark://mtl-ah374.ubisoft.org:7077'
+        self.master = 'spark://xxx-xxx.xxx.xxx:7077'
         self.appName = 'BDSA 0.1 alpha'
         self.spark_driver_cores = '8'
         self.spark_driver_maxResultSize = '200m'
