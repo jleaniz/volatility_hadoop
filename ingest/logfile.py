@@ -28,7 +28,7 @@ class LogFile(object):
     def __init__(self, path):
         self.localHdfs = '/mnt/hdfs'
         self.path = path
-        self.parser = parser.Parser
+        self.parser = parser.Parser()
         self.type = None
 
     def saveLogByDate(self, sContext, destPath):
