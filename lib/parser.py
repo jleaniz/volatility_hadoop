@@ -17,7 +17,10 @@
 import urllib2
 import re
 from pyspark.sql import Row
+from pyspark import SparkContext
 
+global success
+global failed
 
 class Parser(object):
     '''
@@ -41,6 +44,7 @@ class Parser(object):
         :param patterns:
         :return:
         '''
+
         self.patterns = {
             'sgAccessLog': re.compile(
                 '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+:\d+ \S+) (\w+-\w+-\w+|"\w+-\w+-\w+") "(\d+)-(\d+)-(\d+)" ' \
@@ -79,6 +83,7 @@ class Parser(object):
                 m = re.search(pattern, element)
                 if m:
                     if pattern == patterns[0]:
+                        success.add(1)
                         yield Row(
                             proxy=m.group(2),
                             time=m.group(6),
@@ -110,6 +115,7 @@ class Parser(object):
                         )
 
                     elif pattern == patterns[1]:
+                        success.add(1)
                         yield Row(
                             proxy=m.group(2),
                             time=m.group(6),
@@ -139,6 +145,7 @@ class Parser(object):
                             malware=m.group(30),
                             proxyip=m.group(31)
                         )
+                failed.add(1)
 
     def parseIPTables(self, partition):
         '''
@@ -149,6 +156,7 @@ class Parser(object):
         for element in partition:
             m = re.search(fwlog, element)
             if m:
+                success.add(1)
                 yield Row(
                     time=m.group(4),
                     source=m.group(5),
@@ -161,6 +169,7 @@ class Parser(object):
                     srcport=int(m.group(23)),
                     dstport=int(m.group(24))
                 )
+            failed.add(1)
 
     def parseBash(self, partition):
         """
@@ -172,6 +181,7 @@ class Parser(object):
         for element in partition:
             m = re.search(bashlog, element)
             if m:
+                success.add(1)
                 yield Row(
                     logsrc=m.group(5),
                     username=m.group(6),
@@ -179,6 +189,7 @@ class Parser(object):
                     srcip=m.group(8),
                     command=m.group(10)
                 )
+            failed.add(1)
 
     def parseApacheAL(self, partition):
         '''
@@ -189,6 +200,7 @@ class Parser(object):
         for element in partition:
             m = re.search(pattern, element)
             if m:
+                success.add(1)
                 yield Row(
                     ip_address=m.group(1),
                     client_identd=m.group(2),
@@ -200,6 +212,7 @@ class Parser(object):
                     response_code=int(m.group(8)),
                     content_size=long(m.group(9))
                 )
+            failed.add(10)
 
     def parseAlienVaultOTX(self, data):
         '''

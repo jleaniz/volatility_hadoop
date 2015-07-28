@@ -47,6 +47,9 @@ def main():
     parser = Parser()
     log = LogFile(path=None)
 
+    success = sc.accumulator(0)
+    failed = sc.accumulator(0)
+
     '''Loop through the cli arguments'''
     for arg in args.ingest:
         if arg == 'iptables':
@@ -76,6 +79,9 @@ def main():
         elif arg == 'c2':
             print 'Updating local c2 db...'
             updateC2Feeds()
+
+    print 'Success: %s' %(success.value)
+    print 'Filaed: %s' %(failed.value)
 
     '''Stop the SparkContext'''
     sc.stop()
