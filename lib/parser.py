@@ -73,6 +73,8 @@ class Parser(object):
         Parse ProxySG access logs
         :return: pyspark.sql.Row
         '''
+        global success
+        global failed
 
         patterns = [self.patterns['sgAccessLog'],
                     self.patterns['sgAccessLogSSL']
@@ -82,9 +84,8 @@ class Parser(object):
             for pattern in patterns:
                 m = re.search(pattern, element)
                 if m:
-                    global success
                     if pattern == patterns[0]:
-                        success.add(1)
+                        self.success.add(1)
                         yield Row(
                             proxy=m.group(2),
                             time=m.group(6),
@@ -116,7 +117,7 @@ class Parser(object):
                         )
 
                     elif pattern == patterns[1]:
-                        success.add(1)
+                        self.success.add(1)
                         yield Row(
                             proxy=m.group(2),
                             time=m.group(6),
@@ -146,8 +147,8 @@ class Parser(object):
                             malware=m.group(30),
                             proxyip=m.group(31)
                         )
-                global failed
-                failed.add(1)
+                else:
+                    self.failed.add(1)
 
     def parseIPTables(self, partition):
         '''
