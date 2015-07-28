@@ -42,8 +42,8 @@ class Parser(object):
         :return:
         '''
 
-        success = sc.accumulator(0)
-        failed = sc.accumulator(0)
+        self.success = sc.accumulator(0)
+        self.failed = sc.accumulator(0)
 
         self.patterns = {
             'sgAccessLog': re.compile(
