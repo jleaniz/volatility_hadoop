@@ -17,7 +17,7 @@
 from pyspark import SparkConf
 
 
-class Config:
+class Config(object):
     '''
     Configuration class contains attributes used by the app
     and Spark

@@ -19,7 +19,7 @@ import re
 from pyspark.sql import Row
 
 
-class Parser:
+class Parser(object):
     '''
     This class has methods to parse different types of data.
     Currently support data is as follows:
@@ -33,15 +33,14 @@ class Parser:
         TODO: C1fapp
     '''
 
-    def __init__(self, type):
+    def __init__(self):
         '''
         Init function for Parser class
         Initializes type and patterns attributes
 
-        :param type:
+        :param patterns:
         :return:
         '''
-        self.type = None
         self.patterns = {
             'sgAccessLog': re.compile(
                 '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+:\d+ \S+) (\w+-\w+-\w+|"\w+-\w+-\w+") "(\d+)-(\d+)-(\d+)" ' \
@@ -64,7 +63,6 @@ class Parser:
             'apacheAccessLog': re.compile(
                 "^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(\\S+) (\\S+) (\\S+)\" (\\d{3}) (\\d+)")
         }
-
 
     def parseBCAccessLog(self, partition):
         '''

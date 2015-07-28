@@ -20,15 +20,16 @@ from pyspark.sql import SQLContext
 from pyspark.sql.types import *
 
 
-class LogFile:
+class LogFile(object):
     '''
     This class handles log files
     '''
 
     def __init__(self, path):
-        self.path = path
         self.localHdfs = '/mnt/hdfs'
-        self.parser = parser.Parser(type=None)
+        self.path = path
+        self.parser = parser.Parser
+        self.type = None
 
     def saveLogByDate(self, sContext, destPath):
         '''
@@ -55,13 +56,13 @@ class LogFile:
                     if os.listdir('%s/%s/%s/%s' % (localPath, year, month, day)):
                         rdd = sContext.textFile('%s/%s/%s/%s' % (self.path, year, month, day))
 
-                        if self.parser.type is 'proxysg':
+                        if self.type is 'proxysg':
                             parsed_rdd = rdd.mapPartitions(self.parser.parseBCAccessLog)
                             df = parsed_rdd.toDF()
                             df.save('%s/proxysg/year=%s/month=%s/day=%s' % (destPath, year, month, day), 'parquet',
                                     'append')
 
-                        if self.parser.type is 'iptables':
+                        if self.type is 'iptables':
                             parsed_rdd = rdd.mapPartitions(self.parser.parseIPTables)
                             df = parsed_rdd.toDF()
                             if 'onl' in self.path:
@@ -74,13 +75,13 @@ class LogFile:
                                 df.save('%s/off/year=%s/month=%s/day=%s' % (destPath, year, month, day), 'parquet',
                                         'append')
 
-                        if self.parser.type is 'apacheAccessLog':
+                        if self.type is 'apacheAccessLog':
                             parsed_rdd = rdd.mapPartitions(self.parser.parseApacheAL())
                             df = parsed_rdd.toDF()
                             df.save('%s/apache/year=%s/month=%s/day=%s' % (destPath, year, month, day), 'parquet',
                                     'append')
 
-                        if self.parser.type is 'bashlog':
+                        if self.type is 'bashlog':
                             parsed_rdd = rdd.mapPartitions(self.parser.parseBash)
                             df = parsed_rdd.toDF()
                             df.save('%s/bashlog/year=%s/month=%s/day=%s' % (destPath, year, month, day), 'parquet',
