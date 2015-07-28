@@ -15,7 +15,6 @@
 # along with BDSA.  If not, see <http://www.gnu.org/licenses/>.
 #
 import os
-import lib.parser as parser
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
 
@@ -25,10 +24,10 @@ class LogFile(object):
     This class handles log files
     '''
 
-    def __init__(self, path):
+    def __init__(self, path, parser):
         self.localHdfs = '/mnt/hdfs'
         self.path = path
-        self.parser = parser.Parser()
+        self.parser = parser
         self.type = None
 
     def saveLogByDate(self, sContext, destPath):
