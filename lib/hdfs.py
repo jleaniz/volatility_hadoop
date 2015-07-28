@@ -17,6 +17,15 @@
 import mrjob.fs.hadoop
 
 
+def listDir(hdfs_path):
+    fs = mrjob.fs.hadoop.HadoopFilesystem(['hadoop'])
+    try:
+        files = fs.ls(hdfs_path)
+        return files
+    except:
+        return False
+
+
 def checkPathHadoop(hdfs_path):
     fs = mrjob.fs.hadoop.HadoopFilesystem(['hadoop'])
     try:

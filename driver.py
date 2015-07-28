@@ -16,13 +16,9 @@
 #
 import argparse
 
-import ingest.firewall.iptables as iptables
-import ingest.bluecoat.proxysg as proxysg
-import ingest.intelfeeds.alienvault_otx as aotx
-import ingest.intelfeeds.openphish as openphish
-import ingest.intelfeeds.c2_feeds as c2
-import ingest.bash.bash as bash
-import config.config as conf
+from ingest.logfile import LogFile
+from lib.parser import Parser
+from config import config as conf
 from pyspark import SparkContext
 
 
@@ -44,6 +40,10 @@ def main():
     '''Initialize Spark Context with default config'''
     appConfig = conf.Config()
     sc = SparkContext(conf=appConfig.setSparkConf())
+
+    log = ingest.logfile
+    parser = Parser()
+
 
     '''Loop through the cli arguments'''
     for arg in args.ingest:

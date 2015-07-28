@@ -19,7 +19,8 @@ from pyspark import SparkConf
 
 class Config:
     '''
-
+    Configuration class contains attributes used by the app
+    and Spark
     '''
 
     def __init__(self):

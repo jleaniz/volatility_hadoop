@@ -34,51 +34,37 @@ class Parser:
     '''
 
     def __init__(self, type):
-        self.type = ''
-
-    def parseImageInfo(self, img_path, lines):
         '''
-        Parse Volatility framework imageinfo command output
-        :return: pyspark.sql.Row
+        Init function for Parser class
+        Initializes type and patterns attributes
+
+        :param type:
+        :return:
         '''
-        PROFILES_PATTERN = "(\w+)(\s)(\w+)(\S+)(\s)(\:)(\s)(\S+)"
-        KDBG_PATTERN = "(\KDBG)(\s:\s)(\w+)"
+        self.type = None
+        self.patterns = {
+            'sgAccessLog': re.compile(
+                '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+:\d+ \S+) (\w+-\w+-\w+|"\w+-\w+-\w+") "(\d+)-(\d+)-(\d+)" ' \
+                '"(\d+:\d+:\d+)" "(\d+)" "(\d+.\d+.\d+.\d+)" "(\d+)" "(\S+)" "(\d+)" "(\d+)" "(\w+)" "(\w+)" "(' \
+                '\d+.\d+.\d+.\d+|\S+)" "(\d+)" "(\S+)" "(\S+)" "(\S+)" "(\S+)" "(\d+.\d+.\d+.\d+|\S+)" "(\S+)" "(' \
+                '\S+)" "([^"].*?)" "(\S+)" "([\s\S]*?)" "(\S+)" "(\d+.\d+.\d+.\d+)"'),
+            'sgAccessLogSSL': re.compile(
+                '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+:\d+ \S+) (\w+-\w+-\w+|"\w+-\w+-\w+") (\d+)-(' \
+                '\d+)-(\d+) (\d+:\d+:\d+) (\d+) (\d+.\d+.\d+.\d+) (\d+) (\S+) (\d+) (\d+) (\w+) (\w+) (' \
+                '\d+.\d+.\d+.\d+|\S+) (\d+) (\S+) (\S+) (\S+) (\S+) (\d+.\d+.\d+.\d+|\S+) (\S+) (\S+) ' \
+                '"?([' \
+                '^"].*?)"? (\S+) "([\s+\S+]*?)" (\S+) (\S+) (\d{3}|\S+) (\S+) (\d+.\d+.\d+.\d+)'),
+            'iptables': re.compile(
+                '(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+) (\S+) (\S+)(' \
+                '\s{1,2})IN=(\S+) OUT=((\S+)?) MAC=(\S+)  SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) ' \
+                'PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'),
+            'bashlog': re.compile(
+                "(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) bash: user: (\S+) as (\S+)' \
+                'from ip: (\d+.\d+.\d+.\d+):pts\/(\d) execs: '(.*)"),
+            'apacheAccessLog': re.compile(
+                "^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(\\S+) (\\S+) (\\S+)\" (\\d{3}) (\\d+)")
+        }
 
-        for line in lines:
-            profile = re.search(PROFILES_PATTERN, line)
-            kdbg = re.search(KDBG_PATTERN, line)
-
-            if profile:
-                if 'Profile' in line:
-                    m_profile = profile.group(8)
-
-            if kdbg:
-                m_kdbg = kdbg.group(3)
-
-        return Row(
-            image=img_path,
-            profile=m_profile.rstrip(','),
-            kdbg=m_kdbg
-        )
-
-    def parsePSList(self, img_path, lines):
-        '''
-        Parse Volatility framework pslist command output
-        :return: pyspark.sql.Row
-        '''
-        PSLIST_PATTERN = "(\w+)(\s+)(\w+.+)(\s+)(\d+)(\s+)(\d+)(\s+)(\d+)(\s+)(\d+)(\s+)(\d+)(\s+)(\d+)(\s+)(\d{" \
-                         "4}-\d\d-\d\d\s\d\d:\d\d:\d\d)"
-        proclist = []
-
-        for line in lines:
-            m = re.search(PSLIST_PATTERN, line)
-            if m:
-                proclist.append(m.group(3).strip())
-
-        return Row(
-            image=img_path,
-            proclist=proclist
-        )
 
     def parseBCAccessLog(self, partition):
         '''
@@ -86,27 +72,15 @@ class Parser:
         :return: pyspark.sql.Row
         '''
 
-        ACCESS_HTTP = re.compile(
-            '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+:\d+ msr-net-bcrep01) (\w+-\w+-\w+|"\w+-\w+-\w+") "(\d+)-(\d+)-(\d+)" ' \
-            '' \
-            '' \
-            '"(\d+:\d+:\d+)" "(\d+)" "(\d+.\d+.\d+.\d+)" "(\d+)" "(\S+)" "(\d+)" "(\d+)" "(\w+)" "(\w+)" "(' \
-            '\d+.\d+.\d+.\d+|\S+)" "(\d+)" "(\S+)" "(\S+)" "(\S+)" "(\S+)" "(\d+.\d+.\d+.\d+|\S+)" "(\S+)" "(' \
-            '\S+)" "([^"].*?)" "(\S+)" "([\s\S]*?)" "(\S+)" "(\d+.\d+.\d+.\d+)"')
-        ACCESS_HTTPS = re.compile(
-            '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+:\d+ msr-net-bcrep01) (\w+-\w+-\w+|"\w+-\w+-\w+") (\d+)-(' \
-            '\d+)-(\d+) (\d+:\d+:\d+) (\d+) (\d+.\d+.\d+.\d+) (\d+) (\S+) (\d+) (\d+) (\w+) (\w+) (' \
-            '\d+.\d+.\d+.\d+|\S+) (\d+) (\S+) (\S+) (\S+) (\S+) (\d+.\d+.\d+.\d+|\S+) (\S+) (\S+) ' \
-            '"?([' \
-            '^"].*?)"? (\S+) "([\s+\S+]*?)" (\S+) (\S+) (\d{3}|\S+) (\S+) (\d+.\d+.\d+.\d+)')
-
-        PATTERNS = [ACCESS_HTTP, ACCESS_HTTPS]
+        patterns = [self.patterns['sgAccessLog'],
+                    self.patterns['sgAccessLogSSL']
+                    ]
 
         for element in partition:
-            for pattern in PATTERNS:
+            for pattern in patterns:
                 m = re.search(pattern, element)
                 if m:
-                    if pattern == ACCESS_HTTP:
+                    if pattern == patterns[0]:
                         yield Row(
                             proxy=m.group(2),
                             time=m.group(6),
@@ -137,7 +111,7 @@ class Parser:
                             proxyip=m.group(28)
                         )
 
-                    elif pattern == ACCESS_HTTPS:
+                    elif pattern == patterns[1]:
                         yield Row(
                             proxy=m.group(2),
                             time=m.group(6),
@@ -173,12 +147,9 @@ class Parser:
         Parse Netfilter IPtables
         :return: pyspark.sql.Row
         '''
-        LOG = re.compile(
-            '(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+) (\S+) (\S+)(' \
-            '\s{1,2})IN=(\S+) OUT=((\S+)?) MAC=(\S+)  SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) ' \
-            'PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)')
+        fwlog = self.patterns['iptables']
         for element in partition:
-            m = re.search(LOG, element)
+            m = re.search(fwlog, element)
             if m:
                 yield Row(
                     time=m.group(4),
@@ -199,14 +170,7 @@ class Parser:
         :param partition:
         :return: Row
         """
-        '''
-        2015-07-24T14:04:53+00:00 localhost bash: user: XXX as root from ip: 10.XXX.41.XX:pts/0 execs: 'yum install -y nginx'
-        2015-07-24T14:09:07+00:00 localhost bash: user: XXX as root from ip: 10.XXX.41.XX:pts/0 execs: 'ip a'
-        2015-07-24T14:09:23+00:00 localhost bash: user: XXX as root from ip: 10.XXX.41.XX:pts/0 execs: 'host 10.XXX.3.XX'
-
-        '''
-        bashlog = re.compile(
-            "(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) bash: user: (\S+) as (\S+) from ip: (\d+.\d+.\d+.\d+):pts\/(\d) execs: '(.*)")
+        bashlog = self.patterns['bashlog']
         for element in partition:
             m = re.search(bashlog, element)
             if m:
@@ -223,8 +187,7 @@ class Parser:
         Parse Apache access logs
         :return: pyspark.sql.Row
         '''
-        pattern = re.compile(
-            "^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(\\S+) (\\S+) (\\S+)\" (\\d{3}) (\\d+)")
+        pattern = self.patterns['apacheAccessLog']
         for element in partition:
             m = re.search(pattern, element)
             if m:
@@ -276,3 +239,49 @@ class Parser:
             url=data.strip(),
             reason='OpenPhish'
         )
+
+    '''
+    def parseImageInfo(self, img_path, lines):
+        Parse Volatility framework imageinfo command output
+        :return: pyspark.sql.Row
+        PROFILES_PATTERN = "(\w+)(\s)(\w+)(\S+)(\s)(\:)(\s)(\S+)"
+        KDBG_PATTERN = "(\KDBG)(\s:\s)(\w+)"
+
+        for line in lines:
+            profile = re.search(PROFILES_PATTERN, line)
+            kdbg = re.search(KDBG_PATTERN, line)
+
+            if profile:
+                if 'Profile' in line:
+                    m_profile = profile.group(8)
+
+            if kdbg:
+                m_kdbg = kdbg.group(3)
+
+        return Row(
+            image=img_path,
+            profile=m_profile.rstrip(','),
+            kdbg=m_kdbg
+        )
+    '''
+
+    '''
+    def parsePSList(self, img_path, lines):
+
+        Parse Volatility framework pslist command output
+        :return: pyspark.sql.Row
+
+        PSLIST_PATTERN = "(\w+)(\s+)(\w+.+)(\s+)(\d+)(\s+)(\d+)(\s+)(\d+)(\s+)(\d+)(\s+)(\d+)(\s+)(\d+)(\s+)(\d{" \
+                         "4}-\d\d-\d\d\s\d\d:\d\d:\d\d)"
+        proclist = []
+
+        for line in lines:
+            m = re.search(PSLIST_PATTERN, line)
+            if m:
+                proclist.append(m.group(3).strip())
+
+        return Row(
+            image=img_path,
+            proclist=proclist
+        )
+    '''
