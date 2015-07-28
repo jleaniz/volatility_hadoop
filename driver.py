@@ -77,9 +77,6 @@ def main():
             print 'Updating local c2 db...'
             updateC2Feeds()
 
-    print 'Success: %s' %(success.value)
-    print 'Filaed: %s' %(failed.value)
-
     '''Stop the SparkContext'''
     sc.stop()
 
