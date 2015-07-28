@@ -58,7 +58,6 @@ class LogFile(object):
                         if self.type is 'proxysg':
                             parsed_rdd = rdd.mapPartitions(self.parser.parseBCAccessLog)
                             print 'Success: %s' %(self.parser.success.value)
-                            print 'Failed: %s' %(self.parser.failed.value)
                             df = parsed_rdd.toDF()
                             df.save('%s/proxysg/year=%s/month=%s/day=%s' % (destPath, year, month, day), 'parquet',
                                     'append')

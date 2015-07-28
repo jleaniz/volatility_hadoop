@@ -43,7 +43,6 @@ class Parser(object):
         '''
 
         self.success = sc.accumulator(0)
-        self.failed = sc.accumulator(0)
 
         self.patterns = {
             'sgAccessLog': re.compile(
@@ -76,7 +75,6 @@ class Parser(object):
         :return: pyspark.sql.Row
         '''
         global success
-        global failed
 
         patterns = [self.patterns['sgAccessLog'],
                     self.patterns['sgAccessLogSSL']
@@ -149,8 +147,6 @@ class Parser(object):
                             malware=m.group(30),
                             proxyip=m.group(31)
                         )
-                else:
-                    self.failed.add(1)
 
     def parseIPTables(self, partition):
         '''
@@ -186,7 +182,6 @@ class Parser(object):
         :return: Row
         """
         global success
-        global failed
 
         bashlog = self.patterns['bashlog']
         for element in partition:
@@ -200,7 +195,6 @@ class Parser(object):
                     srcip=m.group(8),
                     command=m.group(10)
                 )
-            failed.add(1)
 
     def parseApacheAL(self, partition):
         '''
@@ -208,7 +202,6 @@ class Parser(object):
         :return: pyspark.sql.Row
         '''
         global success
-        global failed
         pattern = self.patterns['apacheAccessLog']
         for element in partition:
             m = re.search(pattern, element)
@@ -225,7 +218,6 @@ class Parser(object):
                     response_code=int(m.group(8)),
                     content_size=long(m.group(9))
                 )
-            failed.add(10)
 
     def parseAlienVaultOTX(self, data):
         '''
