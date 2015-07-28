@@ -56,11 +56,12 @@ class LogFile(object):
                         rdd = sContext.textFile('%s/%s/%s/%s' % (self.path, year, month, day))
 
                         if self.type is 'proxysg':
+                            self.parser.success = 0
                             parsed_rdd = rdd.mapPartitions(self.parser.parseBCAccessLog)
                             df = parsed_rdd.toDF()
                             df.save('%s/proxysg/year=%s/month=%s/day=%s' % (destPath, year, month, day), 'parquet', 'append')
+                            print 'Completed tasks for date: %s-%s-%s' %(year, month, day)
                             print 'Success: %s' %(self.parser.success.value)
-                            self.parser.success = 0
 
 
                         if self.type is 'iptables':
