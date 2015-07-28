@@ -33,7 +33,7 @@ class Parser(object):
         TODO: C1fapp
     '''
 
-    def __init__(self):
+    def __init__(self, sc):
         '''
         Init function for Parser class
         Initializes type and patterns attributes
@@ -42,7 +42,7 @@ class Parser(object):
         :return:
         '''
 
-        #self.success = sc.accumulator(0)
+        self.success = sc.accumulator(0)
 
         self.patterns = {
             'sgAccessLog': re.compile(
@@ -74,7 +74,7 @@ class Parser(object):
         Parse ProxySG access logs
         :return: pyspark.sql.Row
         '''
-        #global success
+        global success
 
         patterns = [self.patterns['sgAccessLog'],
                     self.patterns['sgAccessLogSSL']
@@ -85,7 +85,7 @@ class Parser(object):
                 m = re.search(pattern, element)
                 if m:
                     if pattern == patterns[0]:
-                        #self.success.add(1)
+                        self.success.add(1)
                         yield Row(
                             proxy=m.group(2),
                             time=m.group(6),
@@ -117,7 +117,7 @@ class Parser(object):
                         )
 
                     elif pattern == patterns[1]:
-                        #self.success.add(1)
+                        self.success.add(1)
                         yield Row(
                             proxy=m.group(2),
                             time=m.group(6),
@@ -153,14 +153,13 @@ class Parser(object):
         Parse Netfilter IPtables
         :return: pyspark.sql.Row
         '''
-        #global success
-        #global failed
+        global success
 
         fwlog = self.patterns['iptables']
         for element in partition:
             m = re.search(fwlog, element)
             if m:
-                #success.add(1)
+                success.add(1)
                 yield Row(
                     time=m.group(4),
                     source=m.group(5),
@@ -173,7 +172,6 @@ class Parser(object):
                     srcport=int(m.group(23)),
                     dstport=int(m.group(24))
                 )
-            #failed.add(1)
 
     def parseBash(self, partition):
         """
@@ -181,13 +179,13 @@ class Parser(object):
         :param partition:
         :return: Row
         """
-        #global success
+        global success
 
         bashlog = self.patterns['bashlog']
         for element in partition:
             m = re.search(bashlog, element)
             if m:
-                #success.add(1)
+                success.add(1)
                 yield Row(
                     logsrc=m.group(5),
                     username=m.group(6),
@@ -201,12 +199,12 @@ class Parser(object):
         Parse Apache access logs
         :return: pyspark.sql.Row
         '''
-        #global success
+        global success
         pattern = self.patterns['apacheAccessLog']
         for element in partition:
             m = re.search(pattern, element)
             if m:
-                #success.add(1)
+                success.add(1)
                 yield Row(
                     ip_address=m.group(1),
                     client_identd=m.group(2),
