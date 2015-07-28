@@ -19,9 +19,6 @@ import re
 from pyspark.sql import Row
 from pyspark import SparkContext
 
-global success
-global failed
-
 class Parser(object):
     '''
     This class has methods to parse different types of data.
@@ -36,7 +33,7 @@ class Parser(object):
         TODO: C1fapp
     '''
 
-    def __init__(self):
+    def __init__(self, sc):
         '''
         Init function for Parser class
         Initializes type and patterns attributes
@@ -44,6 +41,9 @@ class Parser(object):
         :param patterns:
         :return:
         '''
+
+        success = sc.accumulator(0)
+        failed = sc.accumulator(0)
 
         self.patterns = {
             'sgAccessLog': re.compile(
@@ -73,6 +73,8 @@ class Parser(object):
         Parse ProxySG access logs
         :return: pyspark.sql.Row
         '''
+        global success
+        global failed
 
         patterns = [self.patterns['sgAccessLog'],
                     self.patterns['sgAccessLogSSL']
@@ -152,6 +154,9 @@ class Parser(object):
         Parse Netfilter IPtables
         :return: pyspark.sql.Row
         '''
+        global success
+        global failed
+
         fwlog = self.patterns['iptables']
         for element in partition:
             m = re.search(fwlog, element)
@@ -177,6 +182,8 @@ class Parser(object):
         :param partition:
         :return: Row
         """
+        global success
+        global failed
         bashlog = self.patterns['bashlog']
         for element in partition:
             m = re.search(bashlog, element)
@@ -196,6 +203,8 @@ class Parser(object):
         Parse Apache access logs
         :return: pyspark.sql.Row
         '''
+        global success
+        global failed
         pattern = self.patterns['apacheAccessLog']
         for element in partition:
             m = re.search(pattern, element)

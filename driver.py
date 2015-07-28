@@ -47,9 +47,6 @@ def main():
     parser = Parser()
     log = LogFile(path=None)
 
-    success = sc.accumulator(0)
-    failed = sc.accumulator(0)
-
     '''Loop through the cli arguments'''
     for arg in args.ingest:
         if arg == 'iptables':
