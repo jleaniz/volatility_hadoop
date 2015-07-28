@@ -42,6 +42,7 @@ class Config(object):
         self.spark_core_connection_ack_wait_timeout = '3000'
         self.spark_storage_memoryFraction = '0.6'
         self.spark_default_parallelism = '60'
+        self.spark_io_compression_codec = 'snappy'
 
     def setSparkConf(self):
         '''
@@ -62,6 +63,7 @@ class Config(object):
                 .set("spark.network.timeout", self.spark_network_timeout)
                 .set("spark.core.connection.ack.wait.timeout", self.spark_core_connection_ack_wait_timeout)
                 .set("spark.storage.memoryFraction", self.spark_storage_memoryFraction)
-                .set("spark.default.parallelism", self.spark_default_parallelism))
+                .set("spark.default.parallelism", self.spark_default_parallelism)
+                .set("spark.io.compression.codec", self.spark_io_compression_codec))
 
         return conf
