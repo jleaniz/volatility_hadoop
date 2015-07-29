@@ -45,7 +45,7 @@ def main():
     ''' LogFile and Parser objects
     Attributes will be defined after parsing "args" '''
     myParser = Parser(sc)
-    log = LogFile(path=None, parser=myParser)
+    log = LogFile(path=None, parser=myParser, sc=sc, destPath=None)
 
     '''Loop through the cli arguments'''
     for arg in args.ingest:
@@ -54,28 +54,31 @@ def main():
             for path in args.path:
                 print 'Ingesting iptables logs for ', (path)
                 log.path = path
-                log.saveLogByDate(sc, log.path)
+                log.destPath = path.rsplit('/', 1)[0]
+                log.saveLogByDate()
         elif arg == 'proxysg':
             log.type = 'proxysg'
             for path in args.path:
                 print 'Ingesting Blue Coat ProxySG access logs...'
                 log.path = path
-                log.saveLogByDate(sc, log.path)
+                log.destPath = path.rsplit('/', 1)[0]
+                log.saveLogByDate()
         elif arg == 'bashlog':
             log.type = 'bashlog'
             for path in args.path:
                 print 'Ingesting bash logs...'
                 log.path = path
-                log.saveLogByDate(sc, log.path)
+                log.destPath = path.rsplit('/', 1)[0]
+                log.saveLogByDate()
         elif arg == 'alienvault_otx':
             print 'Updating local AlienVault OTX db...'
             updateAlienvaultOtx(sc)
         elif arg == 'openphish':
             print 'Updating local OpenPhish db...'
-            updateOpenphish()
+            updateOpenphish(sc)
         elif arg == 'c2':
             print 'Updating local c2 db...'
-            updateC2Feeds()
+            updateC2Feeds(sc)
 
     '''Stop the SparkContext'''
     sc.stop()

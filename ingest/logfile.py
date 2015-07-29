@@ -24,13 +24,15 @@ class LogFile(object):
     This class handles log files
     '''
 
-    def __init__(self, path, parser):
+    def __init__(self, path, parser, sc, destPath):
         self.localHdfs = '/mnt/hdfs'
-        self.path = path
+        self.path = self.localHdfs + path
         self.parser = parser
         self.type = None
+        self.sContext = sc
+        self.destPath = destPath
 
-    def saveLogByDate(self, sContext, destPath):
+    def saveLogByDate(self):
         '''
         This function will parse logs and save them
         to HDFS in parquet format partitioned by date
@@ -42,50 +44,48 @@ class LogFile(object):
         :param path: The HDFS path containing the log files
         :return: None
         '''
-        sqlCtx = SQLContext(sContext)
+        sqlCtx = SQLContext(self.sContext)
         sqlCtx.setConf('spark.sql.parquet.compression.codec', 'snappy')
-        localPath = self.localHdfs + self.path
 
-        years = os.listdir(localPath)
+        years = os.listdir(self.path)
         for year in years:
-            months = os.listdir('%s/%s' % (localPath, year))
+            months = os.listdir('%s/%s' % (self.path, year))
             for month in months:
-                days = os.listdir('%s/%s/%s' % (localPath, year, month))
+                days = os.listdir('%s/%s/%s' % (self.path, year, month))
                 for day in days:
-                    if os.listdir('%s/%s/%s/%s' % (localPath, year, month, day)):
-                        rdd = sContext.textFile('%s/%s/%s/%s' % (self.path, year, month, day))
-
+                    if os.listdir('%s/%s/%s/%s' % (self.path, year, month, day)):
+                        rdd = self.sContext.textFile('%s/%s/%s/%s' % (self.path, year, month, day))
                         if self.type is 'proxysg':
                             parsed_rdd = rdd.mapPartitions(self.parser.parseBCAccessLog)
                             df = parsed_rdd.toDF()
-                            df.save('%s/proxysg/year=%s/month=%s/day=%s' % (destPath, year, month, day), 'parquet',
+                            df.save('%s/proxysg/year=%s/month=%s/day=%s' % (self.destPath, year, month, day), 'parquet',
                                     'append')
 
                         if self.type is 'iptables':
                             parsed_rdd = rdd.mapPartitions(self.parser.parseIPTables)
                             df = parsed_rdd.toDF()
                             if 'onl' in self.path:
-                                df.save('%s/onl/year=%s/month=%s/day=%s' % (destPath, year, month, day), 'parquet',
+                                df.save('%s/onl/year=%s/month=%s/day=%s' % (self.destPath, year, month, day), 'parquet',
                                         'append')
                             if 'onbe' in self.path:
-                                df.save('%s/onbe/year=%s/month=%s/day=%s' % (destPath, year, month, day), 'parquet',
+                                df.save('%s/onbe/year=%s/month=%s/day=%s' % (self.destPath, year, month, day), 'parquet',
                                         'append')
                             if 'off' in self.path:
-                                df.save('%s/off/year=%s/month=%s/day=%s' % (destPath, year, month, day), 'parquet',
+                                df.save('%s/off/year=%s/month=%s/day=%s' % (self.destPath, year, month, day), 'parquet',
                                         'append')
 
                         if self.type is 'apacheAccessLog':
                             parsed_rdd = rdd.mapPartitions(self.parser.parseApacheAL())
                             df = parsed_rdd.toDF()
-                            df.save('%s/apache/year=%s/month=%s/day=%s' % (destPath, year, month, day), 'parquet',
+                            df.save('%s/apache/year=%s/month=%s/day=%s' % (self.destPath, year, month, day), 'parquet',
                                     'append')
 
                         if self.type is 'bashlog':
                             parsed_rdd = rdd.mapPartitions(self.parser.parseBash)
                             df = parsed_rdd.toDF()
-                            df.save('%s/bashlog/year=%s/month=%s/day=%s' % (destPath, year, month, day), 'parquet',
+                            df.save('%s/bashlog/year=%s/month=%s/day=%s' % (self.destPath, year, month, day), 'parquet',
                                     'append')
 
                     print 'Completed tasks for date: %s-%s-%s' % (year, month, day)
                     print 'Success: %s' % (self.parser.success.value)
-                    self.parser.success = sContext.accumulator(0)
+                    self.parser.success = self.sContext.accumulator(0)
