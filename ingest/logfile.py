@@ -17,7 +17,7 @@
 import os
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
-from multiprocessing import Pool
+import threading
 
 
 class LogFile(object):
@@ -89,8 +89,11 @@ class LogFile(object):
                 days = os.listdir('%s/%s/%s' % (localPath, year, month))
                 for day in days:
 
-                    p = Pool(8)
-                    p.map(self.parallelsave(localPath,year,month,day))
+                    threads = []
+                    t = threading.Thread(target=self.parallelsave, args=(localPath,year,month,day))
+                    threads.append(t)
+                    t.start()
+
                     print 'Completed tasks for date: %s-%s-%s' % (year, month, day)
                     print 'Success: %s' % (self.parser.success.value)
                     self.parser.success = self.sContext.accumulator(0)
