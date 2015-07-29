@@ -29,7 +29,7 @@ class LogFile(object):
         self.sContext = sc
         self.destPath = destPath
 
-    def parallelsave(self, localPath, year, month, days, r_queue):
+    def parallelsave(self, localPath, year, month, days):
         for day in days:
             days.remove(day)
             if os.listdir('%s/%s/%s/%s' % (localPath, year, month, day)):
@@ -79,7 +79,6 @@ class LogFile(object):
             months = os.listdir('%s/%s' % (localPath, year))
             for month in months:
                 days = os.listdir('%s/%s/%s' % (localPath, year, month))
-
                 threads = [threading.Thread(target=self.parallelsave, args=(localPath,year,month,days)) for i in range(32)]
                 for thread in threads:
                     thread.start()
