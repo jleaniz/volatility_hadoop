@@ -45,7 +45,7 @@ def main():
     ''' LogFile and Parser objects
     Attributes will be defined after parsing "args" '''
     myParser = Parser(sc)
-    log = LogFile(path=None, parser=myParser, sc=sc, destPath=None)
+    log = LogFile(path='', parser=myParser, sc=sc, destPath=None)
 
     '''Loop through the cli arguments'''
     for arg in args.ingest:
