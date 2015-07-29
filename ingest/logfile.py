@@ -86,6 +86,6 @@ class LogFile(object):
                 for thread in threads:
                     thread.start()
                     thread.join()
-
+                q.join()
 
 
