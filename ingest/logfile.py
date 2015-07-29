@@ -81,8 +81,7 @@ class LogFile(object):
             for month in months:
                 days = os.listdir('%s/%s/%s' % (localPath, year, month))
                 q = Queue.Queue()
-                threads = [threading.Thread(target=self.parallelsave, args=(localPath,year,month,days,q)) for i in range(self.sContext.getConf()
-                                                                                                                         .get('spark.cores.max'))]
+                threads = [threading.Thread(target=self.parallelsave, args=(localPath,year,month,days,q)) for i in range(32)]
                 for thread in threads:
                     thread.start()
                 r = q.get()
