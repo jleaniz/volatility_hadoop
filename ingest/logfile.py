@@ -26,7 +26,7 @@ class LogFile(object):
 
     def __init__(self, path, parser, sc, destPath):
         self.localHdfs = '/mnt/hdfs'
-        self.path = self.localHdfs + path
+        self.path = None
         self.parser = parser
         self.type = None
         self.sContext = sc
