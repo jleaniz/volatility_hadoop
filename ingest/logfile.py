@@ -60,9 +60,6 @@ class LogFile(object):
                             df = parsed_rdd.toDF()
                             df.save('%s/proxysg/year=%s/month=%s/day=%s' % (destPath, year, month, day), 'parquet',
                                     'append')
-                            print 'Completed tasks for date: %s-%s-%s' % (year, month, day)
-                            print 'Success: %s' % (self.parser.success.value)
-                            self.parser.success = sContext.accumulator(0)
 
                         if self.type is 'iptables':
                             parsed_rdd = rdd.mapPartitions(self.parser.parseIPTables)
@@ -88,3 +85,7 @@ class LogFile(object):
                             df = parsed_rdd.toDF()
                             df.save('%s/bashlog/year=%s/month=%s/day=%s' % (destPath, year, month, day), 'parquet',
                                     'append')
+
+                    print 'Completed tasks for date: %s-%s-%s' % (year, month, day)
+                    print 'Success: %s' % (self.parser.success.value)
+                    self.parser.success = sContext.accumulator(0)
