@@ -65,10 +65,11 @@ class LogFile(object):
                     df.save('%s/bashlog/year=%s/month=%s/day=%s' % (self.destPath, year, month, day), 'parquet',
                             'append')
 
+            print 'Success: %s' % (self.parser.success)
             print 'Completed tasks for date: %s-%s-%s' % (year, month, day)
-            print 'Success: %s' % (self.parser.success.value)
+            r_queue.put(self.parser.success)
             self.parser.success = self.sContext.accumulator(0)
-            r_queue.put((day, 'done'))
+
 
     def saveLogByDate(self):
 
@@ -84,5 +85,7 @@ class LogFile(object):
                 threads = [threading.Thread(target=self.parallelsave, args=(localPath,year,month,days,q)) for i in range(32)]
                 for thread in threads:
                     thread.start()
-                r = q.get()
+                    thread.join()
+
+
 
