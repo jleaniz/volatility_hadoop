@@ -18,7 +18,7 @@ import os
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
 import threading
-
+import Queue
 
 class LogFile(object):
     '''
@@ -33,7 +33,7 @@ class LogFile(object):
         self.sContext = sc
         self.destPath = destPath
 
-    def parallelsave(self, localPath, year, month, day):
+    def parallelsave(self, localPath, year, month, day, r_queue):
         if os.listdir('%s/%s/%s/%s' % (localPath, year, month, day)):
             rdd = self.sContext.textFile('%s/%s/%s/%s' % (self.path, year, month, day))
             if self.type is 'proxysg':
@@ -67,6 +67,8 @@ class LogFile(object):
                 df.save('%s/bashlog/year=%s/month=%s/day=%s' % (self.destPath, year, month, day), 'parquet',
                         'append')
 
+        r_queue.put((day, 'done'))
+
     def saveLogByDate(self):
         '''
         This function will parse logs and save them
@@ -88,11 +90,12 @@ class LogFile(object):
             for month in months:
                 days = os.listdir('%s/%s/%s' % (localPath, year, month))
                 for day in days:
+                    q = Queue.Queue()
+                    threads = [threading.Thread(target=self.parallelsave, args=(localPath,year,month,day)) for i in range(4)]
+                    for thread in threads:
+                        thread.start()
 
-                    threads = []
-                    t = threading.Thread(target=self.parallelsave, args=(localPath,year,month,day))
-                    threads.append(t)
-                    t.start()
+                    r = q.get()
 
                     print 'Completed tasks for date: %s-%s-%s' % (year, month, day)
                     print 'Success: %s' % (self.parser.success.value)
