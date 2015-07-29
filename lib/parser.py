@@ -159,7 +159,7 @@ class Parser(object):
         for element in partition:
             m = re.search(fwlog, element)
             if m:
-                success.add(1)
+                self.success.add(1)
                 yield Row(
                     time=m.group(4),
                     source=m.group(5),
@@ -185,7 +185,7 @@ class Parser(object):
         for element in partition:
             m = re.search(bashlog, element)
             if m:
-                success.add(1)
+                self.success.add(1)
                 yield Row(
                     logsrc=m.group(5),
                     username=m.group(6),
@@ -204,7 +204,7 @@ class Parser(object):
         for element in partition:
             m = re.search(pattern, element)
             if m:
-                success.add(1)
+                self.success.add(1)
                 yield Row(
                     ip_address=m.group(1),
                     client_identd=m.group(2),
