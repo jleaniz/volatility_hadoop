@@ -91,7 +91,7 @@ class LogFile(object):
                 days = os.listdir('%s/%s/%s' % (localPath, year, month))
                 for day in days:
                     q = Queue.Queue()
-                    threads = [threading.Thread(target=self.parallelsave, args=(localPath,year,month,day)) for i in range(4)]
+                    threads = [threading.Thread(target=self.parallelsave, args=(localPath,year,month,day,q)) for i in range(4)]
                     for thread in threads:
                         thread.start()
 
