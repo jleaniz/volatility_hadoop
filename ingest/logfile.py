@@ -85,7 +85,7 @@ class LogFile(object):
                 threads = [threading.Thread(target=self.parallelsave, args=(localPath,year,month,days,q)) for i in range(32)]
                 for thread in threads:
                     thread.start()
-                    thread.join()
-                q.join()
+                    #thread.join()
+                    q.join()
 
 
