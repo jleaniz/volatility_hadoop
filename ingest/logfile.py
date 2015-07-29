@@ -80,7 +80,7 @@ class LogFile(object):
             for month in months:
                 days = os.listdir('%s/%s/%s' % (localPath, year, month))
 
-                threads = [threading.Thread(target=self.parallelsave, args=(localPath,year,month,days,q)) for i in range(32)]
+                threads = [threading.Thread(target=self.parallelsave, args=(localPath,year,month,days)) for i in range(32)]
                 for thread in threads:
                     thread.start()
                 for thread in threads:
