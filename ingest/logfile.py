@@ -46,14 +46,14 @@ class LogFile(object):
         '''
         sqlCtx = SQLContext(self.sContext)
         sqlCtx.setConf('spark.sql.parquet.compression.codec', 'snappy')
-
-        years = os.listdir(self.path)
+        localPath = self.localHdfs + self.path
+        years = os.listdir(localPath)
         for year in years:
-            months = os.listdir('%s/%s' % (self.path, year))
+            months = os.listdir('%s/%s' % (localPath, year))
             for month in months:
-                days = os.listdir('%s/%s/%s' % (self.path, year, month))
+                days = os.listdir('%s/%s/%s' % (localPath, year, month))
                 for day in days:
-                    if os.listdir('%s/%s/%s/%s' % (self.path, year, month, day)):
+                    if os.listdir('%s/%s/%s/%s' % (localPath, year, month, day)):
                         rdd = self.sContext.textFile('%s/%s/%s/%s' % (self.path, year, month, day))
                         if self.type is 'proxysg':
                             parsed_rdd = rdd.mapPartitions(self.parser.parseBCAccessLog)
