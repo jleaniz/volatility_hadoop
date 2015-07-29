@@ -67,9 +67,7 @@ class LogFile(object):
 
             print 'Completed tasks for date: %s-%s-%s' % (year, month, day)
             print 'Success: %s' % (self.parser.success.value)
-            r_queue.put(self.parser.success.value)
             self.parser.success = self.sContext.accumulator(0)
-
 
     def saveLogByDate(self):
 
@@ -81,8 +79,9 @@ class LogFile(object):
             months = os.listdir('%s/%s' % (localPath, year))
             for month in months:
                 days = os.listdir('%s/%s/%s' % (localPath, year, month))
-                q = Queue.Queue()
+
                 threads = [threading.Thread(target=self.parallelsave, args=(localPath,year,month,days,q)) for i in range(32)]
                 for thread in threads:
                     thread.start()
+                for thread in threads:
                     thread.join()
