@@ -77,13 +77,12 @@ class LogFile(object):
         sqlCtx.setConf('spark.sql.parquet.compression.codec', 'snappy')
         localPath = self.localHdfs + self.path
         years = os.listdir(localPath)
-        q = Queue.Queue()
-
         for year in years:
             months = os.listdir('%s/%s' % (localPath, year))
             for month in months:
                 days = os.listdir('%s/%s/%s' % (localPath, year, month))
+                q = Queue.Queue()
                 threads = [threading.Thread(target=self.parallelsave, args=(localPath,year,month,days,q)) for i in range(32)]
                 for thread in threads:
                     thread.start()
-        q.join()
+                    q.join()
