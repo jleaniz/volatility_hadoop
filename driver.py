@@ -17,7 +17,7 @@
 import argparse
 
 from ingest.logfile import LogFile
-from ingest.feeds import *
+import ingest.feeds as feeds
 from lib.parser import Parser
 from config import config as conf
 from pyspark import SparkContext
@@ -44,7 +44,7 @@ def main():
 
     ''' LogFile and Parser objects
     Attributes will be defined after parsing "args" '''
-    myParser = Parser(sc)
+    myParser = Parser()
     log = LogFile(path='', parser=myParser, sc=sc, destPath=None)
 
     '''Loop through the cli arguments'''
@@ -72,13 +72,13 @@ def main():
                 log.saveLogByDate()
         elif arg == 'alienvault_otx':
             print 'Updating local AlienVault OTX db...'
-            updateAlienvaultOtx(sc)
+            feeds.updateAlienvaultOtx(sc)
         elif arg == 'openphish':
             print 'Updating local OpenPhish db...'
-            updateOpenphish(sc)
+            feeds.updateOpenphish(sc)
         elif arg == 'c2':
             print 'Updating local c2 db...'
-            updateC2Feeds(sc)
+            feeds.updateC2Feeds(sc)
 
     '''Stop the SparkContext'''
     sc.stop()
