@@ -44,6 +44,7 @@ class Config(object):
         self.spark_default_parallelism = '60'
         self.spark_io_compression_codec = 'snappy'
         self.spark_serializer =  'org.apache.spark.serializer.KryoSerializer'
+        self.spark_kryoserializer_buffer_max = '512m'
 
     def setSparkConf(self):
         '''
@@ -66,6 +67,7 @@ class Config(object):
                 .set("spark.storage.memoryFraction", self.spark_storage_memoryFraction)
                 .set("spark.default.parallelism", self.spark_default_parallelism)
                 .set("spark.serializer", self.spark_serializer)
+                .set("spark.kryoserializer.buffer.max", self.spark_kryoserializer_buffer_max)
                 .set("spark.io.compression.codec", self.spark_io_compression_codec))
 
         return conf
