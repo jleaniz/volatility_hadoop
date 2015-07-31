@@ -47,6 +47,8 @@ class Config(object):
         self.spark_kryoserializer_buffer_max_mb = '128'
         self.spark_rdd_compress = 'false'
         self.spark_sql_shuffle_partitions = '1024'
+        self.spark_sql_codegen = 'true'
+        self.spark_sql_planner_externalSort	= 'true'
 
     def setSparkConf(self):
         '''
@@ -72,6 +74,8 @@ class Config(object):
                 .set("spark.kryoserializer.buffer.max.mb", self.spark_kryoserializer_buffer_max_mb)
                 .set("spark.rdd.compress", self.spark_rdd_compress)
                 .set('spark.sql.shuffle.partitions', self.spark_sql_shuffle_partitions)
+                .set('spark.sql.planner.externalSort', self.spark_sql_planner_externalSort)
+                .set('spark.sql.codegen', self.spark_sql_codegen)
                 .set("spark.io.compression.codec", self.spark_io_compression_codec))
 
         return conf
