@@ -41,7 +41,7 @@ class Config(object):
         self.spark_network_timeout = '3000'
         self.spark_core_connection_ack_wait_timeout = '3000'
         self.spark_storage_memoryFraction = '0.6'
-        self.spark_default_parallelism = '60'
+        self.spark_default_parallelism = '80'
         self.spark_io_compression_codec = 'snappy'
         self.spark_serializer =  'org.apache.spark.serializer.KryoSerializer'
         self.spark_kryoserializer_buffer_max_mb = '128'
