@@ -43,7 +43,7 @@ class Config(object):
         self.spark_storage_memoryFraction = '0.6'
         self.spark_default_parallelism = '80'
         self.spark_io_compression_codec = 'snappy'
-        self.spark_serializer =  'org.apache.spark.serializer.KryoSerializer'
+        self.spark_serializer = 'org.apache.spark.serializer.KryoSerializer'
         self.spark_kryoserializer_buffer_max_mb = '128'
         self.spark_rdd_compress = 'false'
 

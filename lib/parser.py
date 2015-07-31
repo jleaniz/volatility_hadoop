@@ -19,6 +19,7 @@ import re
 from pyspark.sql import Row
 from pyspark import SparkContext
 
+
 class Parser(object):
     '''
     This class has methods to parse different types of data.
