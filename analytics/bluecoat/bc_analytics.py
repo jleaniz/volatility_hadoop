@@ -25,6 +25,20 @@ def getClientsByTransferP(sc, parquetFiles, number, month):
     :param number: limit results to 'number'
     :return: DataFrame
     '''
+    '''
+    sc.stop()
+    from pyspark.sql import SQLContext
+    from pyspark import StorageLevel
+    from pyspark import SparkConf
+    conf = SparkConf().set('spark.sql.shuffle.partitions', '1024').set('spark.sql.planner.externalSort', 'true')
+    sc = SparkContext(master='spark://mtl-ah374.ubisoft.org:7077', conf=conf)
+    sqlctx=SQLContext(sc)
+    df=sqlctx.load('/user/cloudera/proxysg/year=2015/month=07')
+    sqlctx.registerDataFrameAsTable(df, 'proxy')
+    tct = sqlctx.sql('select clientip,host,csbytes from proxy group by clientip,host,csbytes order by csbytes desc limit 500')
+    tct.persist(StorageLevel.MEMORY_AND_DISK_SER)
+    tct.show()
+    '''
 
     # Creat Spark SQL context
     sqlctx = SQLContext(sc)
