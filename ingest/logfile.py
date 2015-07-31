@@ -63,7 +63,10 @@ class LogFile(object):
                     df.save('%s/bashlog/year=%s/month=%s/day=%s' % (self.destPath, year, month, day), 'parquet',
                             'append')
 
+            print '======================================'
             print 'Completed tasks for date: %s-%s-%s' % (year, month, day)
+            print '======================================'
+
 
     def saveLogByDate(self):
 
