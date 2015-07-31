@@ -33,19 +33,20 @@ class Config(object):
         self.spark_driver_cores = '8'
         self.spark_driver_maxResultSize = '512m'
         self.spark_driver_memory = '1g'
-        self.spark_worker_memory = '6g'
-        self.spark_executor_memory = '4g'
+        self.spark_worker_memory = '8g'
+        self.spark_executor_memory = '8g'
         self.spark_executor_cores = '8'
         self.spark_cores_max = '40'
         self.spark_akka_timeout = '3000'
         self.spark_network_timeout = '3000'
         self.spark_core_connection_ack_wait_timeout = '3000'
         self.spark_storage_memoryFraction = '0.6'
-        self.spark_default_parallelism = '80'
+        self.spark_default_parallelism = '120'
         self.spark_io_compression_codec = 'snappy'
         self.spark_serializer = 'org.apache.spark.serializer.KryoSerializer'
         self.spark_kryoserializer_buffer_max_mb = '128'
         self.spark_rdd_compress = 'false'
+        self.spark_sql_shuffle_partitions = '1024'
 
     def setSparkConf(self):
         '''
@@ -70,6 +71,7 @@ class Config(object):
                 .set("spark.serializer", self.spark_serializer)
                 .set("spark.kryoserializer.buffer.max.mb", self.spark_kryoserializer_buffer_max_mb)
                 .set("spark.rdd.compress", self.spark_rdd_compress)
+                .set('spark.sql.shuffle.partitions', self.spark_sql_shuffle_partitions)
                 .set("spark.io.compression.codec", self.spark_io_compression_codec))
 
         return conf
