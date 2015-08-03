@@ -16,7 +16,6 @@
 #
 
 import threading
-from analytics.bluecoat import getClientsByTransfer
 
 class SparkSQLJob(object):
 
