@@ -19,6 +19,7 @@ from pyspark.sql.types import *
 
 
 def getClientsByTransfer(sc, parquetFiles, number, year, month, day):
+    print sc
     # Creat Spark SQL context
     sqlctx = SQLContext(sc)
     # Load files into a DataFrame
