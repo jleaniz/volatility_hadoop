@@ -18,7 +18,7 @@
 from impala.dbapi import connect
 
 
-class ImpalaDB:
+class ImpalaTable:
     '''
     This class defines methods used to interact with
     an Impala database
@@ -27,6 +27,9 @@ class ImpalaDB:
     def __init__(self, host, port):
         self.host = host
         self.port = port
+        self.name = None
+        self.partitions = None
+        self.path = None
 
     def connect(self, host, port):
         '''
@@ -70,13 +73,12 @@ class ImpalaDB:
         '''
         try:
             cursor.execute(
-                # 'alter table ' + table + 'add partition (year=' + year + ', month=' + month + ', day=' + day + ')'
                 'ALTER TABLE %s add partition (%s, %s, %s)' % (table, year, month, day)
             )
         except:
             pass
 
-    def loadData(self, cursor, table, path, partitions):
+    def loadData(self, cursor, table, path, year, month, day):
         '''
         Load data into a partitioned table
         :param cursor:
@@ -88,8 +90,8 @@ class ImpalaDB:
         try:
             cursor.execute(
                 'LOAD DATA INPATH %s INTO TABLE %s PARTITION (year=%s, month=%s, day=%s)' % (
-                    path + '/year=' + partitions[0] + '/month=' + partitions[1] + '/day=' + partitions[2],
-                    table, partitions[0], partitions[1], partitions[2])
+                    path + '/year=' + year + '/month=' + month + '/day=' + day,
+                    table, year, month, day)
             )
         except:
             pass

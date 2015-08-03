@@ -21,7 +21,9 @@ import ingest.feeds as feeds
 from lib.parser import Parser
 from config import config as conf
 from pyspark import SparkContext
-
+from jobs import SparkSQLJob
+from analytics.bluecoat import getClientsByTransfer
+import datetime.date as date
 
 def main():
     '''
@@ -33,6 +35,9 @@ def main():
                            choices=['c2', 'openphish', 'alienvault_otx', 'proxysg', 'iptables', 'imageinfo', 'bashlog'
                                                                                                              'pslist'],
                            required=True, help='Ingest raw logs into HDFS (saves Parquet files)')
+    cliparser.add_argument('-a', '--analytics', action='append',
+                           required=True,
+                           help='Run analytics functions')
     cliparser.add_argument('-p', '--path', action='append',
                            required=True,
                            help='Path to the log data. Subdirs must be structured as /year/month/day')
@@ -79,6 +84,13 @@ def main():
         elif arg == 'c2':
             print 'Updating local c2 db...'
             feeds.updateC2Feeds(sc)
+
+    if args.analytics:
+        funcs = []
+        funcArgs = []
+        funcs.append('getClientsByTransfer')
+        funcArgs.append( 'sc, args.path[0], date.today().year, date.today().month, date.today().day')
+        job = SparkSQLJob(sc, funcs)
 
     '''Stop the SparkContext'''
     sc.stop()
