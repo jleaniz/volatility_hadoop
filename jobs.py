@@ -32,6 +32,7 @@ class SparkSQLJob(object):
         for func in self.funcs:
             if func:
                 if self.funcArgs:
+                    self.funcArgs.append(self.sc)
                     self.timers.append( threading.Timer(self.wait, func, self.funcArgs) )
 
         for timer in self.timers:
