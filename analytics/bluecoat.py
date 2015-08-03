@@ -21,8 +21,6 @@ from pyspark.sql.types import *
 def getClientsByTransfer( parquetFiles, number, year, month, day, sc):
     # Creat Spark SQL context
     sqlctx = SQLContext(sc)
-    print type(sc)
-    print type(sqlctx)
     # Load files into a DataFrame
     df = sqlctx.load(parquetFiles)
     # Register temporary in-memory table
