@@ -96,6 +96,7 @@ def main():
         job.funcArgs.append(
             x for x in arguments
         )
+        print job.funcArgs
         job.execute()
 
     '''Stop the SparkContext'''
