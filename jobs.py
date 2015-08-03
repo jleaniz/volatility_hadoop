@@ -14,7 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with BDSA.  If not, see <http://www.gnu.org/licenses/>.
 #
-
+from pyspark.sql import SQLContext
+from pyspark.sql.types import *
 import threading
 
 class SparkSQLJob(object):
@@ -29,8 +30,9 @@ class SparkSQLJob(object):
 
     def execute(self):
         for func in self.funcs:
-            if self.funcArgs:
-                self.timers.append( threading.Timer(self.wait, func, self.funcArgs) )
+            if func:
+                if self.funcArgs:
+                    self.timers.append( threading.Timer(self.wait, func, self.funcArgs) )
 
         for timer in self.timers:
             timer.start()
