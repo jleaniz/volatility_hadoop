@@ -88,10 +88,15 @@ def main():
 
     if args.analytics:
         funcs = []
-        funcArgs = []
+        arguments = [
+            sc, args.path[0], datetime.date.today().year, datetime.date.today().month, datetime.date.today().day
+        ]
         funcs.append(bluecoat.getClientsByTransfer)
-        funcArgs.append(sc, args.path[0], datetime.date.today().year, datetime.date.today().month, datetime.date.today().day)
         job = SparkSQLJob(sc, funcs)
+        job.funcArgs.append(
+            x for x in arguments
+        )
+        job.execute()
 
     '''Stop the SparkContext'''
     sc.stop()
