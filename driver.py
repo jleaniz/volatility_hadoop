@@ -93,9 +93,9 @@ def main():
         ]
         funcs.append(bluecoat.getClientsByTransfer)
         job = SparkSQLJob(sc, funcs)
-        job.funcArgs.append(
-            x for x in arguments
-        )
+        for x in arguments:
+            job.funcArgs.append(x)
+
         print job.funcArgs
         job.execute()
 
