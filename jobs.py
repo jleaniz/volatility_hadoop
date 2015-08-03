@@ -25,12 +25,12 @@ class SparkSQLJob(object):
         self.funcs = funcs
         self.funcArgs = []
         self.timers = []
-        self.wait = 300.0
+        self.wait = 5.0
 
     def execute(self):
         for func in self.funcs:
             if self.funcArgs:
-                self.timers.append( threading.Timer(self.wait, func, args=self.funcArgs) )
+                self.timers.append( threading.Timer(self.wait, func, self.funcArgs) )
 
         for timer in self.timers:
             timer.start()
