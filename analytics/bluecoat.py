@@ -22,7 +22,7 @@ def getClientsByTransfer(sc, parquetFiles, number, year, month, day):
     # Creat Spark SQL context
     sqlctx = SQLContext(sc)
     # Load files into a DataFrame
-    df = sqlctx.parquetFile(parquetFiles)
+    df = sqlctx.load(parquetFiles)
     # Register temporary in-memory table
     sqlctx.registerDataFrameAsTable(df, 'sgos')
 
