@@ -22,7 +22,8 @@ from lib.parser import Parser
 from config import config as conf
 from pyspark import SparkContext
 from jobs import SparkSQLJob
-from analytics import bluecoat
+import analytics.bluecoat as bluecoat
+
 import datetime.date as date
 
 def main():
