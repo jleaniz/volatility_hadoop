@@ -22,7 +22,7 @@ from lib.parser import Parser
 from config import config as conf
 from pyspark import SparkContext
 from jobs import SparkSQLJob
-from analytics.bluecoat import getClientsByTransfer
+from analytics import bluecoat
 import datetime.date as date
 
 def main():
@@ -88,7 +88,7 @@ def main():
     if args.analytics:
         funcs = []
         funcArgs = []
-        funcs.append('getClientsByTransfer')
+        funcs.append(bluecoat.getClientsByTransfer)
         funcArgs.append( 'sc, args.path[0], date.today().year, date.today().month, date.today().day')
         job = SparkSQLJob(sc, funcs)
 
