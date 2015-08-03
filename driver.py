@@ -34,7 +34,7 @@ def main():
     cliparser.add_argument('-i', '--ingest', action='append',
                            choices=['c2', 'openphish', 'alienvault_otx', 'proxysg', 'iptables', 'imageinfo', 'bashlog'
                                                                                                              'pslist'],
-                           required=True, help='Ingest raw logs into HDFS (saves Parquet files)')
+                           required=False, help='Ingest raw logs into HDFS (saves Parquet files)')
     cliparser.add_argument('-a', '--analytics', action='store_true',
                            required=False,
                            help='Run analytics functions')
