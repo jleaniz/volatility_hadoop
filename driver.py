@@ -89,7 +89,7 @@ def main():
     if args.analytics:
         funcs = []
         arguments = [
-            sc, args.path[0], datetime.date.today().year, datetime.date.today().month, datetime.date.today().day
+            sc, args.path[0], '100', datetime.date.today().year, datetime.date.today().month, datetime.date.today().day
         ]
         funcs.append(bluecoat.getClientsByTransfer)
         job = SparkSQLJob(sc, funcs)
