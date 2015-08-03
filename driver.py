@@ -92,7 +92,7 @@ def main():
             sc, args.path[0], '100', datetime.date.today().year, datetime.date.today().month, datetime.date.today().day
         ]
         funcs.append(bluecoat.getClientsByTransfer)
-        job = SparkSQLJob(sc, funcs)
+        job = SparkSQLJob(sc=sc, funcs=funcs)
         for x in arguments:
             job.funcArgs.append(x)
 
