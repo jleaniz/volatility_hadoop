@@ -15,6 +15,8 @@
 # along with BDSA.  If not, see <http://www.gnu.org/licenses/>.
 #
 from pyspark.sql import SQLContext
+from pyspark.sql.types import *
+
 
 def getClientsByTransfer(sc, parquetFiles, number, year, month, day):
     # Creat Spark SQL context
