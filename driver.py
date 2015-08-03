@@ -53,37 +53,38 @@ def main():
     log = LogFile(path='', parser=myParser, sc=sc, destPath=None)
 
     '''Loop through the cli arguments'''
-    for arg in args.ingest:
-        if arg == 'iptables':
-            log.type = 'iptables'
-            for path in args.path:
-                print 'Ingesting iptables logs for ', (path)
-                log.path = path
-                log.destPath = path.rsplit('/', 1)[0]
-                log.saveLogByDate()
-        elif arg == 'proxysg':
-            log.type = 'proxysg'
-            for path in args.path:
-                print 'Ingesting Blue Coat ProxySG access logs...'
-                log.path = path
-                log.destPath = path.rsplit('/', 1)[0]
-                log.saveLogByDate()
-        elif arg == 'bashlog':
-            log.type = 'bashlog'
-            for path in args.path:
-                print 'Ingesting bash logs...'
-                log.path = path
-                log.destPath = path.rsplit('/', 1)[0]
-                log.saveLogByDate()
-        elif arg == 'alienvault_otx':
-            print 'Updating local AlienVault OTX db...'
-            feeds.updateAlienvaultOtx(sc)
-        elif arg == 'openphish':
-            print 'Updating local OpenPhish db...'
-            feeds.updateOpenphish(sc)
-        elif arg == 'c2':
-            print 'Updating local c2 db...'
-            feeds.updateC2Feeds(sc)
+    if args.ingest:
+        for arg in args.ingest:
+            if arg == 'iptables':
+                log.type = 'iptables'
+                for path in args.path:
+                    print 'Ingesting iptables logs for ', (path)
+                    log.path = path
+                    log.destPath = path.rsplit('/', 1)[0]
+                    log.saveLogByDate()
+            elif arg == 'proxysg':
+                log.type = 'proxysg'
+                for path in args.path:
+                    print 'Ingesting Blue Coat ProxySG access logs...'
+                    log.path = path
+                    log.destPath = path.rsplit('/', 1)[0]
+                    log.saveLogByDate()
+            elif arg == 'bashlog':
+                log.type = 'bashlog'
+                for path in args.path:
+                    print 'Ingesting bash logs...'
+                    log.path = path
+                    log.destPath = path.rsplit('/', 1)[0]
+                    log.saveLogByDate()
+            elif arg == 'alienvault_otx':
+                print 'Updating local AlienVault OTX db...'
+                feeds.updateAlienvaultOtx(sc)
+            elif arg == 'openphish':
+                print 'Updating local OpenPhish db...'
+                feeds.updateOpenphish(sc)
+            elif arg == 'c2':
+                print 'Updating local c2 db...'
+                feeds.updateC2Feeds(sc)
 
     if args.analytics:
         funcs = []
