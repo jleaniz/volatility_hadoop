@@ -23,8 +23,7 @@ from config import config as conf
 from pyspark import SparkContext
 from jobs import SparkSQLJob
 import analytics.bluecoat as bluecoat
-
-import datetime.date as date
+import datetime
 
 def main():
     '''
@@ -90,7 +89,7 @@ def main():
         funcs = []
         funcArgs = []
         funcs.append(bluecoat.getClientsByTransfer)
-        funcArgs.append( 'sc, args.path[0], date.today().year, date.today().month, date.today().day')
+        funcArgs.append(sc, args.path[0], datetime.date.today().year, datetime.date.today().month, datetime.date.today().day)
         job = SparkSQLJob(sc, funcs)
 
     '''Stop the SparkContext'''
