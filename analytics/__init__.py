@@ -1,3 +1,3 @@
 __author__ = 'jleaniz'
-__all__ ['bluecoat']
+__all__ = ['bluecoat']
 
