@@ -36,4 +36,4 @@ def spark():
 
 # start the server with the 'run()' method
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='mtl-ah374.ubisoft.org')
