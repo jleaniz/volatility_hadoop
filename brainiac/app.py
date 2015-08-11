@@ -9,6 +9,8 @@ from config import config as conf
 # create the application object
 app = Flask(__name__)
 
+appConfig = conf.Config()
+sc = SparkContext(conf=appConfig.setSparkConf())
 
 # use decorators to link the function to a url
 @app.route('/')
@@ -37,19 +39,14 @@ def spark():
 
 @app.route('/user/vpn/barChart')
 def renderUserVpnBarChart():
-    appConfig = conf.Config()
-    sc = SparkContext(conf=appConfig.setSparkConf())
     sqlctx = SQLContext(sc)
-    output = []
     df = sqlctx.load('ciscovpn')
     sqlctx.registerDataFrameAsTable(df, 'vpn')
     data = sqlctx.sql(
         "select remoteip, count(*) as hits from vpn where user=%s group by remoteip order by hits" %('"juan.leaniz@ubisoft.com"')
     )
-    for i in df.collect():
-        output.append(i)
-
-    return render_template('spark.html', output=output)
+    for i in data.collect():
+        return render_template('spark.html', output=i)
 
 # start the server with the 'run()' method
 if __name__ == '__main__':
