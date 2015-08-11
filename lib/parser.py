@@ -50,22 +50,37 @@ class Parser(object):
                 '' \
                 '"(\d+:\d+:\d+)" "(\d+)" "(\d+.\d+.\d+.\d+)" "(\d+)" "(\S+)" "(\d+)" "(\d+)" "(\w+)" "(\w+)" "(' \
                 '\d+.\d+.\d+.\d+|\S+)" "(\d+)" "(\S+)" "(\S+)" "(\S+)" "(\S+)" "(\d+.\d+.\d+.\d+|\S+)" "(\S+)" "(' \
-                '\S+)" "([^"].*?)" "(\S+)" "([\s\S]*?)" "(\S+)" "(\d+.\d+.\d+.\d+)"'),
+                '\S+)" "([^"].*?)" "(\S+)" "([\s\S]*?)" "(\S+)" "(\d+.\d+.\d+.\d+)"'
+            ),
             'sgAccessLogSSL': re.compile(
                 '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+:\d+ msr-net-bcrep01) (\w+-\w+-\w+|"\w+-\w+-\w+") (\d+)-(' \
                 '\d+)-(\d+) (\d+:\d+:\d+) (\d+) (\d+.\d+.\d+.\d+) (\d+) (\S+) (\d+) (\d+) (\w+) (\w+) (' \
                 '\d+.\d+.\d+.\d+|\S+) (\d+) (\S+) (\S+) (\S+) (\S+) (\d+.\d+.\d+.\d+|\S+) (\S+) (\S+) ' \
                 '"?([' \
-                '^"].*?)"? (\S+) "([\s+\S+]*?)" (\S+) (\S+) (\d{3}|\S+) (\S+) (\d+.\d+.\d+.\d+)'),
+                '^"].*?)"? (\S+) "([\s+\S+]*?)" (\S+) (\S+) (\d{3}|\S+) (\S+) (\d+.\d+.\d+.\d+)'
+            ),
             'iptables': re.compile(
-                '(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+) (\S+) (\S+)(' \
-                '\s{1,2})IN=(\S+) OUT=((\S+)?) MAC=(\S+)  SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) ' \
-                'PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'),
+                '(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+) (\S+) '
+                '(\S+)(' \
+                '\s{1,2})IN=(\S+) OUT=((\S+)?) MAC=(\S+)  SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+   .\d+.\d+) LEN=(\d+) TOS=('
+                '\d+) ' \
+                'PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
+            ),
             'bashlog': re.compile(
                 "(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) bash: user: (\S+) as (\S+)' \
                 'from ip: (\d+.\d+.\d+.\d+):pts\/(\d) execs: '(.*)"),
+            'ciscovpnLogin': re.compile(
+                '(\d\d\d\d-\d\d-\d\d)T(\d\d:\d\d:\d\d)\+\d\d:\d\d (\S+) : %ASA-\d-722051: \S+ \S+ User <(\S+)> IP <('
+                '\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})> IPv4 Address <(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})>'
+            ),
+            'ciscovpnLogout': re.compile(
+                '(\d\d\d\d-\d\d-\d\d)T(\d\d:\d\d:\d\d)\+\d\d:\d\d (\S+) : %ASA-\d-113019: Group = \S+ Username = ('
+                '\S+) IP = (\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}), Session disconnected. Session Type: \S+, Duration: (\d{'
+                '1,3}h:\d{1,2}m:\d{1,2}s), Bytes xmt: (\d+), Bytes rcv: (\d+), Reason: (.*)'
+            ),
             'apacheAccessLog': re.compile(
-                "^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(\\S+) (\\S+) (\\S+)\" (\\d{3}) (\\d+)")
+                "^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(\\S+) (\\S+) (\\S+)\" (\\d{3}) (\\d+)"
+            )
         }
 
     def parseBCAccessLog(self, partition):
@@ -143,6 +158,48 @@ class Parser(object):
                             proxyip=m.group(31)
                         )
 
+    def parseVPN(self, partition):
+        '''
+        Parse Cisco VPN logs
+        :return: pyspark.sql.Row
+        '''
+        patterns = [self.patterns['ciscovpnLogin'],
+                    self.patterns['ciscovpnLogout']
+                    ]
+
+        for element in partition:
+            for pattern in patterns:
+                m = re.search(pattern, element)
+                if m:
+                    if pattern == patterns[0]:
+                        yield Row(
+                            date=m.group(1),
+                            time=m.group(2),
+                            server=m.group(3),
+                            user=m.group(4),
+                            remoteip=m.group(5),
+                            localip=m.group(6),
+                            duration='',
+                            bytesxmt='',
+                            bytesrcv='',
+                            reason='',
+                        )
+
+                    elif pattern == patterns[1]:
+                        yield Row(
+                            date=m.group(1),
+                            time=m.group(2),
+                            server=m.group(3),
+                            user=m.group(4),
+                            remoteip=m.group(5),
+                            localip='',
+                            duration=m.group(6),
+                            bytesxmt=m.group(7),
+                            bytesrcv=m.group(8),
+                            reason=m.group(9)
+                        )
+
+
     def parseIPTables(self, partition):
         '''
         Parse Netfilter IPtables
@@ -165,6 +222,7 @@ class Parser(object):
                     srcport=int(m.group(23)),
                     dstport=int(m.group(24))
                 )
+
 
     def parseBash(self, partition):
         """

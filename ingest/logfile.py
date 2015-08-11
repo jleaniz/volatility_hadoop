@@ -66,6 +66,12 @@ class LogFile(object):
                         df.save('%s/bashlog/year=%s/month=%s/day=%s' % (self.destPath, year, month, day), 'parquet',
                                 'append')
 
+                    if self.type is 'ciscovpn':
+                        parsed_rdd = rdd.mapPartitions(self.parser.parseVPN)
+                        df = parsed_rdd.toDF()
+                        df.save('%s/ciscovpn/year=%s/month=%s/day=%s' % (self.destPath, year, month, day), 'parquet',
+                                'append')
+
             except Py4JJavaError as e:
                 pass
             except OSError as e:

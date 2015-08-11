@@ -70,6 +70,12 @@ def main():
                     log.path = path
                     log.destPath = path.rsplit('/', 1)[0]
                     log.saveLogByDate()
+            elif arg == 'ciscovpn':
+                for path in args.path:
+                    print 'Ingesting vpn logs...'
+                    log.path = path
+                    log.destPath = path.rsplit('/', 1)[0]
+                    log.saveLogByDate()
             elif arg == 'alienvault_otx':
                 print 'Updating local AlienVault OTX db...'
                 feeds.updateAlienvaultOtx(sc)
