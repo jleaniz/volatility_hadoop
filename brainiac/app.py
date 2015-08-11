@@ -2,7 +2,7 @@ from flask import Blueprint
 main = Blueprint('main', __name__)
 
 import json
-#from engine import RecommendationEngine
+from engine import AnalyticsEngine
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -12,7 +12,7 @@ from flask import Flask, request
 
 @main.route("/")
 def test():
-    print spark_context
+    print analytics_engine.sc
 
 '''
 @main.route("/<int:user_id>/ratings/top/<int:count>", methods=["GET"])
@@ -42,9 +42,9 @@ def add_ratings(user_id):
 '''
 
 def create_app(spark_context, dataset_path):
-    global spark_context
+    global analytics_engine
 
-    #recommendation_engine = RecommendationEngine(spark_context, dataset_path)
+    analytics_engine = AnalyticsEngine(spark_context, dataset_path)
 
     app = Flask(__name__)
     app.register_blueprint(main)
