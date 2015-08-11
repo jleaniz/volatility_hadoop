@@ -71,6 +71,7 @@ def main():
                     log.destPath = path.rsplit('/', 1)[0]
                     log.saveLogByDate()
             elif arg == 'ciscovpn':
+                log.type = 'ciscovpn'
                 for path in args.path:
                     print 'Ingesting vpn logs...'
                     log.path = path
