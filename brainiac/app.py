@@ -52,7 +52,7 @@ def renderUserVpnBarChart():
 # start the server with the 'run()' method
 if __name__ == '__main__':
     '''Initialize Spark Context with default config'''
-    appConfig = conf.Config()
-    sc = SparkContext(conf=appConfig.setSparkConf())
+    #appConfig = conf.Config()
+    #sc = SparkContext(conf=appConfig.setSparkConf())
 
     app.run(debug=True, host='mtl-ah374.ubisoft.org')
