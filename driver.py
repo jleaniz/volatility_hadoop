@@ -22,6 +22,7 @@ from lib.parser import Parser
 from config import config as conf
 from pyspark import SparkContext
 
+
 def main():
     '''
     Main driver program. Takes some command line arguments
@@ -29,8 +30,9 @@ def main():
     '''
     cliparser = argparse.ArgumentParser(description='SRM Security Analytics')
     cliparser.add_argument('-i', '--ingest', action='append',
-                           choices=['c2', 'openphish', 'alienvault_otx', 'proxysg', 'iptables', 'imageinfo', 'bashlog'
-                                                                                                             'pslist'],
+                           choices=['c2', 'openphish', 'alienvault_otx', 'proxysg', 'ciscovpn', 'iptables', 'imageinfo',
+                                    'bashlog',
+                                    'pslist'],
                            required=False, help='Ingest raw logs into HDFS (saves Parquet files)')
     cliparser.add_argument('-p', '--path', action='append',
                            required=True,
