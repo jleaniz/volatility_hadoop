@@ -1,52 +1,47 @@
-# import the Flask class from the flask module
-from flask import Flask, render_template
-from pyspark import SparkContext
-from pyspark.sql import SQLContext
-from pyspark.sql.types import *
-from config import config as conf
+from flask import Blueprint
+main = Blueprint('main', __name__)
 
+import json
+#from engine import RecommendationEngine
 
-# create the application object
-app = Flask(__name__)
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-global sc
-
-# use decorators to link the function to a url
-@app.route('/')
-def home():
-    return "Hello, World!"  # return a string
-
-
-@app.route('/welcome')
-def welcome():
-    return render_template('welcome.html')
+from flask import Flask, request
 
 '''
-@app.route('/spark')
-def spark():
-    sc = SparkContext("local[8]", "SparkVolatility", pyFiles=['/home/cloudera/SparkVolatility/parser.py'])
-    sqlContext = SQLContext(sc)
-    df = sqlContext.load('BlueCoat/accessLog')
-    output = []
-    sqlContext.registerDataFrameAsTable(df, "accesslog")
-    data = sqlContext.sql(
-        "SELECT host, count(*) as hits FROM accesslog WHERE action LIKE '%DENIED%' GROUP BY host ORDER BY hits DESC")
-    for i in data.take(10):
-        output.append(i)
-    return render_template('spark.html', output=output)
+@main.route("/<int:user_id>/ratings/top/<int:count>", methods=["GET"])
+def top_ratings(user_id, count):
+    logger.debug("User %s TOP ratings requested", user_id)
+    top_ratings = recommendation_engine.get_top_ratings(user_id,count)
+    return json.dumps(top_ratings)
+
+@main.route("/<int:user_id>/ratings/<int:movie_id>", methods=["GET"])
+def movie_ratings(user_id, movie_id):
+    logger.debug("User %s rating requested for movie %s", user_id, movie_id)
+    ratings = recommendation_engine.get_ratings_for_movie_ids(user_id, [movie_id])
+    return json.dumps(ratings)
+
+
+@main.route("/<int:user_id>/ratings", methods = ["POST"])
+def add_ratings(user_id):
+    # get the ratings from the Flask POST request object
+    ratings_list = request.form.keys()[0].strip().split("\n")
+    ratings_list = map(lambda x: x.split(","), ratings_list)
+    # create a list with the format required by the negine (user_id, movie_id, rating)
+    ratings = map(lambda x: (user_id, int(x[0]), float(x[1])), ratings_list)
+    # add them to the model using then engine API
+    recommendation_engine.add_ratings(ratings)
+
+    return json.dumps(ratings)
 '''
 
-@app.route('/user/vpn/barChart')
-def renderUserVpnBarChart():
-    sqlctx = SQLContext(sc)
-    df = sqlctx.load('ciscovpn')
-    sqlctx.registerDataFrameAsTable(df, 'vpn')
-    data = sqlctx.sql(
-        "select remoteip, count(*) as hits from vpn where user=%s group by remoteip order by hits" %('"juan.leaniz@ubisoft.com"')
-    )
-    for i in data.collect():
-        return render_template('spark.html', output=i)
+def create_app(spark_context, dataset_path):
+    #global recommendation_engine
 
-# start the server with the 'run()' method
-if __name__ == '__main__':
-    app.run(debug=True, host='mtl-ah374.ubisoft.org')
+    #recommendation_engine = RecommendationEngine(spark_context, dataset_path)
+
+    app = Flask(__name__)
+    app.register_blueprint(main)
+    return app
