@@ -52,7 +52,6 @@ def renderUserVpnBarChart():
 # start the server with the 'run()' method
 if __name__ == '__main__':
     '''Initialize Spark Context with default config'''
-    sc.stop()
     appConfig = conf.Config()
     sc = SparkContext(conf=appConfig.setSparkConf())
 
