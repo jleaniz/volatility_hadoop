@@ -10,6 +10,10 @@ logger = logging.getLogger(__name__)
 
 from flask import Flask, request
 
+@main.route("/")
+def test():
+    print spark_context
+
 '''
 @main.route("/<int:user_id>/ratings/top/<int:count>", methods=["GET"])
 def top_ratings(user_id, count):
@@ -38,7 +42,7 @@ def add_ratings(user_id):
 '''
 
 def create_app(spark_context, dataset_path):
-    #global recommendation_engine
+    global spark_context
 
     #recommendation_engine = RecommendationEngine(spark_context, dataset_path)
 
