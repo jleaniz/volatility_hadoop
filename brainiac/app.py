@@ -38,8 +38,7 @@ def spark():
 @app.route('/user/vpn/barChart')
 def renderUserVpnBarChart():
     appConfig = conf.Config()
-    if not sc:
-        sc = SparkContext(conf=appConfig.setSparkConf())
+    sc = SparkContext(conf=appConfig.setSparkConf())
     sqlctx = SQLContext(sc)
     output = []
     df = sqlctx.load('ciscovpn')
