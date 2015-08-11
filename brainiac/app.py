@@ -42,7 +42,7 @@ def renderUserVpnBarChart():
     df = sqlctx.load('ciscovpn')
     sqlctx.registerDataFrameAsTable(df, 'vpn')
     data = sqlctx.sql(
-        "select remoteip, count(*) as hits from vpn where user=%s group by remoteip, hits"
+        "select remoteip, count(*) as hits from vpn where user=%s group by remoteip, hits" %('juan.leaniz@ubisoft.com')
     )
     for i in df.collect():
         output.append(i)
