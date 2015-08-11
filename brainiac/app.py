@@ -9,8 +9,7 @@ from config import config as conf
 # create the application object
 app = Flask(__name__)
 
-appConfig = conf.Config()
-sc = SparkContext(conf=appConfig.setSparkConf())
+global sc
 
 # use decorators to link the function to a url
 @app.route('/')
