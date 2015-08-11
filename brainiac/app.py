@@ -3,6 +3,7 @@ from flask import Flask, render_template
 from pyspark import SparkContext
 from pyspark.sql import SQLContext
 from pyspark.sql.types import *
+from config import config as conf
 
 
 # create the application object
@@ -19,7 +20,7 @@ def home():
 def welcome():
     return render_template('welcome.html')
 
-
+'''
 @app.route('/spark')
 def spark():
     sc = SparkContext("local[8]", "SparkVolatility", pyFiles=['/home/cloudera/SparkVolatility/parser.py'])
@@ -32,8 +33,26 @@ def spark():
     for i in data.take(10):
         output.append(i)
     return render_template('spark.html', output=output)
+'''
 
+@app.route('/user/vpn/barChart')
+def renderUserVpnBarChart():
+    sqlctx = SQLContext(sc)
+    output = []
+    df = sqlctx.load('ciscovpn')
+    sqlctx.registerDataFrameAsTable(df, 'vpn')
+    data = sqlctx.sql(
+        "select remoteip, count(*) as hits from vpn where user=%s group by remoteip, hits"
+    )
+    for i in df.collect():
+        output.append(i)
+
+    return render_template('spark.html', output=output)
 
 # start the server with the 'run()' method
 if __name__ == '__main__':
+    '''Initialize Spark Context with default config'''
+    appConfig = conf.Config()
+    sc = SparkContext(conf=appConfig.setSparkConf())
+
     app.run(debug=True, host='mtl-ah374.ubisoft.org')
