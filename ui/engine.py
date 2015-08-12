@@ -30,7 +30,7 @@ class AnalyticsEngine:
         self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
 
-    def getVPNLoginsByUser(self, username):
+    def getVPNLoginsByUserJSON(self, username):
         '''
         This function queries a DataFrame for logon/logoff data
         for a specified username
@@ -44,3 +44,22 @@ class AnalyticsEngine:
         )
         jsonRDD = loginsByUser.toJSON()
         return jsonRDD
+
+    def getVPNLoginsByUserGoogle(self, username):
+        '''
+        This function queries a DataFrame for logon/logoff data
+        for a specified username
+
+        :param username:
+        :return:
+        '''
+        loginsByUser = self.sqlctx.sql(
+            "select remoteip, count(*) as hits from vpn where user='%s' group by remoteip" % (username)
+        )
+        entries = loginsByUser.collect()
+        DataTable = []
+        DataTable.append(['Remote IP', 'Hits'])
+        for entry in entries:
+            DataTable.append(entry)
+
+        return DataTable

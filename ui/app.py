@@ -1,15 +1,19 @@
-from flask import Flask, request, render_template, flash, redirect, url_for
-from flask import Response
-from flask import Blueprint
-from flask_bootstrap import __version__ as FLASK_BOOTSTRAP_VERSION
-from flask_nav.elements import Navbar, View, Subgroup, Link, Text, Separator
-from flask_bootstrap import Bootstrap
+from flask import (
+    Flask, request, render_template, flash, redirect, url_for, Response, Blueprint
+)
+
+from flask_bootstrap import (
+ __version__ as FLASK_BOOTSTRAP_VERSION, Bootstrap
+)
+
+from flask_nav.elements import (
+    Navbar, View, Subgroup, Link, Text, Separator
+)
 
 from flask_nav import Nav
 from flask_wtf import Form
 from wtforms.fields import *
 from wtforms.validators import DataRequired
-from markupsafe import escape
 
 
 class UserForm(Form):
@@ -52,7 +56,7 @@ import json
 @main.route("/vpn/LoginsByUser/<username>")
 def vpnJSON(username):
     if username:
-        rdd = analytics_engine.getVPNLoginsByUser(username)
+        rdd = analytics_engine.getVPNLoginsByUserJSON(username)
         def generate():
             yield '{"%s": [\n' %(username)
             for doc in rdd.collect():
@@ -62,24 +66,19 @@ def vpnJSON(username):
     else:
         return 'Username unspecified.'
 
+@main.route('/vpn/LoginsByUser/google/<username>')
+def vpnGoogleFormat(username):
+    if username:
+        DataTable = analytics_engine.getVPNLoginsByUserGoogle(username)
+        return Response(DataTable, mimetype='text/plain')
+
 @main.route("/vpn/display", methods=('GET', 'POST'))
 def vpn_display():
     form = UserForm(csrf_enabled=False)
     if form.validate_on_submit():
-        # We don't have anything fancy in our application, so we are just
-        # flashing a message when a user completes the form successfully.
-        #
-        # Note that the default flashed messages rendering allows HTML, so
-        # we need to escape things if we input user values:
-        #flash('Looking up VPN logons for %s ...' %(escape(form.name.data)), 'info')
-        # In a real application, you may wish to avoid this tedious redirect.
-        return redirect(url_for('main.vpnJSON', username=form.name.data
-                                )
-                        )
+        return redirect(url_for('main.vpnJSON', username=form.name.data))
     return render_template("vpn.html", form=form)
 
-# Our index-page just shows a quick explanation. Check out the template
-# "templates/index.html" documentation for more details.
 @main.route('/')
 def index():
     return render_template('index.html')
