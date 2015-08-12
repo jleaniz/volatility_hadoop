@@ -1,5 +1,5 @@
-import os
 from pyspark.sql import SQLContext
+import json
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -28,4 +28,4 @@ class AnalyticsEngine:
         )
         jsonRDD = loginsByUser.toJSON()
         for jsonDoc in jsonRDD.collect():
-            yield jsonDoc
+            yield json.dumps(jsonDoc)

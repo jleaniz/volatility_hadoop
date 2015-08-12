@@ -1,7 +1,6 @@
 from flask import Blueprint
 main = Blueprint('main', __name__)
 
-import json
 from engine import AnalyticsEngine
 
 import logging
@@ -12,12 +11,8 @@ from flask import Flask, request
 
 @main.route("/")
 def test():
-    jsonDoc = analytics_engine.getVPNLoginsByUser('juan.leaniz@ubisoft.com')
-    docList = []
-    for doc in jsonDoc:
-        docList.append(doc)
+    return analytics_engine.getVPNLoginsByUser('juan.leaniz@ubisoft.com')
 
-    return json.dumps(docList)
 
 '''
 @main.route("/<int:user_id>/ratings/top/<int:count>", methods=["GET"])
