@@ -12,7 +12,7 @@ from flask import Flask, request
 
 @main.route("/")
 def test():
-    print analytics_engine.sc
+    return json.dumps(analytics_engine.sc)
 
 '''
 @main.route("/<int:user_id>/ratings/top/<int:count>", methods=["GET"])
