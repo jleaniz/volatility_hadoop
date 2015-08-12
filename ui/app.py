@@ -1,15 +1,13 @@
+from flask import Flask, request
+from flask import Response
 from flask import Blueprint
 main = Blueprint('main', __name__)
-
-from engine import AnalyticsEngine
 
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from flask import Flask, request
-from flask import Response
-
+from engine import AnalyticsEngine
 import json
 
 @main.route("/vpn/LoginsByUser/<username>")
@@ -20,9 +18,9 @@ def generateJSONArray(username):
             yield jsonDoc + ',\n'
         def generate():
             yield '{"%s": [\n' %(username)
-            #for doc in rdd.collect():
-            #    yield doc + ',\n'
-            rdd.foreach(generateJSONObject)
+            for doc in rdd.collect():
+                generateJSONObject(doc)
+            #rdd.foreach(generateJSONObject)
             yield "{}\n]}"
         return Response(generate(), mimetype='application/json')
     else:
