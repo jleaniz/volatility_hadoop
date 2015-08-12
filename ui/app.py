@@ -50,14 +50,13 @@ from engine import AnalyticsEngine
 import json
 
 @main.route("/vpn/LoginsByUser/<username>")
-def generateJSONArray(username):
+def vpnJSON(username):
     if username:
         rdd = analytics_engine.getVPNLoginsByUser(username)
         def generate():
             yield '{"%s": [\n' %(username)
             for doc in rdd.collect():
                 yield doc + ',\n'
-            #rdd.foreach(generateJSONObject)
             yield "{}\n]}"
         return Response(generate(), mimetype='application/json')
     else:
@@ -72,10 +71,9 @@ def vpn_display():
         #
         # Note that the default flashed messages rendering allows HTML, so
         # we need to escape things if we input user values:
-        flash('Hello, %s. You have successfully signed up' %(escape(form.name.data)), 'info')
-        #return redirect('/success')
+        #flash('Looking up VPN logons for %s ...' %(escape(form.name.data)), 'info')
         # In a real application, you may wish to avoid this tedious redirect.
-        return redirect('/vpn/LoginsByUser/%s' %(form.name.data))
+        return redirect(url_for('vpnJSON', username='%s' %(form.name.data)))
 
     return render_template("vpn.html", form=form)
 
