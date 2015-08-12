@@ -13,8 +13,8 @@ from markupsafe import escape
 
 
 class UserForm(Form):
-    name = StringField(u'Your name', validators=[DataRequired()])
-    submit = SubmitField(u'Signup')
+    name = StringField(u'Username', validators=[DataRequired()])
+    submit = SubmitField(u'Lookup')
 
 main = Blueprint('main', __name__)
 nav = Nav()
