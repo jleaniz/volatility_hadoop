@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, flash
+from flask import Flask, request, render_template, flash, redirect, url_for
 from flask import Response
 from flask import Blueprint
 from flask_bootstrap import __version__ as FLASK_BOOTSTRAP_VERSION
@@ -74,6 +74,9 @@ def vpn_display():
         # we need to escape things if we input user values:
         flash('Hello, %s. You have successfully signed up' %(escape(form.name.data)), 'info')
         #return redirect('/success')
+        # In a real application, you may wish to avoid this tedious redirect.
+        return redirect(url_for('/vpn/LoginsByUser/%s' %(form.name.data) ))
+
     return render_template("vpn.html", form=form)
 
 # Our index-page just shows a quick explanation. Check out the template
