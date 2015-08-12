@@ -15,7 +15,7 @@ nav = Nav()
 nav.register_element('frontend_top', Navbar(
     View('Flask-Bootstrap', '.index'),
     View('Home', '.index'),
-    View('Forms Example', '.example_form'),
+    View('Forms Example', '.index'),
     View('Debug-Info', 'debug.debug_root'),
     Subgroup(
         'Docs',
