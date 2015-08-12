@@ -25,8 +25,8 @@ class AnalyticsEngine:
 
     def getVPNLoginsByUser(self, username):
         loginsByUser = self.sqlctx.sql(
-            "select date, time, remoteip, reason, count(*) as hits from vpn where user='%s' group by date, time, remoteip, reason" % (
-            username)
+            "select date, time, remoteip, reason, count(*) as hits from vpn where user='%s' group by date, time, "
+            "remoteip, reason" % (username)
         )
         jsonRDD = loginsByUser.toJSON()
         return jsonRDD
