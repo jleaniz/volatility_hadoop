@@ -60,7 +60,7 @@ class AnalyticsEngine:
         DataTable = []
         DataTable.append(['Remote IP', 'Hits'])
         for entry in entries:
-            DataTable.append(entry)
+            DataTable.append([entry])
 
         logging.info(DataTable)
         return DataTable
