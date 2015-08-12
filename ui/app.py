@@ -75,7 +75,7 @@ def vpn_display():
         flash('Hello, %s. You have successfully signed up' %(escape(form.name.data)), 'info')
         #return redirect('/success')
         # In a real application, you may wish to avoid this tedious redirect.
-        return redirect(url_for('/vpn/LoginsByUser/%s' %(form.name.data) ))
+        return redirect('/vpn/LoginsByUser/%s' %(form.name.data))
 
     return render_template("vpn.html", form=form)
 
