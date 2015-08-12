@@ -14,7 +14,7 @@ from flask import Flask, request
 def test():
     result = analytics_engine.getVPNLoginsByUser('juan.leaniz@ubisoft.com')
     for i in result:
-        yield i
+        yield json.dumps(i)
 
 '''
 @main.route("/<int:user_id>/ratings/top/<int:count>", methods=["GET"])
