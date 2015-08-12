@@ -12,15 +12,18 @@
   google.setOnLoadCallback(drawChart);
   function drawChart() {
 
-    var data = new google.visualization.DataTable( {{ json|safe }} );
+    var pieChartData = new google.visualization.DataTable( {{ json|safe }} );
+    var tableData = new google.visualization.DataTable( {{ json|safe }} );
 
-    var options = {
-      title: 'VPN stats'
-    };
+    var pieChartOptions = { title: 'VPN stats Pie Chart' };
+    var tableOptions = { title: 'VPN stats table' };
 
-    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+    var pieChart = new google.visualization.PieChart(document.getElementById('piechart'));
+    var table = new google.visualization.Table(document.getElementById('table'));
 
-    chart.draw(data, options);
+    pieChart.draw(pieChartData, pieChartOptions);
+    Table.draw(tableData, tableOptions);
+
   }
 </script>
 <div class="container">
@@ -28,6 +31,8 @@
         <div class="panel-heading">VPN lookup</div>
         <div class="panel-body">
             <div id="piechart" style="width: 900px; height: 500px;"></div>
+            <div id="table" style="width: 900px; height: 500px;"></div>
+
         </div>
     </div>
 </div>
