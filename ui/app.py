@@ -13,15 +13,14 @@ nav = Nav()
 # navbar has an usual amount of Link-Elements, more commonly you will have a
 # lot more View instances.
 nav.register_element('frontend_top', Navbar(
-    View('Flask-Bootstrap', '.index'),
+    View('BDSA-alpha', '.index'),
     View('Home', '.index'),
-    View('Forms Example', '.index'),
-    View('Debug-Info', '.index'),
+    View('Search', '.index'),
     Subgroup(
-        'Docs',
-        Link('Flask-Bootstrap', 'http://pythonhosted.org/Flask-Bootstrap'),
-        Link('Flask-AppConfig', 'https://github.com/mbr/flask-appconfig'),
-        Link('Flask-Debug', 'https://github.com/mbr/flask-debug'),
+        'Analytics',
+        Link('VPN', '.vpnDisplay'),
+        Link('Proxy', 'https://github.com/mbr/flask-appconfig'),
+        Link('Firewall', 'https://github.com/mbr/flask-debug'),
         Separator(),
         Text('Bootstrap'),
         Link('Getting started', 'http://getbootstrap.com/getting-started/'),
