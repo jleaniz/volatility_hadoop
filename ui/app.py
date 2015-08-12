@@ -30,7 +30,7 @@ nav.register_element('frontend_top', Navbar(
         Link('Javascript', 'http://getbootstrap.com/javascript/'),
         Link('Customize', 'http://getbootstrap.com/customize/'),
     ),
-    Text('Using Flask-Bootstrap {}'.format(FLASK_BOOTSTRAP_VERSION)),
+    Text('Using Flask-Bootstrap %s' %(FLASK_BOOTSTRAP_VERSION)),
 ))
 
 import logging
