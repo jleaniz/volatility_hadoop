@@ -1,24 +1,34 @@
-<html>
-  <head>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-      google.load("visualization", "1", {packages:["corechart"]});
-      google.setOnLoadCallback(drawChart);
-      function drawChart() {
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
 
-        var data = new google.visualization.DataTable( JSON.stringify( {{ json|safe }} ) );
+{% block content %}
+{{util.flashed_messages(dismissible=True)}}
 
-        var options = {
-          title: 'VPN stats'
-        };
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["corechart"]});
+  google.setOnLoadCallback(drawChart);
+  function drawChart() {
 
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+    var data = new google.visualization.DataTable( JSON.stringify( {{ json|safe }} ) );
 
-        chart.draw(data, options);
-      }
-    </script>
-  </head>
-  <body>
-    <div id="piechart" style="width: 900px; height: 500px;"></div>
-  </body>
-</html>
+    var options = {
+      title: 'VPN stats'
+    };
+
+    var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+    chart.draw(data, options);
+  }
+</script>
+<div class="container">
+    <div class="panel panel-primary">
+        <div class="panel-heading">VPN lookup</div>
+        <div class="panel-body">
+            <div id="piechart" style="width: 900px; height: 500px;"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
