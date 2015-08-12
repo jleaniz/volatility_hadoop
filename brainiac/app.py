@@ -8,11 +8,17 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 from flask import Flask, request
+from flask import Response
+
+import json
 
 @main.route("/")
-def test():
-    return analytics_engine.getVPNLoginsByUser('juan.leaniz@ubisoft.com')
-
+def generateJSON():
+    rdd = analytics_engine.getVPNLoginsByUser('juan.leaniz@ubisoft.com')
+    def generate():
+        for doc in rdd.collect():
+            yield doc
+    return Response(generate(), mimetype='application/json')
 
 '''
 @main.route("/<int:user_id>/ratings/top/<int:count>", methods=["GET"])

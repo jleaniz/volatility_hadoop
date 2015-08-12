@@ -1,5 +1,4 @@
 from pyspark.sql import SQLContext
-import json
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -27,5 +26,4 @@ class AnalyticsEngine:
             "select remoteip, count(*) as hits from vpn where user='%s' group by remoteip" %(username)
         )
         jsonRDD = loginsByUser.toJSON()
-        for jsonDoc in jsonRDD.collect():
-            return json.dumps(jsonDoc)
+        return jsonRDD
