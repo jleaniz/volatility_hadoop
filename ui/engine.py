@@ -1,4 +1,5 @@
 from pyspark.sql import SQLContext
+from pyspark import StorageLevel
 
 import logging
 
@@ -21,6 +22,7 @@ class AnalyticsEngine:
         logger.info("Loading SQLContext and data...")
         self.sqlctx = SQLContext(self.sc)
         self.vpnLogsDF = self.sqlctx.load(dataset_path)
+        self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
 
     def getVPNLoginsByUser(self, username):
