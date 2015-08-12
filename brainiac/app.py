@@ -13,8 +13,7 @@ from flask import Flask, request
 @main.route("/")
 def test():
     result = analytics_engine.getVPNLoginsByUser('juan.leaniz@ubisoft.com')
-    for i in result:
-        return (i)
+    return json.dumps(result)
 
 '''
 @main.route("/<int:user_id>/ratings/top/<int:count>", methods=["GET"])

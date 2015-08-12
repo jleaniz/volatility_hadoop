@@ -26,5 +26,5 @@ class AnalyticsEngine:
         loginsByUser = self.sqlctx.sql(
             "select remoteip, count(*) as hits from vpn where user='%s' group by remoteip" %(username)
         )
-
+        logger.info(loginsByUser.first())
         return loginsByUser.toJSON()
