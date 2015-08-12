@@ -1,10 +1,19 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, flash
 from flask import Response
 from flask import Blueprint
 from flask_bootstrap import __version__ as FLASK_BOOTSTRAP_VERSION
 from flask_nav.elements import Navbar, View, Subgroup, Link, Text, Separator
 from flask_bootstrap import Bootstrap
 from flask_nav import Nav
+from flask_wtf import Form
+from wtforms.fields import *
+from wtforms.validators import Required, Email
+from markupsafe import escape
+
+
+class UserForm(Form):
+    name = TextField(u'Your name', validators=[Required()])
+    submit = SubmitField(u'Signup')
 
 main = Blueprint('main', __name__)
 nav = Nav()
@@ -14,11 +23,12 @@ nav = Nav()
 # lot more View instances.
 nav.register_element('frontend_top', Navbar(
     View('BDSA-alpha', '.index'),
+    View('Dashboard', '.index'),
     View('Home', '.index'),
     View('Search', '.index'),
     Subgroup(
         'Analytics',
-        Link('VPN', 'vpn/Display'),
+        Link('VPN', 'vpn/display'),
         Link('Proxy', 'https://github.com/mbr/flask-appconfig'),
         Link('Firewall', 'https://github.com/mbr/flask-debug'),
         Separator(),
@@ -53,8 +63,17 @@ def generateJSONArray(username):
         return 'Username unspecified.'
 
 @main.route("/vpn/display")
-def vpnDisplay():
-    return render_template("vpn.html")
+def vpn_display():
+    form = UserForm()
+    if form.validate_on_submit():
+        # We don't have anything fancy in our application, so we are just
+        # flashing a message when a user completes the form successfully.
+        #
+        # Note that the default flashed messages rendering allows HTML, so
+        # we need to escape things if we input user values:
+        flash('Hello, %s. You have successfully signed up' %(escape(form.name.data)))
+
+    return render_template("vpn.html", form=form)
 
 # Our index-page just shows a quick explanation. Check out the template
 # "templates/index.html" documentation for more details.
