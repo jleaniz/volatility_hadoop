@@ -69,11 +69,8 @@ def vpnJSON(username):
 @main.route('/vpn/LoginsByUser/google/<username>')
 def vpnGoogleFormat(username):
     if username:
-        DataTable = analytics_engine.getVPNLoginsByUserGoogle(username)
-        def generate():
-            for row in DataTable:
-                yield str(row) + '\n'
-        return Response(generate(), mimetype="text/plain")
+        json = analytics_engine.getVPNLoginsByUserGoogle(username)
+    return render_template('vpnGC.html', json=json)
 
 @main.route("/vpn/display", methods=('GET', 'POST'))
 def vpn_display():

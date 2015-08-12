@@ -1,8 +1,8 @@
 from pyspark.sql import SQLContext
 from pyspark import StorageLevel
+import gviz_api
 
 import logging
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -57,13 +57,17 @@ class AnalyticsEngine:
             "select remoteip, count(*) as hits from vpn where user='%s' group by remoteip" % (username)
         )
         entries = loginsByUser.collect()
-        DataTable = []
+        data = []
         description = {"remoteip": ("string", "Remote IP"),
                  "hits": ("number", "Hits")}
-        DataTable.append(description)
 
         for entry in entries:
-            DataTable.append([entry.remoteip, entry.hits])
+            data.append([entry.remoteip, entry.hits])
 
-        logging.info(DataTable)
-        return DataTable
+        data_table = gviz_api.DataTable(description)
+        data_table.LoadData(data)
+        # Creating a JSon string
+        json = data_table.ToJSon(columns_order=("remoteip", "hits"),
+                           order_by="hits")
+
+        return json
