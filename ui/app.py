@@ -73,7 +73,7 @@ def vpnGoogleFormat(username):
         def generate():
             for rows in DataTable:
                 for row in rows:
-                    yield str(row)
+                    yield str(row) + '\n'
         return Response(generate(), mimetype="text/plain")
 
 @main.route("/vpn/display", methods=('GET', 'POST'))
