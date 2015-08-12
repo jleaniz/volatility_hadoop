@@ -1,20 +1,24 @@
 <html>
   <head>
-  <title>Static example</title>
-    <script src="http://www.google.com/jsapi" type="text/javascript"></script>
-    <script>
-      google.load("visualization", "1", {packages:["table"]});
-      google.setOnLoadCallback(drawTable);
-      function drawTable() {
-        var json_table = new google.visualization.Table(document.getElementById('table_div_json'));
-        var json_data = new google.visualization.DataTable( {{ json }}, 0.5);
-        json_table.draw(json_data, {showRowNumber: true});
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+
+        var data = google.visualization.DataTable( {{ json }} );
+
+        var options = {
+          title: 'VPN stats'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+        chart.draw(data, options);
       }
     </script>
   </head>
   <body>
-    <H1>Table created using ToJSon</H1>
-    <div id="table_div_json"></div>
-  <p>{{ json }}</p>
+    <div id="piechart" style="width: 900px; height: 500px;"></div>
   </body>
 </html>
