@@ -19,7 +19,7 @@ from setuptools import setup
 setup(
     name='bdsa',
     version='0.1-alpha',
-    packages=['lib', 'config', 'ingest', 'ingest.volatility', 'brainiac', 'analytics'],
+    packages=['lib', 'config', 'ingest', 'ingest.volatility', 'ui', 'analytics'],
     url='http://jleaniz.github.io/bdsa/',
     license='GNU Lesser General Public License version 3',
     author='Juan Leaniz',
