@@ -17,7 +17,7 @@ def generateJSON():
     rdd = analytics_engine.getVPNLoginsByUser('juan.leaniz@ubisoft.com')
     def generate():
         for doc in rdd.collect():
-            yield json_dumps(doc)
+            yield json.dumps(doc)
     return Response(generate(), mimetype='application/json')
 
 '''
