@@ -6,7 +6,7 @@
       google.setOnLoadCallback(drawChart);
       function drawChart() {
 
-        var data = google.visualization.DataTable( JSON.stringify( {{ json|safe }} ) );
+        var data = new google.visualization.DataTable( JSON.stringify( {{ json|safe }} ) );
 
         var options = {
           title: 'VPN stats'
