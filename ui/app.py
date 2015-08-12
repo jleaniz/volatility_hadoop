@@ -76,8 +76,8 @@ def vpn_display():
         #return redirect(url_for('main.vpnJSON', username=form.name.data
         #                        )
         #                )
-
-        return render_template("vpn.html", form=form)
+        render_template("vpn.html", form=form)
+    return render_template("vpn.html", form=form)
 
 # Our index-page just shows a quick explanation. Check out the template
 # "templates/index.html" documentation for more details.
