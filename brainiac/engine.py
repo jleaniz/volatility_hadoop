@@ -1,8 +1,10 @@
 from pyspark.sql import SQLContext
 
 import logging
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 class AnalyticsEngine:
     """A security analytics engine
@@ -23,7 +25,8 @@ class AnalyticsEngine:
 
     def getVPNLoginsByUser(self, username):
         loginsByUser = self.sqlctx.sql(
-            "select remoteip, count(*) as hits from vpn where user='%s' group by remoteip" %(username)
+            "select date, time, remoteip, reason, count(*) as hits from vpn where user='%s' group by date, time, remoteip, reason" % (
+            username)
         )
         jsonRDD = loginsByUser.toJSON()
         return jsonRDD
