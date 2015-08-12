@@ -3,7 +3,7 @@ from flask import Response
 from flask import Blueprint
 from flask_bootstrap import __version__ as FLASK_BOOTSTRAP_VERSION
 from flask_nav.elements import Navbar, View, Subgroup, Link, Text, Separator
-from flask_bootstrap import Bootstrap
+from flask_bootstrap import Bootstrap, render_form
 from flask_nav import Nav
 from flask_wtf import Form
 from wtforms.fields import *
