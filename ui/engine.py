@@ -58,7 +58,10 @@ class AnalyticsEngine:
         )
         entries = loginsByUser.collect()
         DataTable = []
-        DataTable.append(['Remote IP', 'Hits'])
+        description = {"remoteip": ("string", "Remote IP"),
+                 "hits": ("number", "Hits")}
+        DataTable.append(description)
+
         for entry in entries:
             DataTable.append([entry.remoteip, entry.hits])
 
