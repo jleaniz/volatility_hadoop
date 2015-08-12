@@ -75,11 +75,20 @@ def vpnGoogleFormat(username):
     else:
         return 'Username unspecified.'
 
+'''
 @main.route("/vpn/display", methods=('GET', 'POST'))
 def vpn_display():
     form = UserForm(csrf_enabled=False)
     if form.validate_on_submit():
         return redirect(url_for('main.vpnJSON', username=form.name.data))
+    return render_template("vpn.html", form=form)
+'''
+
+@main.route("/vpn/display", methods=('GET', 'POST'))
+def vpn_display():
+    form = UserForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        return redirect(url_for('main.vpnGoogleFormat', username=form.name.data))
     return render_template("vpn.html", form=form)
 
 @main.route('/')
