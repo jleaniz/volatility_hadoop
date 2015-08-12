@@ -37,7 +37,7 @@ def run_server(app):
 if __name__ == "__main__":
     # Init spark context and load libraries
     sc = init_spark_context()
-    dataset_path = '/mnt/hdfs/user/cloudera/ciscovpn'
+    dataset_path = '/user/cloudera/ciscovpn'
     app = create_app(sc, dataset_path)
  
     # start web server
