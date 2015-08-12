@@ -64,7 +64,7 @@ def generateJSONArray(username):
 
 @main.route("/vpn/display")
 def vpn_display():
-    form = UserForm(srf_enabled=False)
+    form = UserForm(csrf_enabled=False)
     if form.validate_on_submit():
         # We don't have anything fancy in our application, so we are just
         # flashing a message when a user completes the form successfully.
