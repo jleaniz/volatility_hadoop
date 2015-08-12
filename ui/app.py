@@ -70,7 +70,10 @@ def vpnJSON(username):
 def vpnGoogleFormat(username):
     if username:
         json = analytics_engine.getVPNLoginsByUserGoogle(username)
-    return render_template('vpnGC.html', json=json)
+        logging.info(json)
+        return render_template('vpnGC.html', json=json)
+    else:
+        return 'Username unspecified.'
 
 @main.route("/vpn/display", methods=('GET', 'POST'))
 def vpn_display():
