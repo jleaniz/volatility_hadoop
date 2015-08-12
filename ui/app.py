@@ -16,7 +16,7 @@ nav.register_element('frontend_top', Navbar(
     View('Flask-Bootstrap', '.index'),
     View('Home', '.index'),
     View('Forms Example', '.index'),
-    View('Debug-Info', 'debug.debug_root'),
+    View('Debug-Info', '.index'),
     Subgroup(
         'Docs',
         Link('Flask-Bootstrap', 'http://pythonhosted.org/Flask-Bootstrap'),
