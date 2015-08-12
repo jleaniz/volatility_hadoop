@@ -28,4 +28,4 @@ class AnalyticsEngine:
         )
         jsonRDD = loginsByUser.toJSON()
         for jsonDoc in jsonRDD.collect():
-            yield json.dumps(jsonDoc)
+            return json.dumps(jsonDoc)
