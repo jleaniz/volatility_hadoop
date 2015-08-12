@@ -14,12 +14,10 @@ import json
 def generateJSONArray(username):
     if username:
         rdd = analytics_engine.getVPNLoginsByUser(username)
-        def generateJSONObject(jsonDoc):
-            yield jsonDoc + ',\n'
         def generate():
             yield '{"%s": [\n' %(username)
             for doc in rdd.collect():
-                generateJSONObject(doc)
+                yield doc + ',\n'
             #rdd.foreach(generateJSONObject)
             yield "{}\n]}"
         return Response(generate(), mimetype='application/json')
