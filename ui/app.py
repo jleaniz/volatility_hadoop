@@ -60,7 +60,7 @@ def vpnDisplay():
 
 # Our index-page just shows a quick explanation. Check out the template
 # "templates/index.html" documentation for more details.
-@frontend.route('/')
+@main.route('/')
 def index():
     return render_template('index.html')
 
