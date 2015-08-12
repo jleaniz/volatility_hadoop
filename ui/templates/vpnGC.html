@@ -14,13 +14,18 @@
 
     var pieChartData = new google.visualization.DataTable( {{ json|safe }} );
     var tableData = new google.visualization.DataTable( {{ json|safe }} );
+    var barChartData = new google.visualization.DataTable( {{ json|safe }} );
 
     var pieChartOptions = { title: 'VPN stats Pie Chart' };
-    var tableOptions = { title: 'VPN stats table', showRowNumber: false, width: '100%', height: '100%' };
+    var barChartOptions = { title: 'VPN stats Bar Chart' };
 
+    var tableOptions = { showRowNumber: false, width: '100%', height: '100%' };
+
+    var barChart = new google.visualization.BarChart(document.getElementById('barchart'));
     var pieChart = new google.visualization.PieChart(document.getElementById('piechart'));
     var table = new google.visualization.Table(document.getElementById('table'));
 
+    barChart.draw(barChartData, barChartOptions);
     pieChart.draw(pieChartData, pieChartOptions);
     table.draw(tableData, tableOptions);
 
@@ -31,9 +36,10 @@
         <div class="panel-heading">VPN User Statistics</div>
         <div class="panel-body">
             <div class="row">
+                <div class="col-xs-6" id="barchart" style="width: 600px; height: 400px;"></div>
                 <div class="col-xs-6" id="piechart" style="width: 600px; height: 400px;"></div>
-                <div class="col-xs-6" id="table" style="width: 450px; height: 250px;"></div>
             </div>
+            <div class="col-xs-6" id="table" style="width: 450px; height: 250px;"></div>
         </div>
     </div>
 </div>
