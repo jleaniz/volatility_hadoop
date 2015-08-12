@@ -13,14 +13,16 @@ from flask import Response
 import json
 
 @main.route("/vpn/LoginsByUser/<username>")
-def generateJSON(username):
+def generateJSONArray(username):
     if username:
         rdd = analytics_engine.getVPNLoginsByUser(username)
+        def generateJSONObject(jsonDoc):
+            yield jsonDoc + ',\n'
         def generate():
             yield '{"%s": [\n' %(username)
             #for doc in rdd.collect():
             #    yield doc + ',\n'
-            rdd.foreach(lambda doc: (yield doc + ',\n') )
+            rdd.foreach(generateJSONObject)
             yield "{}\n]}"
         return Response(generate(), mimetype='application/json')
     else:
