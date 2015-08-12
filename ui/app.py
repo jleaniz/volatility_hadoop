@@ -72,7 +72,7 @@ def vpn_display():
         #
         # Note that the default flashed messages rendering allows HTML, so
         # we need to escape things if we input user values:
-        flash('Hello, %s. You have successfully signed up' %(escape(form.name.data)))
+        flash('Hello, %s. You have successfully signed up' %(escape(form.name.data)), 'info')
         #return redirect('/success')
     return render_template("vpn.html", form=form)
 
@@ -88,11 +88,12 @@ def create_app(spark_context, dataset_path):
     analytics_engine = AnalyticsEngine(spark_context, dataset_path)
 
     app = Flask(__name__)
+    app.config['SESSION_TYPE'] = 'filesystem'
+    app.secret_key = 'super secret key'
 
     Bootstrap(app)
 
     app.register_blueprint(main)
 
     nav.init_app(app)
-    app.secret_key = 'super secret key'
     return app
