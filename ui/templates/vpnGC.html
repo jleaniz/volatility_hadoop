@@ -7,36 +7,27 @@
 {{util.flashed_messages(dismissible=True)}}
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-
 <script type="text/javascript">
   google.load("visualization", "1", {packages:["corechart"]});
   google.setOnLoadCallback(drawChart);
   function drawChart() {
-    var datachart = new google.visualization.DataTable( JSON.stringify( {{ json|safe }} ) );
+
+    var data = new google.visualization.DataTable( {{ json|safe }} );
+
     var options = {
       title: 'VPN stats'
     };
+
     var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-    chart.draw(datachart, options);
+
+    chart.draw(data, options);
   }
 </script>
-
-<script type="text/javascript">
-  google.load("visualization", "1.1", {packages:["Table"]});
-  google.setOnLoadCallback(drawTable);
-  function drawTable() {
-    var data = new google.visualization.DataTable( JSON.stringify( {{ json|safe }} ) );
-    var table = new google.visualization.Table(document.getElementById('table_div'));
-    table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
-  }
-</script>
-
 <div class="container">
     <div class="panel panel-primary">
         <div class="panel-heading">VPN lookup</div>
         <div class="panel-body">
-            <div id="piechart" style="width: 600; height: 300px;"></div>
-            <div id="table_div" style="width: 600px; height: 300px;"></div>
+            <div id="piechart" style="width: 900px; height: 500px;"></div>
         </div>
     </div>
 </div>
