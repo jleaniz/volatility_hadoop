@@ -70,7 +70,7 @@ def vpnJSON(username):
 def vpnGoogleFormat(username):
     if username:
         DataTable = analytics_engine.getVPNLoginsByUserGoogle(username)
-        return Response(DataTable, mimetype='text/plain')
+        return (DataTable)
 
 @main.route("/vpn/display", methods=('GET', 'POST'))
 def vpn_display():
