@@ -94,5 +94,5 @@ def create_app(spark_context, dataset_path):
     app.register_blueprint(main)
 
     nav.init_app(app)
-
+    app.secret_key = 'super secret key'
     return app
