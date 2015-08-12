@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
+{% block content %}
+{{util.flashed_messages(dismissible=True)}}
+<div class="container">
+    <div class="panel panel-primary">
+        <div class="panel-heading">VPN lookup</div>
+        <div class="panel-body">
+
+        </div>
+    </div>
+</div>
+{% endblock %}
