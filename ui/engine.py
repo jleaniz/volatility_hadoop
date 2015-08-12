@@ -62,7 +62,9 @@ class AnalyticsEngine:
                  "hits": ("number", "Hits")}
 
         for entry in entries:
-            data.append([entry.remoteip, entry.hits])
+            data.append(
+                {"remoteip": entry.remoteip, "hits": entry.hits}
+            )
 
         data_table = gviz_api.DataTable(description)
         data_table.LoadData(data)
