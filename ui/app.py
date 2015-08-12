@@ -8,12 +8,12 @@ from flask_bootstrap import Bootstrap
 from flask_nav import Nav
 from flask_wtf import Form
 from wtforms.fields import *
-from wtforms.validators import Required, Email
+from wtforms.validators import DataRequired
 from markupsafe import escape
 
 
 class UserForm(Form):
-    name = TextField(u'Your name', validators=[Required()])
+    name = StringField(u'Your name', validators=[DataRequired()])
     submit = SubmitField(u'Signup')
 
 main = Blueprint('main', __name__)
