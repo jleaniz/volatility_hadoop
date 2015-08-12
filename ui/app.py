@@ -29,7 +29,7 @@ nav.register_element('frontend_top', Navbar(
     View('Search', '.index'),
     Subgroup(
         'Analytics',
-        Link('VPN', 'vpn/display'),
+        Link('VPN', '/vpn/display'),
         Link('Proxy', 'https://github.com/mbr/flask-appconfig'),
         Link('Firewall', 'https://github.com/mbr/flask-debug'),
         Separator(),

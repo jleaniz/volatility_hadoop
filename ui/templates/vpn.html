@@ -5,11 +5,11 @@
 
 {% block content %}
 {{util.flashed_messages(dismissible=True)}}
-<div class="container">
-  <h1>Hello, world!</h1>
-
-  <h2>This is the sample form (basic)</h2>
-  {{ wtf.quick_form(form, button_map={'submit_button': 'primary'}) }}
-
+<div class="panel panel-primary">
+    <div class="panel-heading">VPN lookup</div>
+    <div class="panel-body">
+      <pre>This is the sample form (basic)</pre>
+      {{ wtf.quick_form(form, button_map={'submit_button': 'primary'}) }}
+    </div>
 </div>
 {% endblock %}
