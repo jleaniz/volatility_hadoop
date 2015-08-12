@@ -1,16 +1,21 @@
+{% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
-
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
 {%- extends "base.html" %}
 
-
 {% block content %}
-   <div class="container">
-      <div class="content">
-        <h1>Signup for our awesome service</h1>
-        <p>Note: Your data isn't going anywhere.</p>
-      </div>
-    </div>
-   <div class="col-md-12">
-     {{ wtf.quick_form(form) }}
-   </div>
-{%- endblock %}
+{{util.flashed_messages(dismissible=True)}}
+<div class="container">
+  <h1>Hello, world!</h1>
+
+  <h2>This is the sample form (basic)</h2>
+  {{ wtf.quick_form(form, button_map={'submit_button': 'primary'}) }}
+
+</div>
+{% endblock %}
+
+{% block head %}
+{{super()}}
+{{fixes.ie8()}}
+{% endblock %}

@@ -63,7 +63,7 @@ def generateJSONArray(username):
     else:
         return 'Username unspecified.'
 
-@main.route("/vpn/display")
+@main.route("/vpn/display", methods=('GET', 'POST'))
 def vpn_display():
     form = UserForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -73,7 +73,7 @@ def vpn_display():
         # Note that the default flashed messages rendering allows HTML, so
         # we need to escape things if we input user values:
         flash('Hello, %s. You have successfully signed up' %(escape(form.name.data)))
-
+        #return redirect('/success')
     return render_template("vpn.html", form=form)
 
 # Our index-page just shows a quick explanation. Check out the template
