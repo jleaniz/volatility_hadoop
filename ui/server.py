@@ -1,4 +1,4 @@
-import time, sys, cherrypy, os
+import cherrypy
 from paste.translogger import TransLogger
 from app import create_app
 from pyspark import SparkContext, SparkConf
