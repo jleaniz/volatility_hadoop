@@ -78,7 +78,7 @@ def vpn_display():
         #                )
         render_template("vpn.html", form=form, vpnJSON=lambda username: vpnJSON(username))
 
-    return render_template("vpn.html", form=form)
+    return render_template("vpn.html", form=form, vpnJSON=lambda username: vpnJSON(username))
 
 # Our index-page just shows a quick explanation. Check out the template
 # "templates/index.html" documentation for more details.
