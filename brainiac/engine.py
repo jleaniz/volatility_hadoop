@@ -27,4 +27,4 @@ class AnalyticsEngine:
             "select remoteip, count(*) as hits from vpn where user='%s' group by remoteip" %(username)
         )
         logger.info(loginsByUser.first())
-        return loginsByUser.toJSON()
+        return loginsByUser
