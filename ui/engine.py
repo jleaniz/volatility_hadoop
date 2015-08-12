@@ -62,4 +62,5 @@ class AnalyticsEngine:
         for entry in entries:
             DataTable.append(entry)
 
+        logging.info(DataTable)
         return DataTable
