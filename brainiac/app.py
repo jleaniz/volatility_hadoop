@@ -17,7 +17,7 @@ def generateJSON(username):
     if username:
         rdd = analytics_engine.getVPNLoginsByUser(username)
         def generate():
-            yield '"%s": [' %(username)
+            yield '"%s": [\n' %(username)
             for doc in rdd.collect():
                 yield doc + ',\n'
             yield "]"
