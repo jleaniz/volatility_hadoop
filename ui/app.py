@@ -73,7 +73,7 @@ def vpn_display():
         # we need to escape things if we input user values:
         #flash('Looking up VPN logons for %s ...' %(escape(form.name.data)), 'info')
         # In a real application, you may wish to avoid this tedious redirect.
-        return redirect(url_for('vpnJSON', username='%s' %(form.name.data)
+        return redirect(url_for('vpnJSON', username='%s' %(escape(form.name.data))
                                 )
                         )
 
