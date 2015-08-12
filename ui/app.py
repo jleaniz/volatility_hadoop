@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask import Response
 from flask import Blueprint
 main = Blueprint('main', __name__)
@@ -23,6 +23,10 @@ def generateJSONArray(username):
         return Response(generate(), mimetype='application/json')
     else:
         return 'Username unspecified.'
+
+@main.route("/vpn/display")
+def vpnDisplay():
+    return render_template("vpn.html")
 
 def create_app(spark_context, dataset_path):
     global analytics_engine
