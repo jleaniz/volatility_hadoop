@@ -73,11 +73,11 @@ def vpn_display():
         # we need to escape things if we input user values:
         #flash('Looking up VPN logons for %s ...' %(escape(form.name.data)), 'info')
         # In a real application, you may wish to avoid this tedious redirect.
-        return redirect(url_for('main.vpnJSON', username=form.name.data
-                                )
-                        )
+        #return redirect(url_for('main.vpnJSON', username=form.name.data
+        #                        )
+        #                )
 
-    return render_template("vpn.html", form=form)
+        return render_template("vpn.html", form=form)
 
 # Our index-page just shows a quick explanation. Check out the template
 # "templates/index.html" documentation for more details.
