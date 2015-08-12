@@ -32,20 +32,33 @@
   }
 </script>
 
-<div class="container">
+
+<div class="panel panel-default">
+   <div class="panel-heading">VPN User Statistics</div>
     <div class="row">
-        <div class="panel-heading">Pie Chart</div>
-        <div class="panel-body">
-            <div class="col-xs-6" id="piechart" style="width: 600px; height: 400px;"></div>
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                 <div class="panel-heading">
+                     <div id="barchart" style="width: 600px; height: 400px;"></div>
+                 </div>
+            </div>
         </div>
-                <div class="panel-heading">Bar Chart</div>
-        <div class="panel-body">
-            <div class="col-xs-6" id="barchart" style="width: 600px; height: 400px;"></div>
+        <div class="col-sm-6">
+             <div class="panel panel-default">
+                 <div class="panel-heading">
+                     <div id="piechart" style="width: 600px; height: 400px;"></div>
+                 </div>
+            </div>
         </div>
-                <div class="panel-heading">Table</div>
-        <div class="panel-body">
-            <div class="col-xs-6" id="table" style="width: 600px; height: 400px;"></div>
+        <div class="col-sm-2">
+            <div class="panel panel-default">
+                 <div class="panel-heading">
+                     <div id="table" style="width: 450px; height: 250px;"></div>
+                 </div>
+            </div>
         </div>
     </div>
+   </div>
 </div>
+
 {% endblock %}
