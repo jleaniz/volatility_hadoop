@@ -26,5 +26,6 @@ class AnalyticsEngine:
         loginsByUser = self.sqlctx.sql(
             "select remoteip, count(*) as hits from vpn where user='%s' group by remoteip" %(username)
         )
-        jsonList = loginsByUser.toJSON()
-        return jsonList
+        jsonRDD = loginsByUser.toJSON()
+        for jsonDoc in jsonRDD.collect():
+            yield jsonDoc
