@@ -149,7 +149,7 @@ class AnalyticsEngine:
 
         topTransfers = self.sqlctx.sql(
             'select clientip, host, cast(csbytes as Double) as bytes from proxy '
-            'group by clientip, host, bytes order by bytes desc limit 10'
+            'group by clientip, host, cast(csbytes as Double) order by bytes desc limit 10'
         )
         entries = topTransfers.collect()
         data = []
