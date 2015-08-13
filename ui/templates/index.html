@@ -13,22 +13,13 @@
    intact. #}
 {% block content %}
   <div class="container">
-  {%- with messages = get_flashed_messages(with_categories=True) %}
-  {%- if messages %}
-    <div class="row">
-      <div class="col-md-12">
-        {{utils.flashed_messages(messages)}}
-      </div>
-    </div>
-  {%- endif %}
-  {%- endwith %}
     <div class="container">
       <h1>Welcome to BDSA-alpha</h1>
       <p>To get the latest version go to our <a href="https://www.github.com/jleaniz/bdsa">
       site</a>.</p>
       <p>
-        <a class="btn btn-lg btn-default" role="button"
-           href="http://pythonhosted.org/Flask-Bootstrap" >Show docs</a>
+        <a class="btn btn-md btn-default" role="button"
+           href="http://pythonhosted.org/Flask-Bootstrap" >Go!</a>
       </p>
     </div>
   </div>

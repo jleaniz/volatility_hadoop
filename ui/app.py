@@ -3,7 +3,7 @@ from flask import (
 )
 
 from flask_bootstrap import (
- __version__ as FLASK_BOOTSTRAP_VERSION, Bootstrap
+    __version__ as FLASK_BOOTSTRAP_VERSION, Bootstrap
 )
 
 from flask_nav.elements import (
@@ -15,14 +15,17 @@ from flask_wtf import Form
 from wtforms.fields import *
 from wtforms.validators import DataRequired
 
+
 class UserForm(Form):
     name = StringField(u'Username', validators=[DataRequired()])
     submit = SubmitField(u'Lookup')
+
 
 class UserDateForm(Form):
     date = DateField(u'Date', validators=[DataRequired()])
     name = StringField(u'Username', validators=[DataRequired()])
     submit = SubmitField(u'Lookup')
+
 
 main = Blueprint('main', __name__)
 nav = Nav()
@@ -48,6 +51,7 @@ nav.register_element('frontend_top', Navbar(
 ))
 
 import logging
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -68,6 +72,7 @@ def vpnJSON(username):
         return 'Username unspecified.'
 '''
 
+
 @main.route('/vpn/LoginsByUser/google/<username>')
 def vpnGoogleFormat(username):
     if username:
@@ -76,6 +81,7 @@ def vpnGoogleFormat(username):
         return render_template('vpnGC.html', json=json)
     else:
         return 'Username unspecified.'
+
 
 @main.route('/proxy/LoginsByUser/google/<username>/<date>')
 def proxyGoogleFormat(username, date):
@@ -86,23 +92,29 @@ def proxyGoogleFormat(username, date):
     else:
         return 'Username unspecified.'
 
+
 @main.route("/vpn/user", methods=('GET', 'POST'))
 def vpn_user():
     form = UserForm(csrf_enabled=False)
     if form.validate_on_submit():
+        flash("Firing up a Spark job! Sit tight!", "success")
         return redirect(url_for('main.vpnGoogleFormat', username=form.name.data))
     return render_template("vpn.html", form=form)
+
 
 @main.route("/proxy/user", methods=('GET', 'POST'))
 def proxy_user():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
+        flash("Firing up a Spark job! Sit tight!", "success")
         return redirect(url_for('main.proxyGoogleFormat', username=form.name.data, date=form.date.data))
     return render_template("proxy.html", form=form)
+
 
 @main.route('/')
 def index():
     return render_template('index.html')
+
 
 def create_app(spark_context, dataset_path):
     global analytics_engine

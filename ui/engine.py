@@ -3,6 +3,7 @@ from pyspark import StorageLevel
 import gviz_api
 
 import logging
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,6 @@ class AnalyticsEngine:
         logger.info("Creating Spark SQL context:")
         self.sqlctx = SQLContext(self.sc)
 
-
     def getVPNLoginsByUserJSON(self, username):
         '''
         This function queries a DataFrame for logon/logoff data
@@ -39,7 +39,6 @@ class AnalyticsEngine:
         )
         jsonRDD = loginsByUser.toJSON()
         return jsonRDD
-
 
     def getVPNLoginsByUserGoogle(self, username):
         '''
@@ -62,7 +61,7 @@ class AnalyticsEngine:
         entries = loginsByUser.collect()
         data = []
         description = {"remoteip": ("string", "Remote IP"),
-                 "hits": ("number", "Hits")}
+                       "hits": ("number", "Hits")}
 
         for entry in entries:
             data.append(
@@ -73,7 +72,7 @@ class AnalyticsEngine:
         data_table.LoadData(data)
         # Creating a JSon string
         json = data_table.ToJSon(columns_order=("remoteip", "hits"),
-                           order_by="hits")
+                                 order_by="hits")
 
         return json
 
@@ -84,18 +83,18 @@ class AnalyticsEngine:
 
         # Load Spark SQL DataFrame
         self.proxyDF = self.sqlctx.load(
-            "/user/cloudera/proxysg/year=%s/month=%s/day=%s" %(year, month, day)
+            "/user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
         )
         # Persist the DataFrame - only on a huge cluster though..
-        #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        # self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         # Register DataFrame as a Spark SQL Table
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
 
-        query = ( "select clientip, username, host, port, path, query, count(*) as hits from proxy"
-            " where username='%s' and categories like '%s'"
-            " group by clientip, username, host, port, path, query"
-            " order by cast(hits as int) desc" % (username, '%Internet%') )
-            #" limit 50" % (username, '%Internet%') )
+        query = ("select clientip, username, host, port, path, query, count(*) as hits from proxy"
+                 " where username='%s' and categories like '%s'"
+                 " group by clientip, username, host, port, path, query"
+                 " order by cast(hits as int) desc" % (username, '%Internet%'))
+        # " limit 50" % (username, '%Internet%') )
         logger.info(query)
 
         # Query using Spark SQL
@@ -131,6 +130,6 @@ class AnalyticsEngine:
         data_table.LoadData(data)
         # Creating a JSon string
         json = data_table.ToJSon(columns_order=("clientip", "username", "host", "port", "path", "query", "hits"),
-                           order_by="hits")
+                                 order_by="hits")
 
         return json
