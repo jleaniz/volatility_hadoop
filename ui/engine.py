@@ -94,7 +94,7 @@ class AnalyticsEngine:
         query = ( "select clientip, username, host, port, path, query, count(*) as hits from proxy"
             " where username='%s' and categories like '%s'"
             " group by clientip, username, host, port, path, query"
-            " order by cast(hits as bigint) desc"
+            " order by cast(hits as int) desc"
             " limit 50" % (username, '%Internet%') )
         logger.info(query)
 
