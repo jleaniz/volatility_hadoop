@@ -1,6 +1,7 @@
 from pyspark.sql import SQLContext
 from pyspark import StorageLevel
 import gviz_api
+from datetime import datetime, date
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -24,11 +25,6 @@ class AnalyticsEngine:
         logger.info("Creating Spark SQL context:")
         self.sqlctx = SQLContext(self.sc)
 
-        # Load datasets as DataFrames and register temporary tables
-        logger.info("Pre-loading some data for analysis:")
-        self.vpnLogsDF = self.sqlctx.load(dataset_path)
-        self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
-        self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
 
     def getVPNLoginsByUserJSON(self, username):
         '''
@@ -45,6 +41,7 @@ class AnalyticsEngine:
         jsonRDD = loginsByUser.toJSON()
         return jsonRDD
 
+
     def getVPNLoginsByUserGoogle(self, username):
         '''
         This function queries a DataFrame for logon/logoff data
@@ -53,6 +50,13 @@ class AnalyticsEngine:
         :param username:
         :return:
         '''
+
+        self.vpnLogsDF = self.sqlctx.load(
+            "/user/cloudera/ciscovpn"
+        )
+        self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
+
         loginsByUser = self.sqlctx.sql(
             "select remoteip, count(*) as hits from vpn where user='%s' group by remoteip" % (username)
         )
@@ -70,6 +74,62 @@ class AnalyticsEngine:
         data_table.LoadData(data)
         # Creating a JSon string
         json = data_table.ToJSon(columns_order=("remoteip", "hits"),
+                           order_by="hits")
+
+        return json
+
+    def getProxyUserMalwareHits(self, username, timerange):
+
+        # Get the specified date
+        (year, month, day) = (timerange.year, timerange.month, timerange.day)
+
+        # Load Spark SQL DataFrame
+        self.proxyDF = self.sqlctx.load(
+            "/user/cloudera/proxysg/year=%s/month=%s/day=%s" %(year, month, day)
+        )
+        # Persist the DataFrame
+        self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        # Register DataFrame as a Spark SQL Table
+        self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'proxy')
+
+        # Query using Spark SQL
+        userHistory = self.sqlctx.sql(
+            "select clientip, username, host, port, path, query, count(*) as hits from proxy"
+            " where username='%s' and category like '%s'"
+            " group by clientip, username, host, port, path, query"
+            " order by hits desc"
+            " limit 50" % (username, '%Mal%')
+        )
+
+        entries = userHistory.collect()
+        data = []
+        description = {
+            "clientip": ("string", "Client IP"),
+            "username": ("string", "Username"),
+            "host": ("string", "Host"),
+            "port": ("number", "Port"),
+            "path": ("string", "Path"),
+            "query": ("string", "Query"),
+            "hits": ("string", "Hits")
+        }
+
+        for entry in entries:
+            data.append(
+                {
+                    "clientip": entry.clientip,
+                    "username": entry.username,
+                    "host": entry.host,
+                    "port": entry.port,
+                    "path": entry.path,
+                    "query": entry.query,
+                    "hits": entry.hits,
+                }
+            )
+
+        data_table = gviz_api.DataTable(description)
+        data_table.LoadData(data)
+        # Creating a JSon string
+        json = data_table.ToJSon(columns_order=("clientip", "username", "host", "port", "path", "query", "hits"),
                            order_by="hits")
 
         return json

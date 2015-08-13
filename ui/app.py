@@ -15,8 +15,12 @@ from flask_wtf import Form
 from wtforms.fields import *
 from wtforms.validators import DataRequired
 
-
 class UserForm(Form):
+    name = StringField(u'Username', validators=[DataRequired()])
+    submit = SubmitField(u'Lookup')
+
+class UserDateForm(Form):
+    date = DateField(u'Date', validators=[DataRequired()])
     name = StringField(u'Username', validators=[DataRequired()])
     submit = SubmitField(u'Lookup')
 
@@ -33,16 +37,12 @@ nav.register_element('frontend_top', Navbar(
     View('Search', '.index'),
     Subgroup(
         'Analytics',
-        Link('VPN', '/vpn/display'),
-        Link('Proxy', 'https://github.com/mbr/flask-appconfig'),
-        Link('Firewall', 'https://github.com/mbr/flask-debug'),
+        Text('VPN'),
         Separator(),
-        Text('Bootstrap'),
-        Link('Getting started', 'http://getbootstrap.com/getting-started/'),
-        Link('CSS', 'http://getbootstrap.com/css/'),
-        Link('Components', 'http://getbootstrap.com/components/'),
-        Link('Javascript', 'http://getbootstrap.com/javascript/'),
-        Link('Customize', 'http://getbootstrap.com/customize/'),
+        Link('User stats', '/vpn/user'),
+        Text('Proxy'),
+        Separator(),
+        Link('Proxy', '/proxy/user'),
     ),
 ))
 
@@ -51,8 +51,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 from engine import AnalyticsEngine
-import json
 
+'''
 @main.route("/vpn/LoginsByUser/<username>")
 def vpnJSON(username):
     if username:
@@ -65,6 +65,7 @@ def vpnJSON(username):
         return Response(generate(), mimetype='application/json')
     else:
         return 'Username unspecified.'
+'''
 
 @main.route('/vpn/LoginsByUser/google/<username>')
 def vpnGoogleFormat(username):
@@ -75,21 +76,28 @@ def vpnGoogleFormat(username):
     else:
         return 'Username unspecified.'
 
-'''
-@main.route("/vpn/display", methods=('GET', 'POST'))
-def vpn_display():
-    form = UserForm(csrf_enabled=False)
-    if form.validate_on_submit():
-        return redirect(url_for('main.vpnJSON', username=form.name.data))
-    return render_template("vpn.html", form=form)
-'''
+@main.route('/proxy/LoginsByUser/google/<username>/<date>')
+def proxyGoogleFormat(username, date):
+    if username and date:
+        json = analytics_engine.getProxyUserMalwareHits(username, date)
+        logging.info(json)
+        return render_template('proxyGC.html', json=json)
+    else:
+        return 'Username unspecified.'
 
-@main.route("/vpn/display", methods=('GET', 'POST'))
-def vpn_display():
+@main.route("/vpn/user", methods=('GET', 'POST'))
+def vpn_user():
     form = UserForm(csrf_enabled=False)
     if form.validate_on_submit():
         return redirect(url_for('main.vpnGoogleFormat', username=form.name.data))
     return render_template("vpn.html", form=form)
+
+@main.route("/proxy/user", methods=('GET', 'POST'))
+def proxy_user():
+    form = UserDateForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        return redirect(url_for('main.proxyGoogleFormat', username=form.name.data, date=form.date.data))
+    return render_template("proxy.html", form=form)
 
 @main.route('/')
 def index():
