@@ -32,8 +32,11 @@ class DateForm(Form):
     date = DateField(u'Date', format='%Y-%m-%d', validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     submit = SubmitField(u'Lookup')
 
+
 class Inputs(Form):
-    table = SelectField(u'Table', choices=['proxy', 'vpn', 'firewall'])
+    table = SelectField(choices=[('proxy', 'Proxy'), ('firewall', 'Firewall'), ('vpn', 'VPN')],
+                        validators=[DataRequired(message='Required field')]
+                        )
 
 main = Blueprint('main', __name__)
 nav = Nav()
