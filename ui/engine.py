@@ -147,25 +147,25 @@ class AnalyticsEngine:
         # self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
 
-        loginsByUser = self.sqlctx.sql(
+        topTransfers = self.sqlctx.sql(
             'select clientip, host, cast(csbytes as Double) as bytes from proxy '
             'group by clientip, host, bytes order by bytes desc limit 10'
         )
-        entries = loginsByUser.collect()
+        entries = topTransfers.collect()
         data = []
         description = {"clientip": ("string", "Client IP"),
                        "host": ("string", "Destination host"),
-                       "hits": ("number", "Hits")}
+                       "bytes": ("number", "Bytes")}
 
         for entry in entries:
             data.append(
-                {"clientip": entry.clientip, "host": entry.host, "hits": entry.hits}
+                {"clientip": entry.clientip, "host": entry.host, "bytes": entry.bytes}
             )
 
         data_table = gviz_api.DataTable(description)
         data_table.LoadData(data)
         # Creating a JSon string
-        json = data_table.ToJSon(columns_order=("remoteip", "host", "hits"),
-                                 order_by="hits")
+        json = data_table.ToJSon(columns_order=("remoteip", "host", "bytes"),
+                                 order_by="bytes")
 
         return json
