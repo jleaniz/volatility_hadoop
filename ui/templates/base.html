@@ -38,16 +38,14 @@
 
 {# Finally, round things out with navigation #}
 {% block navbar %}
-<div class="navbar navbar-inverse>">
 {{nav.frontend_top.render()}}
-</div>
 {% endblock %}
 
 {% block content %}
    {%- with messages = get_flashed_messages(with_categories=True) %}
       {%- if messages %}
        <div class="row">
-         <div class="col-md-12">
+         <div class="col-md-8">
            {{utils.flashed_messages(messages)}}
          </div>
        </div>
