@@ -149,7 +149,7 @@ class AnalyticsEngine:
 
         loginsByUser = self.sqlctx.sql(
             'select clientip, host, cast(csbytes as Double) as bytes from proxy '
-            'group by clientip, host, cast(csbytes as Double) order by cast(csbytes as Double) desc limit 10'
+            'group by clientip, host, bytes order by bytes desc limit 10'
         )
         entries = loginsByUser.collect()
         data = []
