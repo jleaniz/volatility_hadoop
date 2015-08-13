@@ -89,7 +89,7 @@ class AnalyticsEngine:
         # Persist the DataFrame
         self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         # Register DataFrame as a Spark SQL Table
-        self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'proxy')
+        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
 
         # Query using Spark SQL
         userHistory = self.sqlctx.sql(
