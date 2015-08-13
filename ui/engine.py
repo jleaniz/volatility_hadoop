@@ -95,13 +95,13 @@ class AnalyticsEngine:
             " where username='%s' and categories like '%s'"
             " group by clientip, username, host, port, path, query"
             " order by hits desc"
-            " limit 50" % (username, '%Mal%') )
+            " limit 50" % (username, '%Internet%') )
         logger.info(query)
 
         # Query using Spark SQL
         userHistory = self.sqlctx.sql(query)
 
-        entries = userHistory.collect()
+        entries = userHistory.take(50)
         data = []
         description = {
             "clientip": ("string", "Client IP"),
