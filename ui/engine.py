@@ -165,7 +165,7 @@ class AnalyticsEngine:
         data_table = gviz_api.DataTable(description)
         data_table.LoadData(data)
         # Creating a JSon string
-        json = data_table.ToJSon(columns_order=("remoteip", "host", "bytes"),
+        json = data_table.ToJSon(columns_order=("clientip", "host", "bytes"),
                                  order_by="bytes")
 
         return json
