@@ -1,7 +1,6 @@
 from pyspark.sql import SQLContext
 from pyspark import StorageLevel
 import gviz_api
-from datetime import datetime, date
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -81,7 +80,7 @@ class AnalyticsEngine:
     def getProxyUserMalwareHits(self, username, timerange):
 
         # Get the specified date
-        (year, month, day) = (timerange.year, timerange.month, timerange.day)
+        (year, month, day) = timerange.split('-')
 
         # Load Spark SQL DataFrame
         self.proxyDF = self.sqlctx.load(

@@ -40,9 +40,10 @@ nav.register_element('frontend_top', Navbar(
         Text('VPN'),
         Separator(),
         Link('User stats', '/vpn/user'),
+        Separator(),
         Text('Proxy'),
         Separator(),
-        Link('Proxy', '/proxy/user'),
+        Link('Malware by user', '/proxy/user'),
     ),
 ))
 
