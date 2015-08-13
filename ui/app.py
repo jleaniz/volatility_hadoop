@@ -48,7 +48,10 @@ nav.register_element('frontend_top', Navbar(
     View('BDSA', '.index'),
     View('Home', '.index'),
     View('Dashboard', '.index'),
-    View('Search', '/search'),
+    Subgroup(
+        'Search',
+        Link('Custom query', '/search'),
+    ),
     Subgroup(
         'Analytics',
         Text('VPN'),
