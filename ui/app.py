@@ -13,11 +13,11 @@ from flask_nav.elements import (
 from flask_nav import Nav
 from flask_wtf import Form
 from wtforms.fields import *
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Email
 
 
 class UserForm(Form):
-    name = StringField(u'Username', validators=[DataRequired(message="Invalid input. Ex: srm-ais@ubisoft.com")])
+    name = StringField(u'VPN Username', validators=[Email(message="Invalid input. Ex: srm-ais@ubisoft.com")])
     submit = SubmitField(u'Lookup')
 
 
