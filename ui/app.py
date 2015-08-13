@@ -12,7 +12,7 @@ from flask_nav.elements import (
 
 from flask_nav import Nav
 from flask_wtf import Form
-from wtforms.fields import StringField, SubmitField
+from wtforms.fields import StringField, SubmitField, SelectField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Email
 
@@ -23,15 +23,17 @@ class UserForm(Form):
 
 
 class UserDateForm(Form):
-    date = DateField(u'Date', validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+    date = DateField(u'Date', format='%Y-%m-%d', validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     name = StringField(u'Username', validators=[DataRequired(message="Invalid input. Ex: jdoe")])
     submit = SubmitField(u'Lookup')
 
 
 class DateForm(Form):
-    date = DateField(u'Date', validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+    date = DateField(u'Date', format='%Y-%m-%d', validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     submit = SubmitField(u'Lookup')
 
+class Inputs(Form):
+    table = SelectField(u'Table', choices=['proxy', 'vpn', 'firewall'])
 
 main = Blueprint('main', __name__)
 nav = Nav()
@@ -40,10 +42,10 @@ nav = Nav()
 # navbar has an usual amount of Link-Elements, more commonly you will have a
 # lot more View instances.
 nav.register_element('frontend_top', Navbar(
-    View('BDSA-alpha', '.index'),
-    View('Dashboard', '.index'),
+    View('BDSA', '.index'),
     View('Home', '.index'),
-    View('Search', '.index'),
+    View('Dashboard', '.index'),
+    View('Search', '/search'),
     Subgroup(
         'Analytics',
         Text('VPN'),
@@ -65,7 +67,7 @@ logger = logging.getLogger(__name__)
 from engine import AnalyticsEngine
 
 '''
-@main.route("/vpn/LoginsByUser/<username>")
+@main.route("/api/vpn/byUser/<username>")
 def vpnJSON(username):
     if username:
         rdd = analytics_engine.getVPNLoginsByUserJSON(username)
@@ -113,7 +115,6 @@ def getProxyTopTransfers(date):
 @main.route("/vpn/user", methods=('GET', 'POST'))
 def vpn_user():
     form = UserForm(csrf_enabled=False)
-    flash("This will fire up a Spark job. Sit tight, the first query might take a while.", "info")
     if form.validate_on_submit():
         return redirect(url_for('main.vpnGoogleFormat', username=form.name.data))
     return render_template("vpn.html", form=form)
@@ -122,7 +123,6 @@ def vpn_user():
 @main.route("/proxy/malware/user", methods=('GET', 'POST'))
 def proxy_user():
     form = UserDateForm(csrf_enabled=False)
-    flash("This will fire up a Spark job. Sit tight, the first query might take a while.", "info")
     if form.validate_on_submit():
         return redirect(url_for('main.proxyGoogleFormat', username=form.name.data, date=form.date.data.strftime('%Y-%m-%d')))
     return render_template("proxy.html", form=form)
@@ -131,11 +131,16 @@ def proxy_user():
 @main.route("/proxy/top/transfers", methods=('GET', 'POST'))
 def proxyTopTransfers():
     form = DateForm(csrf_enabled=False)
-    flash("This will fire up a Spark job. Sit tight, the first query might take a while.", "info")
     if form.validate_on_submit():
         return redirect(url_for('main.getProxyTopTransfers', date=form.date.data.strftime('%Y-%m-%d')))
     return render_template("proxy.html", form=form)
 
+@main.route("/search", methods=('GET', 'POST'))
+def search():
+    form = Inputs(csrf_enabled=False)
+    if form.validate_on_submit():
+        return redirect(url_for('main.search', form=form))
+    return render_template("search.html", form=form)
 
 @main.route('/')
 def index():
