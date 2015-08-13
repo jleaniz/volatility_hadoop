@@ -145,7 +145,7 @@ class AnalyticsEngine:
             "/user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
         )
         # self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
-        self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'proxy')
+        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
 
         loginsByUser = self.sqlctx.sql(
             'select clientip, host, cast(csbytes as Double) as bytes from proxy '
