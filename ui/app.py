@@ -26,6 +26,9 @@ class UserDateForm(Form):
     name = StringField(u'Username', validators=[DataRequired(message="Invalid input. Ex: jdoe")])
     submit = SubmitField(u'Lookup')
 
+class DateForm(Form):
+    date = DateField(u'Date', validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+    submit = SubmitField(u'Lookup')
 
 main = Blueprint('main', __name__)
 nav = Nav()
@@ -46,7 +49,8 @@ nav.register_element('frontend_top', Navbar(
         Separator(),
         Text('Proxy'),
         Separator(),
-        Link('Malware by user', '/proxy/user'),
+        Link('Malware by user', '/proxy/malware/user'),
+        Link('Top 10 Transfers', '/proxy/top/transfers'),
     ),
 ))
 
@@ -78,7 +82,6 @@ def vpnGoogleFormat(username):
     if username:
         json = analytics_engine.getVPNLoginsByUserGoogle(username)
         logging.info(json)
-        flash("Spark job successful! Data has been cached.", "success")
         return render_template('vpnGC.html', json=json)
     else:
         return 'Username unspecified.'
@@ -89,11 +92,18 @@ def proxyGoogleFormat(username, date):
     if username and date:
         json = analytics_engine.getProxyUserMalwareHits(username, date)
         logging.info(json)
-        flash("Spark job successful! Data has been cached.", "success")
         return render_template('proxyGC.html', json=json)
     else:
         return 'Username or date unspecified.'
 
+@main.route('/proxy/topTransfers/google/<date>')
+def getProxyTopTransfers(date):
+    if date:
+        json = analytics_engine.getTopTransfersProxy(date)
+        logging.info(json)
+        return render_template('proxyTopTransfers.html', json=json)
+    else:
+        return 'Date unspecified.'
 
 @main.route("/vpn/user", methods=('GET', 'POST'))
 def vpn_user():
@@ -104,7 +114,7 @@ def vpn_user():
     return render_template("vpn.html", form=form)
 
 
-@main.route("/proxy/user", methods=('GET', 'POST'))
+@main.route("/proxy/malware/user", methods=('GET', 'POST'))
 def proxy_user():
     form = UserDateForm(csrf_enabled=False)
     flash("This will fire up a Spark job. Sit tight, the first query might take a while.", "info")
@@ -112,6 +122,13 @@ def proxy_user():
         return redirect(url_for('main.proxyGoogleFormat', username=form.name.data, date=form.date.data))
     return render_template("proxy.html", form=form)
 
+@main.route("/proxy/top/transfers", methods=('GET', 'POST'))
+def proxyTopTransfers():
+    form = DateForm(csrf_enabled=False)
+    flash("This will fire up a Spark job. Sit tight, the first query might take a while.", "info")
+    if form.validate_on_submit():
+        return redirect(url_for('main.getProxyTopTransfers', date=form.date.data))
+    return render_template("proxy.html", form=form)
 
 @main.route('/')
 def index():

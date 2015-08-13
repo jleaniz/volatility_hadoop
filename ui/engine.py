@@ -93,7 +93,7 @@ class AnalyticsEngine:
         query = ("select clientip, username, host, port, path, query, count(*) as hits from proxy"
                  " where username='%s' and categories like '%s'"
                  " group by clientip, username, host, port, path, query"
-                 " order by cast(hits as int) desc" % (username, '%Internet%'))
+                 " order by cast(hits as int) desc" % (username, '%Mal%'))
         # " limit 50" % (username, '%Internet%') )
         logger.info(query)
 
@@ -130,6 +130,42 @@ class AnalyticsEngine:
         data_table.LoadData(data)
         # Creating a JSon string
         json = data_table.ToJSon(columns_order=("clientip", "username", "host", "port", "path", "query", "hits"),
+                                 order_by="hits")
+
+        return json
+
+    def getTopTransfersProxy(self, timerange):
+        '''
+        :return:
+        '''
+
+        (year, month, day) = timerange.split('-')
+
+        self.proxyDF = self.sqlctx.load(
+            "/user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
+        )
+        # self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'proxy')
+
+        loginsByUser = self.sqlctx.sql(
+            'select clientip, host, cast(csbytes as Double) as bytes from proxy '
+            'group by clientip, host, cast(csbytes as Double) order by cast(csbytes as Double) desc limit 10'
+        )
+        entries = loginsByUser.collect()
+        data = []
+        description = {"clientip": ("string", "Client IP"),
+                       "host": ("string", "Destination host"),
+                       "hits": ("number", "Hits")}
+
+        for entry in entries:
+            data.append(
+                {"clientip": entry.clientip, "host": entry.host, "hits": entry.hits}
+            )
+
+        data_table = gviz_api.DataTable(description)
+        data_table.LoadData(data)
+        # Creating a JSon string
+        json = data_table.ToJSon(columns_order=("remoteip", "host", "hits"),
                                  order_by="hits")
 
         return json
