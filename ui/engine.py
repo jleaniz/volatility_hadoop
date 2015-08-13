@@ -170,27 +170,27 @@ class AnalyticsEngine:
         data_table.LoadData(data)
         # Creating a JSon string
         jsonTable = data_table.ToJSon(
-            columns_order=("host", "bytes", "clientip"),
+            columns_order=("clientip", "host", "bytes"),
             order_by="bytes"
         )
 
         # Build json object for the table
         dataChart = []
         descriptionChart = {
-            "host": ("string", "Destination"),
+            "clientip": ("string", "Client IP"),
             "bytes": ("number", "Bytes")
         }
 
         for entry in entries:
             dataChart.append(
-                {"host": entry.host, "bytes": entry.bytes}
+                {"clientip": entry.clientip, "bytes": entry.bytes}
             )
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
         # Creating a JSon string
         jsonChart = data_table.ToJSon(
-            columns_order=("host", "bytes"),
+            columns_order=("clientip", "bytes"),
             order_by="bytes"
         )
 

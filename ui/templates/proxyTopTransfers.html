@@ -15,14 +15,11 @@
     var barData = new google.visualization.DataTable( {{ jsonChart|safe }} );
     var tableOptions = { showRowNumber: false, width: '100%', height: '100%' };
     var baroptions = {
-    width: 600,
-    height: 400,
-    bar: { groupWidth: '75%' },
-    isStacked: true,
+        title: "Column chart"
     };
 
     var table = new google.visualization.Table(document.getElementById('table'));
-    var barChart = new google.visualization.BarChart(document.getElementById('barchart'));
+    var barChart = new google.visualization.ColumnChart(document.getElementById('barchart'));
 
     barChart.draw(barData, baroptions);
     table.draw(tableData, tableOptions);
