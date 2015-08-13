@@ -91,14 +91,15 @@ class AnalyticsEngine:
         # Register DataFrame as a Spark SQL Table
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
 
-        # Query using Spark SQL
-        userHistory = self.sqlctx.sql(
-            "select clientip, username, host, port, path, query, count(*) as hits from proxy"
+        logger.info(query)
+        query = ( "select clientip, username, host, port, path, query, count(*) as hits from proxy"
             " where username='%s' and category like '%s'"
             " group by clientip, username, host, port, path, query, hits"
             " order by hits desc"
-            " limit 50" % (username, '%Mal%')
-        )
+            " limit 50" % (username, '%Mal%') )
+
+        # Query using Spark SQL
+        userHistory = self.sqlctx.sql(query)
 
         entries = userHistory.collect()
         data = []
