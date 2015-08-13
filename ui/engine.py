@@ -95,7 +95,7 @@ class AnalyticsEngine:
         userHistory = self.sqlctx.sql(
             "select clientip, username, host, port, path, query, count(*) as hits from proxy"
             " where username='%s' and category like '%s'"
-            " group by clientip, username, host, port, path, query"
+            " group by clientip, username, host, port, path, query, hits"
             " order by hits desc"
             " limit 50" % (username, '%Mal%')
         )
