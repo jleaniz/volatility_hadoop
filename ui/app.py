@@ -17,13 +17,13 @@ from wtforms.validators import DataRequired
 
 
 class UserForm(Form):
-    name = StringField(u'Username', validators=[DataRequired()])
+    name = StringField(u'Username', validators=[DataRequired(message="Invalid input. Ex: srm-ais@ubisoft.com")])
     submit = SubmitField(u'Lookup')
 
 
 class UserDateForm(Form):
-    date = DateField(u'Date', validators=[DataRequired()])
-    name = StringField(u'Username', validators=[DataRequired()])
+    date = DateField(u'Date', validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+    name = StringField(u'Username', validators=[DataRequired(message="Invalid input. Ex: jdoe")])
     submit = SubmitField(u'Lookup')
 
 
