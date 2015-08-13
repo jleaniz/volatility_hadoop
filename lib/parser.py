@@ -62,7 +62,8 @@ class Parser(object):
             'iptables': re.compile(
                 '(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+) (\S+) '
                 '(\S+)(' \
-                '\s{1,2})IN=(\S+) OUT=((\S+)?) MAC=(\S+)  SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+   .\d+.\d+) LEN=(\d+) TOS=('
+                '\s{1,2})IN=(\S+) OUT=((\S+)?) MAC=(\S+)  SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+   .\d+.\d+) LEN=(\d+) '
+                'TOS=('
                 '\d+) ' \
                 'PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
             ),
@@ -199,7 +200,6 @@ class Parser(object):
                             reason=m.group(9)
                         )
 
-
     def parseIPTables(self, partition):
         '''
         Parse Netfilter IPtables
@@ -222,7 +222,6 @@ class Parser(object):
                     srcport=int(m.group(23)),
                     dstport=int(m.group(24))
                 )
-
 
     def parseBash(self, partition):
         """

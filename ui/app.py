@@ -26,9 +26,11 @@ class UserDateForm(Form):
     name = StringField(u'Username', validators=[DataRequired(message="Invalid input. Ex: jdoe")])
     submit = SubmitField(u'Lookup')
 
+
 class DateForm(Form):
     date = DateField(u'Date', validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     submit = SubmitField(u'Lookup')
+
 
 main = Blueprint('main', __name__)
 nav = Nav()
@@ -96,14 +98,16 @@ def proxyGoogleFormat(username, date):
     else:
         return 'Username or date unspecified.'
 
+
 @main.route('/proxy/topTransfers/google/<date>')
 def getProxyTopTransfers(date):
     if date:
-        json = analytics_engine.getTopTransfersProxy(date)
-        logging.info(json)
-        return render_template('proxyTopTransfers.html', json=json)
+        (jsonTable, jsonChart) = analytics_engine.getTopTransfersProxy(date)
+        logging.info(jsonTable, jsonChart)
+        return render_template('proxyTopTransfers.html', jsonTable=jsonTable, jsonChart=jsonChart)
     else:
         return 'Date unspecified.'
+
 
 @main.route("/vpn/user", methods=('GET', 'POST'))
 def vpn_user():
@@ -122,6 +126,7 @@ def proxy_user():
         return redirect(url_for('main.proxyGoogleFormat', username=form.name.data, date=form.date.data))
     return render_template("proxy.html", form=form)
 
+
 @main.route("/proxy/top/transfers", methods=('GET', 'POST'))
 def proxyTopTransfers():
     form = DateForm(csrf_enabled=False)
@@ -129,6 +134,7 @@ def proxyTopTransfers():
     if form.validate_on_submit():
         return redirect(url_for('main.getProxyTopTransfers', date=form.date.data))
     return render_template("proxy.html", form=form)
+
 
 @main.route('/')
 def index():

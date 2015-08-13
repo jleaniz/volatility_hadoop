@@ -152,21 +152,46 @@ class AnalyticsEngine:
             'group by clientip, host, cast(csbytes as Double) order by bytes desc limit 10'
         )
         entries = topTransfers.collect()
+
+        # Build json object for the table
         data = []
-        description = {"clientip": ("string", "Client IP"),
-                       "bytes": ("number", "Bytes"),
-                       "host": ("string", "Destination host")
-                       }
+        descriptionTable = {
+            "host": ("string", "Destination"),
+            "bytes": ("number", "Bytes"),
+            "clientip": ("string", "Client IP")
+        }
 
         for entry in entries:
             data.append(
                 {"clientip": entry.clientip, "bytes": entry.bytes, "host": entry.host}
             )
 
-        data_table = gviz_api.DataTable(description)
+        data_table = gviz_api.DataTable(descriptionTable)
         data_table.LoadData(data)
         # Creating a JSon string
-        json = data_table.ToJSon(columns_order=("clientip", "bytes", "host"),
-                                 order_by="bytes")
+        jsonTable = data_table.ToJSon(
+            columns_order=("host", "bytes", "clientip"),
+            order_by="bytes"
+        )
 
-        return json
+        # Build json object for the table
+        dataChart = []
+        descriptionChart = {
+            "host": ("string", "Destination"),
+            "bytes": ("number", "Bytes")
+        }
+
+        for entry in entries:
+            dataChart.append(
+                {"host": entry.host, "bytes": entry.bytes}
+            )
+
+        data_tableChart = gviz_api.DataTable(descriptionChart)
+        data_tableChart.LoadData(dataChart)
+        # Creating a JSon string
+        jsonChart = data_table.ToJSon(
+            columns_order=("host", "bytes"),
+            order_by="bytes"
+        )
+
+        return (jsonTable, jsonChart)

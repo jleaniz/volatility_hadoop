@@ -1,24 +1,26 @@
 {# This simple template derives from ``base.html``. See ``base.html`` for
-   more information about template inheritance. #}
+more information about template inheritance. #}
 {%- extends "base.html" %}
 
 {# Loads some of the macros included with Flask-Bootstrap. We are using the
-   utils module here to automatically render Flask's flashed messages in a
-   bootstrap friendly manner #}
+utils module here to automatically render Flask's flashed messages in a
+bootstrap friendly manner #}
 {% import "bootstrap/utils.html" as utils %}
 
 
 {# Inside the ``content`` is where you should place most of your own stuff.
-   This will keep scripts at the page end and a navbar you add on later
-   intact. #}
+This will keep scripts at the page end and a navbar you add on later
+intact. #}
 {% block content %}
-  <div class="container" style="width: 50%; height: 50%;">
-  <h1>Welcome to BDSA-alpha</h1>
-  <hr>
-  <p>To get the latest version go to our <a href="https://www.github.com/jleaniz/bdsa">site</a>.</p>
-  <p><a class="btn btn-md btn-default" role="button" href="http://pythonhosted.org/Flask-Bootstrap" >Go!</a></p>
-      <p class="bg-danger"><font color="red"><b>WARNING: This is a very early alpha release. Use at your own risk.
-          Please report bugs!, or don't.. whatever!! :)
-      </b></font></p>
-  </div>
+<div class="container" style="width: 50%; height: 50%;">
+    <h1>Welcome to BDSA-alpha</h1>
+    <hr>
+    <p>To get the latest version go to our <a href="https://www.github.com/jleaniz/bdsa">site</a>.</p>
+
+    <p><a class="btn btn-md btn-default" role="button" href="http://pythonhosted.org/Flask-Bootstrap">Go!</a></p>
+
+    <p class="bg-danger"><font color="red"><b>WARNING: This is a very early alpha release. Use at your own risk.
+        Please report bugs!, or don't.. whatever!! :)
+    </b></font></p>
+</div>
 {%- endblock %}

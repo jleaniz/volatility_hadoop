@@ -48,7 +48,7 @@ class Config(object):
         self.spark_rdd_compress = 'false'
         self.spark_sql_shuffle_partitions = '1024'
         self.spark_sql_codegen = 'true'
-        self.spark_sql_planner_externalSort	= 'true'
+        self.spark_sql_planner_externalSort = 'true'
 
     def setSparkConf(self):
         '''
