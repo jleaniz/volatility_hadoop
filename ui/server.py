@@ -25,10 +25,12 @@ def run_server(app):
     cherrypy.config.update({
         'engine.autoreload.on': True,
         'log.screen': True,
+        'server.ssl_module': 'builtin',
         'server.socket_port': 5432,
         'server.socket_host': '0.0.0.0'
     })
- 
+    cherrypy.server.ssl_certificate = "cert.pem"
+    cherrypy.server.ssl_private_key = "privkey.pem"
     # Start the CherryPy WSGI web server
     cherrypy.engine.start()
     cherrypy.engine.block()
