@@ -9,7 +9,7 @@
     <div class="panel panel-primary">
         <div class="panel-heading">Proxy Malware lookup</div>
         <div class="panel-body">
-            {%- if form.__contains__(name) %}
+            {%- if form.__contains__('name') %}
             <pre>Enter a username in the format 'jdoe' to look for malware hits on the proxy for this user.)</pre>
             {%- endif %}
             <pre>You also have to specify a date. For example: 2015-05-05)</pre>
