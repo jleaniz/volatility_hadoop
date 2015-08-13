@@ -155,7 +155,7 @@ class AnalyticsEngine:
         data = []
         description = {"clientip": ("string", "Client IP"),
                        "host": ("string", "Destination host"),
-                       "bytes": ("number", "Bytes")}
+                       "bytes": ("string", "Bytes")}
 
         for entry in entries:
             data.append(
