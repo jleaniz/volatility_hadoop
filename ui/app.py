@@ -12,7 +12,8 @@ from flask_nav.elements import (
 
 from flask_nav import Nav
 from flask_wtf import Form
-from wtforms.fields import *
+from wtforms.fields import StringField, SubmitField
+from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Email
 
 
@@ -123,7 +124,7 @@ def proxy_user():
     form = UserDateForm(csrf_enabled=False)
     flash("This will fire up a Spark job. Sit tight, the first query might take a while.", "info")
     if form.validate_on_submit():
-        return redirect(url_for('main.proxyGoogleFormat', username=form.name.data, date=form.date.data))
+        return redirect(url_for('main.proxyGoogleFormat', username=form.name.data, date=form.date.data.strftime('%Y-%m-%d')))
     return render_template("proxy.html", form=form)
 
 
@@ -132,7 +133,7 @@ def proxyTopTransfers():
     form = DateForm(csrf_enabled=False)
     flash("This will fire up a Spark job. Sit tight, the first query might take a while.", "info")
     if form.validate_on_submit():
-        return redirect(url_for('main.getProxyTopTransfers', date=form.date.data))
+        return redirect(url_for('main.getProxyTopTransfers', date=form.date.data.strftime('%Y-%m-%d')))
     return render_template("proxy.html", form=form)
 
 
