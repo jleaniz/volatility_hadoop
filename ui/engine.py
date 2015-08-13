@@ -154,18 +154,19 @@ class AnalyticsEngine:
         entries = topTransfers.collect()
         data = []
         description = {"clientip": ("string", "Client IP"),
-                       "host": ("string", "Destination host"),
-                       "bytes": ("string", "Bytes")}
+                       "bytes": ("number", "Bytes"),
+                       "host": ("string", "Destination host")
+                       }
 
         for entry in entries:
             data.append(
-                {"clientip": entry.clientip, "host": entry.host, "bytes": entry.bytes}
+                {"clientip": entry.clientip, "bytes": entry.bytes, "host": entry.host}
             )
 
         data_table = gviz_api.DataTable(description)
         data_table.LoadData(data)
         # Creating a JSon string
-        json = data_table.ToJSon(columns_order=("clientip", "host", "bytes"),
+        json = data_table.ToJSon(columns_order=("clientip", "bytes", "host"),
                                  order_by="bytes")
 
         return json
