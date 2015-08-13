@@ -76,7 +76,6 @@ def vpnJSON(username):
 @main.route('/vpn/LoginsByUser/google/<username>')
 def vpnGoogleFormat(username):
     if username:
-        flash("Firing up a Spark job! Sit tight!", "success")
         json = analytics_engine.getVPNLoginsByUserGoogle(username)
         logging.info(json)
         return render_template('vpnGC.html', json=json)
@@ -87,7 +86,6 @@ def vpnGoogleFormat(username):
 @main.route('/proxy/LoginsByUser/google/<username>/<date>')
 def proxyGoogleFormat(username, date):
     if username and date:
-        flash("Firing up a Spark job! Sit tight!", "success")
         json = analytics_engine.getProxyUserMalwareHits(username, date)
         logging.info(json)
         return render_template('proxyGC.html', json=json)

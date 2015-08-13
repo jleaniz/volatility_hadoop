@@ -5,6 +5,7 @@
 
 {% block content %}
 {{util.flashed_messages(dismissible=True)}}
+{{ flash("This will fire up a Spark job. Sit tight!") }}
 <div class="container">
     <div class="panel panel-primary">
         <div class="panel-heading">Proxy Malware lookup</div>
