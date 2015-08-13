@@ -111,6 +111,9 @@ def getProxyTopTransfers(date):
     else:
         return 'Date unspecified.'
 
+@main.route('/search/<query>')
+def search(table):
+    pass
 
 @main.route("/vpn/user", methods=('GET', 'POST'))
 def vpn_user():
@@ -136,10 +139,10 @@ def proxyTopTransfers():
     return render_template("proxy.html", form=form)
 
 @main.route("/search", methods=('GET', 'POST'))
-def search():
+def search_view():
     form = Inputs(csrf_enabled=False)
     if form.validate_on_submit():
-        return redirect(url_for('main.search', form=form))
+        return redirect(url_for('main.search', table=form.table.data))
     return render_template("search.html", form=form)
 
 @main.route('/')
