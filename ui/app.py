@@ -103,7 +103,7 @@ def proxyGoogleFormat(username, date):
 def getProxyTopTransfers(date):
     if date:
         (jsonTable, jsonChart) = analytics_engine.getTopTransfersProxy(date)
-        logging.info(jsonTable, jsonChart)
+        #logging.info(jsonTable, jsonChart)
         return render_template('proxyTopTransfers.html', jsonTable=jsonTable, jsonChart=jsonChart)
     else:
         return 'Date unspecified.'
