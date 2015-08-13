@@ -107,7 +107,7 @@ class AnalyticsEngine:
             "clientip": ("string", "Client IP"),
             "username": ("string", "Username"),
             "host": ("string", "Host"),
-            "port": ("number", "Port"),
+            "port": ("string", "Port"),
             "path": ("string", "Path"),
             "query": ("string", "Query"),
             "hits": ("string", "Hits")
