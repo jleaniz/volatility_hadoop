@@ -10,9 +10,7 @@
         <div class="panel-heading">Proxy Malware lookup</div>
         <div class="panel-body">
             <pre>Enter a username in the format 'jdoe' to look for malware hits on the proxy for this user.)</pre>
-            {%- if type(form) == 'app.DateForm' %}
             <pre>You also have to specify a date. For example: 2015-05-05)</pre>
-            {%- endif %}
             {{ wtf.quick_form(form, button_map={'submit_button': 'primary'}) }}
         </div>
     </div>
