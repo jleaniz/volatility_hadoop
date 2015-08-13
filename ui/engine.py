@@ -87,7 +87,7 @@ class AnalyticsEngine:
             "/user/cloudera/proxysg/year=%s/month=%s/day=%s" %(year, month, day)
         )
         # Persist the DataFrame
-        self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         # Register DataFrame as a Spark SQL Table
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
 
@@ -101,7 +101,7 @@ class AnalyticsEngine:
         # Query using Spark SQL
         userHistory = self.sqlctx.sql(query)
 
-        entries = userHistory.take(50)
+        entries = userHistory.collect()
         data = []
         description = {
             "clientip": ("string", "Client IP"),
