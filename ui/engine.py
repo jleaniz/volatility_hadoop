@@ -207,6 +207,7 @@ class AnalyticsEngine:
         '''
         try:
             self.tableDF = self.sqlctx.parquetFile(item)
+            self.tableDF = None
             return True
         except Py4JJavaError:
             logger.info('unable to load file %s. skipping' %(item))
