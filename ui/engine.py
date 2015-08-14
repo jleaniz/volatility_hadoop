@@ -245,9 +245,4 @@ class AnalyticsEngine:
 
         jsonRDD = self.resultDF.toJSON()
 
-        del self.tableDF
-        del self.resultDF
-        del parquetPaths
-        #del _parquetPaths
-        gc.collect()
         return jsonRDD

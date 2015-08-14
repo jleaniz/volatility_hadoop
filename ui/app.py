@@ -95,7 +95,7 @@ def vpnJSON(username):
 '''
 
 
-def create_app(spark_context, dataset_path):
+def create_app(spark_context):
     global analytics_engine
 
     analytics_engine = AnalyticsEngine(spark_context)
@@ -147,6 +147,7 @@ def search(table, sdate, edate, query):
     jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query)
     def generate():
         yield '{"%s": [\n' %(table)
+        logger.info('running collect()')
         for doc in jsonResult.collect():
             yield doc + ',\n'
         yield "{}\n]}"
