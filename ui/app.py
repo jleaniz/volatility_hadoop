@@ -147,12 +147,10 @@ def search(table, sdate, edate, query):
     jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query)
     def generate():
         yield '{"%s": [\n' %(table)
-        #for doc in jsonResult.collect():
-            #yield doc + ',\n'
-        for doc in jsonResult:
+        for doc in jsonResult.collect():
             yield doc + ',\n'
         yield "{}\n]}"
-
+    del jsonResult
     return Response(generate(), mimetype='application/json')
 
 @main.route("/vpn/user", methods=('GET', 'POST'))

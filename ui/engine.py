@@ -244,12 +244,10 @@ class AnalyticsEngine:
         self.resultDF = self.sqlctx.sql(query)
 
         jsonRDD = self.resultDF.toJSON()
-        for i in jsonRDD.collect():
-            yield i
 
-        #del self.tableDF
-        #del parquetPaths
+        del self.tableDF
+        del self.resultDF
+        del parquetPaths
         #del _parquetPaths
-        #del jsonRDD
-        #gc.collect()
-        #return jsonRDD
+        gc.collect()
+        return jsonRDD
