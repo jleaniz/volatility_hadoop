@@ -209,7 +209,6 @@ class AnalyticsEngine:
         days = []
         for i in range(delta.days + 1):
             days.append(_sdate + td(days=i))
-            print _sdate + td(days=i)
 
         parquetPaths = []
         for day in days:
