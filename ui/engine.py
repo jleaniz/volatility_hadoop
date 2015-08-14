@@ -200,14 +200,12 @@ class AnalyticsEngine:
         return (jsonTable, jsonChart)
 
     def ifExists(self, item):
-        print item
         try:
             self.tableDF = self.sqlctx.parquetFile(item)
             return True
         except Py4JJavaError:
-            logger.info('unable to load file %s' %(item))
+            logger.info('unable to load file %s. skipping' %(item))
             return False
-            #parquetPaths.remove(file)
 
     def getSearchResults(self, table, sdate, edate, query):
         (syear, smonth, sday) = sdate.split('-')
@@ -234,9 +232,7 @@ class AnalyticsEngine:
                 )
 
         _parquetPaths = [x for x in parquetPaths if self.ifExists(x)]
-
         self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
-
         #self.tableDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
