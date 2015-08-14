@@ -236,8 +236,8 @@ class AnalyticsEngine:
                 )
 
         # This works but it would be faster to just check if the directory exists in HDFS
-        _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
-        self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
+        #_parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
+        self.tableDF = self.sqlctx.parquetFile(*parquetPaths)
 
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
 
@@ -249,7 +249,7 @@ class AnalyticsEngine:
 
         del self.tableDF
         del parquetPaths
-        del _parquetPaths
+        #del _parquetPaths
         del jsonRDD
         gc.collect()
         #return jsonRDD
