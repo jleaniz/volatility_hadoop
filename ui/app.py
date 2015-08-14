@@ -150,7 +150,7 @@ def search(table, sdate, edate, query):
         for doc in jsonResult.collect():
             yield doc + ',\n'
         yield "{}\n]}"
-        del jsonResult
+
     return Response(generate(), mimetype='application/json')
 
 @main.route("/vpn/user", methods=('GET', 'POST'))
