@@ -25,6 +25,8 @@ def run_server(app):
     cherrypy.config.update({
         'engine.autoreload.on': True,
         'log.screen': True,
+        'response.stream': True,
+        'response.timeout': 3600,
         'server.ssl_module': 'builtin',
         'server.socket_port': 5432,
         'server.socket_host': '0.0.0.0'
