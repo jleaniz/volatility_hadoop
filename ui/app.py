@@ -145,14 +145,7 @@ def getProxyTopTransfers(date):
 @main.route('/search/<table>/<sdate>/<edate>/<query>')
 def search(table, sdate, edate, query):
     jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query)
-    def generate():
-        yield '{"%s": [\n' %(table)
-        logger.info('running collect()')
-        for doc in jsonResult.collect():
-            yield doc + ',\n'
-        yield "{}\n]}"
-
-    return Response(generate(), mimetype='application/json')
+    return Response(jsonResult, mimetype='application/json')
 
 @main.route("/vpn/user", methods=('GET', 'POST'))
 def vpn_user():

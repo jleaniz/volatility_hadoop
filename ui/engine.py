@@ -5,7 +5,6 @@ from pyspark import StorageLevel
 from py4j.java_gateway import Py4JJavaError
 import gviz_api
 import lib.hdfs as hdfs
-import gc
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -236,8 +235,8 @@ class AnalyticsEngine:
                 )
 
         # This works but it would be faster to just check if the directory exists in HDFS
-        #_parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
-        self.tableDF = self.sqlctx.parquetFile(*parquetPaths)
+        _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
+        self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
 
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
 
