@@ -1,6 +1,8 @@
 from datetime import date, timedelta as td
+
 from pyspark.sql import SQLContext
 from pyspark import StorageLevel
+from py4j.java_gateway import Py4JJavaError
 import gviz_api
 
 import logging
@@ -220,6 +222,13 @@ class AnalyticsEngine:
                     '/user/cloudera/%s/year=%s/month=%s/day=%s' % (
                     table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
+
+        for file in parquetPaths:
+            try:
+                self.tableDF = self.sqlctx.parquetFile(file)
+            except Py4JJavaError:
+                print 'unable to load file %s' %(file)
+                parquetPaths.remove(file)
 
         self.tableDF = self.sqlctx.parquetFile(*parquetPaths)
 
