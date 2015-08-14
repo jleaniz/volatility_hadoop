@@ -1,5 +1,9 @@
 import os
 from sys import stderr
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def exists(hdfs_url):
     """
@@ -27,6 +31,7 @@ def test(hdfs_url, test='e'):
     exit_code, stdo, stde = exec_command(command)
 
     if exit_code != 0:
+        logger.info('Failed to load %s. Skipping..') %(hdfs_url)
         return False
     else:
         return True
