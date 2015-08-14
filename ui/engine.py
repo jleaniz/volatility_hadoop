@@ -208,12 +208,16 @@ class AnalyticsEngine:
         for i in range(delta.days + 1):
             days.append(_sdate + td(days=i))
 
+        parquetPaths = []
+        for day in days:
+            parquetPaths.append(
+                '/user/cloudera/%s/year=%s/month=%s/day=%s' %(table, day.year, str(day).split('-')[1], str(day).split('-')[2])
+            )
 
-        self.tableDF = self.sqlctx.parquetfile(
-            ['/user/cloudera/%s/year=%s/month=%s/day=%s' %(table, ) ]
-        )
+        self.tableDF = self.sqlctx.parquetFile(*parquetPaths)
+
         # self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
-        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
-        loginsByUser = self.sqlctx.sql('select * from %s')
-        jsonRDD = loginsByUser.toJSON()
+        self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
+        df = self.sqlctx.sql(query)
+        jsonRDD = df.toJSON()
         return jsonRDD
