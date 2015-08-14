@@ -145,7 +145,7 @@ def getProxyTopTransfers(date):
 @main.route('/search/<table>/<sdate>/<edate>/<query>')
 def search(table, sdate, edate, query):
     jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query)
-    return Response(jsonResult, mimetype='application/json')
+    return jsonResult
 
 @main.route("/vpn/user", methods=('GET', 'POST'))
 def vpn_user():
