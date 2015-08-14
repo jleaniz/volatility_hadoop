@@ -33,10 +33,14 @@ class DateForm(Form):
     submit = SubmitField(u'Lookup')
 
 
-class Inputs(Form):
+class SearchForm(Form):
     table = SelectField(choices=[('proxy', 'Proxy'), ('firewall', 'Firewall'), ('vpn', 'VPN')],
                         validators=[DataRequired(message='Required field')]
                         )
+    sdate = DateField(u'Start Date', format='%Y-%m-%d', validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+    edate = DateField(u'End Date', format='%Y-%m-%d', validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+    query = StringField(u'Query', validators=[DataRequired(message="Field required")])
+    submit = SubmitField(u'Lookup')
 
 main = Blueprint('main', __name__)
 nav = Nav()
@@ -146,7 +150,7 @@ def proxyTopTransfers():
 
 @main.route("/search", methods=('GET', 'POST'))
 def search_view():
-    form = Inputs(csrf_enabled=False)
+    form = SearchForm(csrf_enabled=False)
     if form.validate_on_submit():
         return redirect(url_for('main.search', table=form.table.data))
     return render_template("search.html", form=form)
