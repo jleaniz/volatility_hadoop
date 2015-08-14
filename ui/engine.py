@@ -227,6 +227,9 @@ class AnalyticsEngine:
         for i in range(delta.days + 1):
             days.append(_sdate + td(days=i))
 
+        self.sqlctx = None
+        self.sqlctx = SQLContext(self.sc)
+
         parquetPaths = []
         for day in days:
             if table == 'firewall':
