@@ -202,9 +202,9 @@ class AnalyticsEngine:
         (eyear, emonth, eday) = edate.split('-')
         _sdate = date(int(syear), int(smonth), int(sday))
         _edate = date(int(eyear), int(emonth), int(eday))
-        days = []
         delta = _edate - _sdate
 
+        days = []
         for i in range(delta.days + 1):
             days.append(_sdate + td(days=i))
 
@@ -220,9 +220,10 @@ class AnalyticsEngine:
                     '/user/cloudera/%s/year=%s/month=%s/day=%s' % (
                     table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
+
         self.tableDF = self.sqlctx.parquetFile(*parquetPaths)
 
-        # self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
         df = self.sqlctx.sql(query)
         jsonRDD = df.toJSON()
