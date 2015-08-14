@@ -202,10 +202,10 @@ class AnalyticsEngine:
     def ifExists(self, items):
         for item in items:
             try:
-                self.tableDF = self.sqlctx.parquetFile(file)
+                self.tableDF = self.sqlctx.parquetFile(item)
                 return True
             except Py4JJavaError:
-                logger.info('unable to load file %s' %(file))
+                logger.info('unable to load file %s' %(item))
                 return False
                 #parquetPaths.remove(file)
 
