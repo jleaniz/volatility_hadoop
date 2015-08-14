@@ -31,7 +31,7 @@ def test(hdfs_url, test='e'):
     exit_code, stdo, stde = exec_command(command)
 
     if exit_code != 0:
-        logger.info('Failed to load %s. Skipping..') %(hdfs_url)
+        logger.info('Failed to load %s. Skipping..' %(hdfs_url) )
         return False
     else:
         return True
