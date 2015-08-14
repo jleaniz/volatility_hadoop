@@ -199,16 +199,15 @@ class AnalyticsEngine:
 
         return (jsonTable, jsonChart)
 
-    def ifExists(self, items):
-        for item in items:
-            print item
-            try:
-                self.tableDF = self.sqlctx.parquetFile(item)
-                return True
-            except Py4JJavaError:
-                logger.info('unable to load file %s' %(item))
-                return False
-                #parquetPaths.remove(file)
+    def ifExists(self, item):
+        print item
+        try:
+            self.tableDF = self.sqlctx.parquetFile(item)
+            return True
+        except Py4JJavaError:
+            logger.info('unable to load file %s' %(item))
+            return False
+            #parquetPaths.remove(file)
 
     def getSearchResults(self, table, sdate, edate, query):
         (syear, smonth, sday) = sdate.split('-')
@@ -234,7 +233,7 @@ class AnalyticsEngine:
                     table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
 
-        _parquetPaths = [x for x in parquetPaths if self.ifExists(parquetPaths)]
+        _parquetPaths = [x for x in parquetPaths if self.ifExists(x)]
 
         self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
 
