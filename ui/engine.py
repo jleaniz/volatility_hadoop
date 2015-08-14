@@ -227,7 +227,7 @@ class AnalyticsEngine:
             try:
                 self.tableDF = self.sqlctx.parquetFile(file)
             except Py4JJavaError:
-                print 'unable to load file %s' %(file)
+                logger.info('unable to load file %s' %(file))
                 parquetPaths.remove(file)
 
         self.tableDF = self.sqlctx.parquetFile(*parquetPaths)
