@@ -247,9 +247,9 @@ class AnalyticsEngine:
         for i in jsonRDD.collect():
             yield i
 
-        del self.tableDF
-        del parquetPaths
+        #del self.tableDF
+        #del parquetPaths
         #del _parquetPaths
-        del jsonRDD
-        gc.collect()
+        #del jsonRDD
+        #gc.collect()
         #return jsonRDD
