@@ -224,7 +224,10 @@ class AnalyticsEngine:
         self.tableDF = self.sqlctx.parquetFile(*parquetPaths)
 
         self.tableDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
+
         df = self.sqlctx.sql(query)
+
         jsonRDD = df.toJSON()
         return jsonRDD
