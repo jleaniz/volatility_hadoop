@@ -79,7 +79,7 @@ logger = logging.getLogger(__name__)
 
 from engine import AnalyticsEngine
 
-'''
+
 @main.route("/api/vpn/byUser/<username>")
 def vpnJSON(username):
     if username:
@@ -92,7 +92,7 @@ def vpnJSON(username):
         return Response(generate(), mimetype='application/json')
     else:
         return 'Username unspecified.'
-'''
+
 
 
 def create_app(spark_context):

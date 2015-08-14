@@ -36,6 +36,11 @@ class AnalyticsEngine:
         :param username:
         :return:
         '''
+        self.vpnLogsDF = self.sqlctx.load(
+            "/user/cloudera/ciscovpn"
+        )
+        self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
         loginsByUser = self.sqlctx.sql(
             "select `date`, time, remoteip, reason from vpn where user='%s' group by `date`, time, "
             "remoteip, reason" % (username)
