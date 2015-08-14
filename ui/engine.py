@@ -5,7 +5,7 @@ from pyspark import StorageLevel
 from py4j.java_gateway import Py4JJavaError
 import gviz_api
 import lib.hdfs as hdfs
-
+import gc
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -18,7 +18,7 @@ class AnalyticsEngine:
     Contains all the analytics functions
     '''
 
-    def __init__(self, sc, dataset_path):
+    def __init__(self, sc):
         """
         Init the  engine given a Spark context and a dataset path
         """
@@ -242,13 +242,19 @@ class AnalyticsEngine:
 
         # This works but it would be faster to just check if the directory exists in HDFS
         _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
-        self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
-        #self.tableDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        tableDF = self.sqlctx.parquetFile(*_parquetPaths)
 
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
 
-        self.resultDF = self.sqlctx.sql(query)
-        #self.resultDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        resultDF = self.sqlctx.sql(query)
 
-        jsonRDD = self.resultDF.toJSON()
-        return jsonRDD
+        jsonRDD = resultDF.toJSON()
+        for i in jsonRDD.collect():
+            yield i
+
+        del tableDF
+        del parquetPaths
+        del _parquetPaths
+        del jsonRDD
+        gc.collect()
+        #return jsonRDD

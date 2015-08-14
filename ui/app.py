@@ -95,6 +95,23 @@ def vpnJSON(username):
 '''
 
 
+def create_app(spark_context, dataset_path):
+    global analytics_engine
+
+    analytics_engine = AnalyticsEngine(spark_context)
+
+    app = Flask(__name__)
+    app.config['SESSION_TYPE'] = 'filesystem'
+    app.secret_key = 'super secret key'
+
+    Bootstrap(app)
+
+    app.register_blueprint(main)
+
+    nav.init_app(app)
+    return app
+
+
 @main.route('/vpn/LoginsByUser/google/<username>')
 def vpnGoogleFormat(username):
     if username:
@@ -130,7 +147,9 @@ def search(table, sdate, edate, query):
     jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query)
     def generate():
         yield '{"%s": [\n' %(table)
-        for doc in jsonResult.collect():
+        #for doc in jsonResult.collect():
+            #yield doc + ',\n'
+        for doc in jsonResult:
             yield doc + ',\n'
         yield "{}\n]}"
 
@@ -174,19 +193,3 @@ def search_view():
 def index():
     return render_template('index.html')
 
-
-def create_app(spark_context, dataset_path):
-    global analytics_engine
-
-    analytics_engine = AnalyticsEngine(spark_context, dataset_path)
-
-    app = Flask(__name__)
-    app.config['SESSION_TYPE'] = 'filesystem'
-    app.secret_key = 'super secret key'
-
-    Bootstrap(app)
-
-    app.register_blueprint(main)
-
-    nav.init_app(app)
-    return app
