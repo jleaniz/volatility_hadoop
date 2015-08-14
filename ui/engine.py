@@ -201,6 +201,7 @@ class AnalyticsEngine:
 
     def ifExists(self, items):
         for item in items:
+            print item
             try:
                 self.tableDF = self.sqlctx.parquetFile(item)
                 return True
@@ -233,7 +234,7 @@ class AnalyticsEngine:
                     table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
 
-        _parquetPaths = [x for x in parquetPaths if not self.ifExists(parquetPaths)]
+        _parquetPaths = [x for x in parquetPaths if self.ifExists(parquetPaths)]
 
         self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
 
