@@ -34,13 +34,16 @@ class DateForm(Form):
 
 
 class SearchForm(Form):
-    table = SelectField(choices=[('proxy', 'Proxy'), ('firewall', 'Firewall'), ('vpn', 'VPN')],
+    table = SelectField(choices=[('proxysg', 'Proxy'), ('firewall', 'Firewall'), ('ciscovpn', 'VPN')],
                         validators=[DataRequired(message='Required field')]
                         )
-    sdate = DateField(u'Start Date', format='%Y-%m-%d', validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
-    edate = DateField(u'End Date', format='%Y-%m-%d', validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+    sdate = DateField(u'Start Date', format='%Y-%m-%d',
+                      validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+    edate = DateField(u'End Date', format='%Y-%m-%d',
+                      validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     query = StringField(u'Query', validators=[DataRequired(message="Field required")])
     submit = SubmitField(u'Lookup')
+
 
 main = Blueprint('main', __name__)
 nav = Nav()
@@ -116,14 +119,22 @@ def proxyGoogleFormat(username, date):
 def getProxyTopTransfers(date):
     if date:
         (jsonTable, jsonChart) = analytics_engine.getTopTransfersProxy(date)
-        #logging.info(jsonTable, jsonChart)
+        # logging.info(jsonTable, jsonChart)
         return render_template('proxyTopTransfers.html', jsonTable=jsonTable, jsonChart=jsonChart)
     else:
         return 'Date unspecified.'
 
-@main.route('/search/<query>')
-def search(table):
-    pass
+
+@main.route('/search/<table>/<sdate>/<edate>/<query>')
+def search(table, sdate, edate, query):
+    jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query)
+    def generate():
+        yield '{"%s": [\n' %(table)
+        for doc in jsonResult.collect():
+            yield doc + ',\n'
+        yield "{}\n]}"
+
+    return Response(generate(), mimetype='application/json')
 
 @main.route("/vpn/user", methods=('GET', 'POST'))
 def vpn_user():
@@ -137,7 +148,8 @@ def vpn_user():
 def proxy_user():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
-        return redirect(url_for('main.proxyGoogleFormat', username=form.name.data, date=form.date.data.strftime('%Y-%m-%d')))
+        return redirect(
+            url_for('main.proxyGoogleFormat', username=form.name.data, date=form.date.data.strftime('%Y-%m-%d')))
     return render_template("proxy.html", form=form)
 
 
@@ -148,12 +160,15 @@ def proxyTopTransfers():
         return redirect(url_for('main.getProxyTopTransfers', date=form.date.data.strftime('%Y-%m-%d')))
     return render_template("proxy.html", form=form)
 
+
 @main.route("/search", methods=('GET', 'POST'))
 def search_view():
     form = SearchForm(csrf_enabled=False)
     if form.validate_on_submit():
-        return redirect(url_for('main.search', table=form.table.data))
+        return redirect(url_for('main.search', table=form.table.data, sdate=form.sdate.data.strftime('%Y-%m-%d'),
+                                edate=form.edate.data.strftime('%Y-%m-%d'), query=form.query.data))
     return render_template("search.html", form=form)
+
 
 @main.route('/')
 def index():

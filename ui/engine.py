@@ -1,3 +1,4 @@
+from datetime import date, timedelta as td
 from pyspark.sql import SQLContext
 from pyspark import StorageLevel
 import gviz_api
@@ -195,3 +196,24 @@ class AnalyticsEngine:
         )
 
         return (jsonTable, jsonChart)
+
+    def getSearchResults(self, table, sdate, edate, query):
+        (syear, smonth, sday) = sdate.split('-')
+        (eyear, emonth, eday) = edate.split('-')
+        _sdate = date(int(syear),int(smonth),int(sday))
+        _edate = date(int(eyear),int(emonth),int(eday))
+        days = []
+        delta = _edate - _sdate
+
+        for i in range(delta.days + 1):
+            days.append(_sdate + td(days=i))
+
+
+        self.tableDF = self.sqlctx.parquetfile(
+            ['/user/cloudera/%s/year=%s/month=%s/day=%s' %(table, ) ]
+        )
+        # self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
+        loginsByUser = self.sqlctx.sql('select * from %s')
+        jsonRDD = loginsByUser.toJSON()
+        return jsonRDD
