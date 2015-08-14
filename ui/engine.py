@@ -240,8 +240,8 @@ class AnalyticsEngine:
 
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
 
-        self.resultDF = self.sqlctx.sql(query)
+        self.tableDF = self.sqlctx.sql(query)
 
-        jsonRDD = self.resultDF.toJSON()
+        jsonRDD = self.tableDF.toJSON()
 
         return jsonRDD
