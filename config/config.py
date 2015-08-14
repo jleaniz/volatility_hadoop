@@ -41,7 +41,7 @@ class Config(object):
         self.spark_network_timeout = '3000'
         self.spark_core_connection_ack_wait_timeout = '3000'
         self.spark_storage_memoryFraction = '0.6'
-        self.spark_metrics_conf = '/opt/cloudera/parcels/CDH/etc/spark/conf.dist/metrics.properties'
+        #self.spark_metrics_conf = '/opt/cloudera/parcels/CDH/etc/spark/conf.dist/metrics.properties'
         self.spark_default_parallelism = '120'
         self.spark_io_compression_codec = 'snappy'
         self.spark_serializer = 'org.apache.spark.serializer.KryoSerializer'
@@ -67,7 +67,7 @@ class Config(object):
                 .set("spark.executor.cores", self.spark_executor_cores)
                 .set("spark.cores.max", self.spark_cores_max)
                 .set("spark.akka.timeout", self.spark_akka_timeout)
-                .set("spark.metrics.conf", self.spark_metrics_conf)
+                #.set("spark.metrics.conf", self.spark_metrics_conf)
                 .set("spark.network.timeout", self.spark_network_timeout)
                 .set("spark.core.connection.ack.wait.timeout", self.spark_core_connection_ack_wait_timeout)
                 .set("spark.storage.memoryFraction", self.spark_storage_memoryFraction)
