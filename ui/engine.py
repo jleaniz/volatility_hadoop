@@ -243,7 +243,8 @@ class AnalyticsEngine:
 
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
 
-        df = self.sqlctx.sql(query)
+        self.resultDF = self.sqlctx.sql(query)
+        self.resultDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-        jsonRDD = df.toJSON()
+        jsonRDD = self.resultDF.toJSON()
         return jsonRDD
