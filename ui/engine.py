@@ -200,13 +200,8 @@ class AnalyticsEngine:
 
         return (jsonTable, jsonChart)
 
-
+    '''
     def ifExistsSlow(self, item):
-        '''
-        Try to load parquet files in this directory
-        :param item:
-        :return: bool
-        '''
         try:
             self.tableDF = self.sqlctx.parquetFile(item)
             self.tableDF = None
@@ -214,7 +209,7 @@ class AnalyticsEngine:
         except Py4JJavaError:
             logger.info('unable to load file %s. skipping' %(item))
             return False
-
+    '''
 
     def getSearchResults(self, table, sdate, edate, query):
         (syear, smonth, sday) = sdate.split('-')
@@ -244,7 +239,7 @@ class AnalyticsEngine:
         _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
         tableDF = self.sqlctx.parquetFile(*_parquetPaths)
 
-        self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
+        self.sqlctx.registerDataFrameAsTable(tableDF, table)
 
         resultDF = self.sqlctx.sql(query)
 
