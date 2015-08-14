@@ -4,6 +4,7 @@ from pyspark.sql import SQLContext
 from pyspark import StorageLevel
 from py4j.java_gateway import Py4JJavaError
 import gviz_api
+import os
 
 import logging
 
@@ -199,7 +200,8 @@ class AnalyticsEngine:
 
         return (jsonTable, jsonChart)
 
-    def ifExists(self, item):
+
+    def ifExistsSlow(self, item):
         '''
         Try to load parquet files in this directory
         :param item:
@@ -212,6 +214,22 @@ class AnalyticsEngine:
         except Py4JJavaError:
             logger.info('unable to load file %s. skipping' %(item))
             return False
+
+
+    def ifExistsFast(self, item):
+        '''
+        Check if dir exists using HADOOP-FUSE mnt point
+        quicker than the other method
+        :param item:
+        :return: bool
+        '''
+        try:
+            if os.path.exists('/mnt/hdfs' + item):
+                return True
+        except:
+            logger.info('unable to load file %s. skipping' %(item))
+            return False
+
 
     def getSearchResults(self, table, sdate, edate, query):
         (syear, smonth, sday) = sdate.split('-')
@@ -238,7 +256,7 @@ class AnalyticsEngine:
                 )
 
         # This works but it would be faster to just check if the directory exists in HDFS
-        _parquetPaths = [x for x in parquetPaths if self.ifExists(x)]
+        _parquetPaths = [x for x in parquetPaths if self.ifExistsFast(x)]
         self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
         #self.tableDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
