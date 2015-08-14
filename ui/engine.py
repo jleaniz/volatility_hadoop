@@ -200,8 +200,8 @@ class AnalyticsEngine:
     def getSearchResults(self, table, sdate, edate, query):
         (syear, smonth, sday) = sdate.split('-')
         (eyear, emonth, eday) = edate.split('-')
-        _sdate = date(int(syear),int(smonth),int(sday))
-        _edate = date(int(eyear),int(emonth),int(eday))
+        _sdate = date(int(syear), int(smonth), int(sday))
+        _edate = date(int(eyear), int(emonth), int(eday))
         days = []
         delta = _edate - _sdate
 
@@ -210,10 +210,16 @@ class AnalyticsEngine:
 
         parquetPaths = []
         for day in days:
-            parquetPaths.append(
-                '/user/cloudera/%s/year=%s/month=%s/day=%s' %(table, day.year, str(day).split('-')[1], str(day).split('-')[2])
-            )
-
+            if table == 'firewall':
+                parquetPaths.append(
+                    '/user/cloudera/%s/off/year=%s/month=%s/day=%s' % (
+                    table, day.year, str(day).split('-')[1], str(day).split('-')[2])
+                )
+            else:
+                parquetPaths.append(
+                    '/user/cloudera/%s/year=%s/month=%s/day=%s' % (
+                    table, day.year, str(day).split('-')[1], str(day).split('-')[2])
+                )
         self.tableDF = self.sqlctx.parquetFile(*parquetPaths)
 
         # self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
