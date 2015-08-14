@@ -223,7 +223,7 @@ class AnalyticsEngine:
 
         self.tableDF = self.sqlctx.parquetFile(*parquetPaths)
 
-        self.tableDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        #self.tableDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
 
