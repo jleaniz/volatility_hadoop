@@ -200,6 +200,11 @@ class AnalyticsEngine:
         return (jsonTable, jsonChart)
 
     def ifExists(self, item):
+        '''
+        Try to load parquet files in this directory
+        :param item:
+        :return: bool
+        '''
         try:
             self.tableDF = self.sqlctx.parquetFile(item)
             return True
@@ -231,6 +236,7 @@ class AnalyticsEngine:
                     table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
 
+        # This works but it would be faster to just check if the directory exists in HDFS
         _parquetPaths = [x for x in parquetPaths if self.ifExists(x)]
         self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
         #self.tableDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
