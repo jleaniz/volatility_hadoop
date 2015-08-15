@@ -130,12 +130,24 @@ def getProxyTopTransfers(date):
 @main.route('/search/<table>/<sdate>/<edate>/<query>/<num>')
 def search(table, sdate, edate, query, num):
     jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query, num)
-#    def generate():
-    yield '{"%s": [\n' %(table)
-    for doc in jsonResult:
-        yield doc + ',\n'
-    yield "{}\n]}"
-    #return Response(generate(), mimetype='application/json')
+    def generate():
+        yield '{"%s": [\n' %(table)
+        for doc in jsonResult:
+            yield doc + ',\n'
+        yield "{}\n]}"
+    return Response(generate(), mimetype='application/json')
+
+
+def buildJSON(table, sdate, edate, query, num):
+    jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query, num)
+    results = []
+
+    results.append('{"%s": [\n' %(table) )
+    for item in jsonResult:
+        results.append(item + ',\n')
+    results.append('{}\n]}')
+
+    return results
 
 
 @main.route('/download/<file>')
@@ -185,7 +197,7 @@ def search_view():
     if form.validate_on_submit():
         #return redirect(url_for('main.search', table=form.table.data, sdate=form.sdate.data.strftime('%Y-%m-%d'),
         #                       edate=form.edate.data.strftime('%Y-%m-%d'), query=form.query.data, num=form.num.data))
-        data = search(form.table.data,form.sdate.data,form.edate.data,form.query.data,form.num.data)
+        data = buildJSON(form.table.data,form.sdate.data,form.edate.data,form.query.data,form.num.data)
         download(data)
 
     return render_template("search.html", form=form)
