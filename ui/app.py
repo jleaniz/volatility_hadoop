@@ -1,5 +1,5 @@
 from flask import (
-    Flask, request, render_template, flash, redirect, url_for, Response, Blueprint
+    Flask, request, render_template, flash, redirect, url_for, Response, Blueprint, make_response
 )
 
 from flask_bootstrap import (
@@ -15,7 +15,7 @@ from flask_wtf import Form
 from wtforms.fields import StringField, SubmitField, SelectField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Email
-
+import gzip
 
 class UserForm(Form):
     name = StringField(u'VPN Username', validators=[Email(message="Invalid input. Ex: srm-ais@ubisoft.com")])
@@ -135,7 +135,20 @@ def search(table, sdate, edate, query, num):
         for doc in jsonResult:
             yield doc + ',\n'
         yield "{}\n]}"
-    return Response(generate(), mimetype='application/json')
+    #return Response(generate(), mimetype='application/json')
+    return generate()
+
+@main.route('/download/<file>')
+def download(content):
+    with gzip.open('file.txt.gz', 'wb') as f:
+        f.write(content)
+
+    response = make_response(f)
+    # This is the key: Set the right header for the response
+    # to be downloaded, instead of just printed on the browser
+    response.headers["Content-Disposition"] = "attachment; filename=results.gz"
+    return response
+
 
 @main.route("/vpn/user", methods=('GET', 'POST'))
 def vpn_user():
@@ -166,8 +179,11 @@ def proxyTopTransfers():
 def search_view():
     form = SearchForm(csrf_enabled=False)
     if form.validate_on_submit():
-        return redirect(url_for('main.search', table=form.table.data, sdate=form.sdate.data.strftime('%Y-%m-%d'),
-                                edate=form.edate.data.strftime('%Y-%m-%d'), query=form.query.data, num=form.num.data))
+        #return redirect(url_for('main.search', table=form.table.data, sdate=form.sdate.data.strftime('%Y-%m-%d'),
+        #                       edate=form.edate.data.strftime('%Y-%m-%d'), query=form.query.data, num=form.num.data))
+        data = search(form.table.data,form.sdate.data,form.edate.data,form.query.data,form.num.data)
+        download(data)
+
     return render_template("search.html", form=form)
 
 
