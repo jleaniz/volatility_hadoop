@@ -1,5 +1,5 @@
 from flask import (
-    Flask, request, render_template, flash, redirect, url_for, Response, Blueprint, make_response
+    Flask, request, render_template, flash, redirect, url_for, Response, Blueprint, make_response, abort
 )
 
 from flask_bootstrap import (
@@ -159,8 +159,11 @@ def buildJSON(table, sdate, edate, query, num):
     results = []
 
     results.append('{"%s": [\n' % (table))
-    for item in jsonResult:
-        results.append(item + ',\n')
+    try:
+        for item in jsonResult:
+            results.append(item + ',\n')
+    except TypeError as e:
+        abort(500)
     results.append('{}\n]}')
 
     return results
