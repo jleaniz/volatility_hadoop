@@ -158,17 +158,18 @@ def buildJSON(table, sdate, edate, query, num):
 
 @main.route('/download/<file>')
 def download(content):
-    # with gzip.open('file.txt.gz', 'wb') as f:
-    #    f.write(content)
     f = gzip.open('/tmp/results.gz', 'wb')
-    for line in content:
-        f.write(line)
-    f.close()
+    try:
+        for line in content:
+            f.write(line)
+    finally:
+        f.close()
 
-    r = gzip.open('/tmp/results.gz', 'rb')
-    buf = r.read()
-    print len(buf)
-    r.close()
+    r = open('/tmp/results.gz', 'rb')
+    try:
+        buf = r.read()
+    finally:
+        r.close()
 
     response = make_response(buf)
     # This is the key: Set the right header for the response
