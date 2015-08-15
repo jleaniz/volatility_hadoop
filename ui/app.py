@@ -42,6 +42,9 @@ class SearchForm(Form):
     edate = DateField(u'End Date', format='%Y-%m-%d',
                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     query = StringField(u'Query', validators=[DataRequired(message="Field required")])
+    num = SelectField(choices=[('10', '10'), ('100', '1000'), ('10000', '10000'), ('100000')],
+                    validators=[DataRequired(message='Required field')]
+                    )
     submit = SubmitField(u'Lookup')
 
 
@@ -125,8 +128,8 @@ def getProxyTopTransfers(date):
 
 
 @main.route('/search/<table>/<sdate>/<edate>/<query>')
-def search(table, sdate, edate, query):
-    jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query)
+def search(table, sdate, edate, query, num):
+    jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query, num)
     def generate():
         yield '{"%s": [\n' %(table)
         for doc in jsonResult:
@@ -164,7 +167,7 @@ def search_view():
     form = SearchForm(csrf_enabled=False)
     if form.validate_on_submit():
         return redirect(url_for('main.search', table=form.table.data, sdate=form.sdate.data.strftime('%Y-%m-%d'),
-                                edate=form.edate.data.strftime('%Y-%m-%d'), query=form.query.data))
+                                edate=form.edate.data.strftime('%Y-%m-%d'), query=form.query.data, num=form.num.data))
     return render_template("search.html", form=form)
 
 

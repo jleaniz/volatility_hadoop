@@ -213,7 +213,7 @@ class AnalyticsEngine:
             return False
     '''
 
-    def getSearchResults(self, table, sdate, edate, query):
+    def getSearchResults(self, table, sdate, edate, query, num):
 
         (syear, smonth, sday) = sdate.split('-')
         (eyear, emonth, eday) = edate.split('-')
@@ -244,7 +244,7 @@ class AnalyticsEngine:
 
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
 
-        results = self.sqlctx.sql(query)
+        results = self.sqlctx.sql('%s limit %s' % (query, num))
         try:
             for json in results.toJSON().collect():
                 yield json
