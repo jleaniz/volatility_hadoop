@@ -140,8 +140,12 @@ def search(table, sdate, edate, query, num):
 
 @main.route('/download/<file>')
 def download(content):
-    with gzip.open('file.txt.gz', 'wb') as f:
-        f.write(content)
+
+    #with gzip.open('file.txt.gz', 'wb') as f:
+    #    f.write(content)
+    f = gzip.open('results.gz', 'wb')
+    f.write(content)
+    f.close()
 
     response = make_response(f)
     # This is the key: Set the right header for the response
