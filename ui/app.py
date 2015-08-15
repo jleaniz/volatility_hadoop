@@ -162,9 +162,7 @@ def download(content):
     #    f.write(content)
     f = gzip.open('results.gz', 'wb')
     for line in content:
-        print type(content)
-        for i in line:
-            f.write(content)
+        f.write(line)
     f.close()
 
     response = make_response(f)
