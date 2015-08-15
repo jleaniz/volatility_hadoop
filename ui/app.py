@@ -168,6 +168,7 @@ def download(content):
     r = gzip.open('/tmp/results.gz', 'rb')
     buf = r.read()
     r.close()
+
     response = make_response(buf)
     # This is the key: Set the right header for the response
     # to be downloaded, instead of just printed on the browser
@@ -206,10 +207,12 @@ def search_view():
     if form.validate_on_submit():
         # return redirect(url_for('main.search', table=form.table.data, sdate=form.sdate.data.strftime('%Y-%m-%d'),
         #                       edate=form.edate.data.strftime('%Y-%m-%d'), query=form.query.data, num=form.num.data))
+        flash('Executing query...', 'info')
         data = buildJSON(form.table.data, form.sdate.data.strftime('%Y-%m-%d'), form.edate.data.strftime('%Y-%m-%d'),
                          form.query.data, form.num.data)
         response = download(data)
-        return Response(response, mimetype='application/x-gzip')
+        return response
+
     return render_template("search.html", form=form)
 
 
