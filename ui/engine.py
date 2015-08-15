@@ -247,6 +247,6 @@ class AnalyticsEngine:
 
         results = self.sqlctx.sql(query)
 
-        jsonRDD = results.toJSON().take(20)
+        jsonRDD = results.toJSON().collect()
 
         return jsonRDD
