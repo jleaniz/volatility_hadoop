@@ -89,11 +89,11 @@ from engine import AnalyticsEngine
 
 @main.app_errorhandler(404)
 def page_not_found(e):
-    return e
+    return e.message
 
 @main.app_errorhandler(500)
 def internal_server_error(e):
-    return e
+    return e.message
 
 @main.route("/api/vpn/byUser/<username>")
 def vpnJSON(username):
