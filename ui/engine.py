@@ -39,13 +39,16 @@ class AnalyticsEngine:
         self.vpnLogsDF = self.sqlctx.load(
             "/user/cloudera/ciscovpn"
         )
-        self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
+
         loginsByUser = self.sqlctx.sql(
             "select `date`, time, remoteip, reason from vpn where user='%s' group by `date`, time, "
             "remoteip, reason" % (username)
         )
+
         jsonRDD = loginsByUser.toJSON()
+
         return jsonRDD
 
     def getVPNLoginsByUserGoogle(self, username):
@@ -216,7 +219,7 @@ class AnalyticsEngine:
     '''
 
     def getSearchResults(self, table, sdate, edate, query):
-        '''
+
         (syear, smonth, sday) = sdate.split('-')
         (eyear, emonth, eday) = edate.split('-')
         _sdate = date(int(syear), int(smonth), int(sday))
@@ -242,8 +245,8 @@ class AnalyticsEngine:
 
         # This works but it would be faster to just check if the directory exists in HDFS
         _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
-        '''
-        self.tableDF = self.sqlctx.parquetFile('/user/cloudera/proxysg/year=2015/month=07/day=01', '/user/cloudera/proxysg/year=2015/month=07/day=02')
+
+        self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
 
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
 
