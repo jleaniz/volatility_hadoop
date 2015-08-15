@@ -246,7 +246,8 @@ class AnalyticsEngine:
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
 
         results = self.sqlctx.sql(query)
+        for json in results.toJSON().collect():
+            yield json
+        #jsonRDD = results.toJSON().collect()
 
-        jsonRDD = results.toJSON().collect()
-
-        return jsonRDD
+        #return jsonRDD
