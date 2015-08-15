@@ -9,10 +9,8 @@
     <div class="panel panel-primary">
         <div class="panel-heading">Custom lookup</div>
         <div class="panel-body">
-            <pre>
-You can run custom Spark SQL queries from here. However, results will be limited in size as they need to fit in the master's memory when collected.
-To get the full results, run the query manually through PySpark and save the results to HDFS. You can then manually download the files to your PC.
-            </pre>
+            You can run custom Spark SQL queries from here. However, results will be limited in size as they need to fit in the master's memory when collected.
+            To get the full results, run the query manually through PySpark and save the results to HDFS. You can then manually download the files to your PC.
             {{ wtf.quick_form(form, button_map={'submit_button': 'primary'}) }}
         </div>
     </div>
