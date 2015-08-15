@@ -89,11 +89,11 @@ from engine import AnalyticsEngine
 
 @main.app_errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    return e
 
 @main.app_errorhandler(500)
 def internal_server_error(e):
-    return render_template("500.html", error=str(e)), 500
+    return e
 
 @main.route("/api/vpn/byUser/<username>")
 def vpnJSON(username):
@@ -159,11 +159,9 @@ def buildJSON(table, sdate, edate, query, num):
     results = []
 
     results.append('{"%s": [\n' % (table))
-    try:
-        for item in jsonResult:
-            results.append(item + ',\n')
-    except TypeError as e:
-        abort( mapping={500: e} )
+    for item in jsonResult:
+        results.append(item + ',\n')
+
     results.append('{}\n]}')
 
     return results
