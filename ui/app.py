@@ -208,8 +208,8 @@ def search_view():
         #                       edate=form.edate.data.strftime('%Y-%m-%d'), query=form.query.data, num=form.num.data))
         data = buildJSON(form.table.data, form.sdate.data.strftime('%Y-%m-%d'), form.edate.data.strftime('%Y-%m-%d'),
                          form.query.data, form.num.data)
-        download(data)
-
+        response = download(data)
+        return Response(response, mimetype='application/x-gzip')
     return render_template("search.html", form=form)
 
 
