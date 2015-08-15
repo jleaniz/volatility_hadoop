@@ -167,6 +167,7 @@ def download(content):
 
     r = gzip.open('/tmp/results.gz', 'rb')
     buf = r.read()
+    print len(buf)
     r.close()
 
     response = make_response(buf)
@@ -207,7 +208,6 @@ def search_view():
     if form.validate_on_submit():
         # return redirect(url_for('main.search', table=form.table.data, sdate=form.sdate.data.strftime('%Y-%m-%d'),
         #                       edate=form.edate.data.strftime('%Y-%m-%d'), query=form.query.data, num=form.num.data))
-        flash('Executing query...', 'info')
         data = buildJSON(form.table.data, form.sdate.data.strftime('%Y-%m-%d'), form.edate.data.strftime('%Y-%m-%d'),
                          form.query.data, form.num.data)
         response = download(data)
