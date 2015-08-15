@@ -163,7 +163,7 @@ def buildJSON(table, sdate, edate, query, num):
         for item in jsonResult:
             results.append(item + ',\n')
     except TypeError as e:
-        abort( {500: e} )
+        abort( mapping={500: e} )
     results.append('{}\n]}')
 
     return results
