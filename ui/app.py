@@ -129,7 +129,7 @@ def search(table, sdate, edate, query):
     jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query)
     def generate():
         yield '{"%s": [\n' %(table)
-        for doc in jsonResult.collect():
+        for doc in jsonResult:
             yield doc + ',\n'
         yield "{}\n]}"
     return Response(generate(), mimetype='application/json')

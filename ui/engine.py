@@ -63,7 +63,6 @@ class AnalyticsEngine:
         self.vpnLogsDF = self.sqlctx.load(
             "/user/cloudera/ciscovpn"
         )
-        self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
 
         loginsByUser = self.sqlctx.sql(
@@ -96,13 +95,11 @@ class AnalyticsEngine:
         self.proxyDF = self.sqlctx.load(
             "/user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
         )
-        # Persist the DataFrame - only on a huge cluster though..
-        # self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         # Register DataFrame as a Spark SQL Table
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
 
         query = ("select clientip, username, host, port, path, query, count(*) as hits from proxy"
-                 " where username='%s' and categories like '%s'"
+                 " where username like '%s' and categories like '%s'"
                  " group by clientip, username, host, port, path, query"
                  " order by cast(hits as int) desc" % (username, '%Mal%'))
         # " limit 50" % (username, '%Internet%') )
@@ -110,7 +107,6 @@ class AnalyticsEngine:
 
         # Query using Spark SQL
         userHistory = self.sqlctx.sql(query)
-        userHistory.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
         entries = userHistory.collect()
         data = []
@@ -155,7 +151,6 @@ class AnalyticsEngine:
         self.proxyDF = self.sqlctx.load(
             "/user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
         )
-        # self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
 
         topTransfers = self.sqlctx.sql(
@@ -252,6 +247,6 @@ class AnalyticsEngine:
 
         results = self.sqlctx.sql(query)
 
-        jsonRDD = results.toJSON()
+        jsonRDD = results.toJSON().take(20)
 
         return jsonRDD
