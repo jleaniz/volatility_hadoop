@@ -47,11 +47,10 @@ class SearchForm(Form):
         choices=[('10', '10'), ('100', '100'), ('1000', '1000'), ('10000', '10000'), ('100000', '100000')],
         validators=[DataRequired(message='Required field')]
     )
-    submit = SubmitField(u'Lookup')
+    lookup = SubmitField(u'Lookup')
+    download = SubmitField(u'Download')
 
 
-class DBtn(Form):
-    submit = SubmitField(u'Download')
 
 
 main = Blueprint('main', __name__)
@@ -210,20 +209,17 @@ def proxyTopTransfers():
 @main.route("/search", methods=('GET', 'POST'))
 def search_view():
     Lookupform = SearchForm(csrf_enabled=False)
-    DownloadBtn = DBtn(csrf_enabled=False)
 
-    if Lookupform.validate_on_submit():
+    if Lookupform.validate_on_submit() and Lookupform.lookup.data:
          return redirect(url_for('main.search', table=Lookupform.table.data, sdate=Lookupform.sdate.data.strftime('%Y-%m-%d'),
                               edate=Lookupform.edate.data.strftime('%Y-%m-%d'), query=Lookupform.query.data, num=Lookupform.num.data))
-
-    if DownloadBtn.validate_on_submit():
-        Lookupform.validate()
+    if Lookupform.validate_on_submit() and Lookupform.download.data:
         data = buildJSON(Lookupform.table.data, Lookupform.sdate.data.strftime('%Y-%m-%d'), Lookupform.edate.data.strftime('%Y-%m-%d'),
                          Lookupform.query.data, Lookupform.num.data)
         response = download(data)
         return response
 
-    return render_template("search.html", form=Lookupform, btn=DownloadBtn)
+    return render_template("search.html", form=Lookupform)
 
 
 @main.route('/')
