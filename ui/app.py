@@ -217,6 +217,7 @@ def search_view():
                               edate=Lookupform.edate.data.strftime('%Y-%m-%d'), query=Lookupform.query.data, num=Lookupform.num.data))
 
     if DownloadBtn.validate_on_submit():
+        Lookupform.validate()
         data = buildJSON(Lookupform.table.data, Lookupform.sdate.data.strftime('%Y-%m-%d'), Lookupform.edate.data.strftime('%Y-%m-%d'),
                          Lookupform.query.data, Lookupform.num.data)
         response = download(data)
