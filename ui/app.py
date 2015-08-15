@@ -87,11 +87,11 @@ logger = logging.getLogger(__name__)
 
 from engine import AnalyticsEngine
 
-@main.errorhandler(404)
+@app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html', e), 404
 
-@main.errorhandler(500)
+@app.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html', e), 500
 
@@ -236,6 +236,7 @@ def index():
 
 def create_app(spark_context):
     global analytics_engine
+    global app
 
     analytics_engine = AnalyticsEngine(spark_context)
 
