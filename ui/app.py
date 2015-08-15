@@ -130,13 +130,13 @@ def getProxyTopTransfers(date):
 @main.route('/search/<table>/<sdate>/<edate>/<query>/<num>')
 def search(table, sdate, edate, query, num):
     jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query, num)
-    def generate():
-        yield '{"%s": [\n' %(table)
-        for doc in jsonResult:
-            yield doc + ',\n'
-        yield "{}\n]}"
+#    def generate():
+    yield '{"%s": [\n' %(table)
+    for doc in jsonResult:
+        yield doc + ',\n'
+    yield "{}\n]}"
     #return Response(generate(), mimetype='application/json')
-    return generate()
+
 
 @main.route('/download/<file>')
 def download(content):
