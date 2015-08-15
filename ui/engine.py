@@ -238,7 +238,6 @@ class AnalyticsEngine:
                     table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
 
-        # This works but it would be faster to just check if the directory exists in HDFS
         _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
 
         self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
@@ -246,8 +245,11 @@ class AnalyticsEngine:
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
 
         results = self.sqlctx.sql(query)
-        for json in results.toJSON().collect():
-            yield json
-        #jsonRDD = results.toJSON().collect()
+        try:
+            for json in results.toJSON().collect():
+                yield json
+        except Py4JJavaError:
+            yield ['']
 
+        #jsonRDD = results.toJSON().collect()
         #return jsonRDD
