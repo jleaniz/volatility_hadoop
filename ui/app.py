@@ -223,7 +223,7 @@ def search_view():
             response = download(data)
             return response
 
-    return render_template("search.html", form=Lookupform)
+    return render_template("search.html", form=Lookupform, dbtn=DownloadBtn)
 
 
 @main.route('/')
