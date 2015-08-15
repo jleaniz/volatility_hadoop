@@ -42,8 +42,7 @@ class SearchForm(Form):
     edate = DateField(u'End Date', format='%Y-%m-%d',
                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     query = StringField(u'Query', validators=[DataRequired(message="Field required")])
-    num = SelectField(choices=[('10', '10'), ('100', '100'), ('1000', '1000'), ('10000', '10000'), ('100000','100000')
-                               ],
+    num = SelectField(choices=[('10', '10'), ('100', '100'), ('1000', '1000'), ('10000', '10000'), ('100000','100000')],
                     validators=[DataRequired(message='Required field')]
                     )
     submit = SubmitField(u'Lookup')
@@ -128,7 +127,7 @@ def getProxyTopTransfers(date):
         return 'Date unspecified.'
 
 
-@main.route('/search/<table>/<sdate>/<edate>/<query>')
+@main.route('/search/<table>/<sdate>/<edate>/<query>/<num>')
 def search(table, sdate, edate, query, num):
     jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query, num)
     def generate():
