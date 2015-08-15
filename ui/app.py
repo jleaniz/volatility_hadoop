@@ -93,7 +93,7 @@ def page_not_found(e):
 
 @main.app_errorhandler(500)
 def internal_server_error(e):
-    return render_template('500.html'), 500
+    return render_template("500.html", error = str(e)), 500
 
 @main.route("/api/vpn/byUser/<username>")
 def vpnJSON(username):
