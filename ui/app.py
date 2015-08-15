@@ -160,12 +160,15 @@ def buildJSON(table, sdate, edate, query, num):
 def download(content):
     # with gzip.open('file.txt.gz', 'wb') as f:
     #    f.write(content)
-    f = gzip.open('results.gz', 'wb')
+    f = gzip.open('/tmp/results.gz', 'wb')
     for line in content:
         f.write(line)
     f.close()
 
-    response = make_response(f)
+    r = gzip.open('/tmp/results.gz', 'rb')
+    buf = r.read()
+    r.close()
+    response = make_response(buf)
     # This is the key: Set the right header for the response
     # to be downloaded, instead of just printed on the browser
     response.headers["Content-Disposition"] = "attachment; filename=results.gz"
