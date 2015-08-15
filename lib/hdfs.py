@@ -5,12 +5,14 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 def exists(hdfs_url):
     """
     Test if the url exists.
     """
     return test(hdfs_url, test='e')
- 
+
+
 def test(hdfs_url, test='e'):
     """
     Test the url.
@@ -26,12 +28,12 @@ def test(hdfs_url, test='e'):
 
         Default is an existence test, 'e'
     """
-    command="""hadoop fs -test -%s %s""" % (test, hdfs_url)
+    command = """hadoop fs -test -%s %s""" % (test, hdfs_url)
 
     exit_code, stdo, stde = exec_command(command)
 
     if exit_code != 0:
-        logger.info('Failed to load %s. Skipping..' %(hdfs_url) )
+        logger.info('Failed to load %s. Skipping..' % (hdfs_url))
         return False
     else:
         return True
@@ -49,7 +51,7 @@ def stat(hdfs_url):
         replication: number of copies in hdfs
     """
 
-    command="""hadoop fs -stat "{'blocks': %b, 'mod_date': '%y', 'replication': %r, 'filename':'%n'}" """
+    command = """hadoop fs -stat "{'blocks': %b, 'mod_date': '%y', 'replication': %r, 'filename':'%n'}" """
     command += hdfs_url
 
     exit_code, stdo, stde = exec_command(command)
@@ -67,15 +69,15 @@ def ls(hdfs_url='', recurse=False):
     import subprocess
     from subprocess import PIPE
     if recurse:
-        cmd='lsr'
+        cmd = 'lsr'
     else:
-        cmd='ls'
+        cmd = 'ls'
 
-    command = "hadoop fs -%s %s" % (cmd,hdfs_url)
+    command = "hadoop fs -%s %s" % (cmd, hdfs_url)
 
     exit_code, stdo, stde = exec_command(command)
     if exit_code != 0:
-        raise ValueError("command failed with code %s: %s" % (exit_code,command))
+        raise ValueError("command failed with code %s: %s" % (exit_code, command))
 
     flist = []
     lines = stdo.split('\n')
@@ -83,7 +85,7 @@ def ls(hdfs_url='', recurse=False):
         ls = line.split()
         if len(ls) == 8:
             # this is a file description line
-            fname=ls[-1]
+            fname = ls[-1]
             flist.append(fname)
 
     return flist
@@ -116,9 +118,11 @@ def lsr(hdfs_url=''):
     """
     ls(hdfs_url, recurse=True)
 
+
 def read(hdfs_url, reader, verbose=False, **keys):
     with HDFSFile(hdfs_url, verbose=verbose) as fobj:
         return fobj.read(reader, **keys)
+
 
 def put(local_file, hdfs_url, verbose=False, force=False):
     """
@@ -126,7 +130,7 @@ def put(local_file, hdfs_url, verbose=False, force=False):
     """
 
     if verbose:
-        print >>stderr,'hdfs',local_file,'->',hdfs_url
+        print >> stderr, 'hdfs', local_file, '->', hdfs_url
 
     if force:
         if exists(hdfs_url):
@@ -135,7 +139,8 @@ def put(local_file, hdfs_url, verbose=False, force=False):
     command = 'hadoop fs -put %s %s' % (local_file, hdfs_url)
     exit_code, stdo, stde = exec_command(command)
     if exit_code != 0:
-        raise RuntimeError("Failed to copy to hdfs %s -> %s: %s" % (local_file,hdfs_url,stde))
+        raise RuntimeError("Failed to copy to hdfs %s -> %s: %s" % (local_file, hdfs_url, stde))
+
 
 def opent(hdfs_url, tmpdir=None, verbose=False):
     """
@@ -148,15 +153,15 @@ def opent(hdfs_url, tmpdir=None, verbose=False):
     from subprocess import PIPE
     import tempfile
     bname = os.path.basename(hdfs_url)
-    temp_file = tempfile.NamedTemporaryFile(prefix='hdfs-', suffix='-'+bname, dir=tmpdir)
+    temp_file = tempfile.NamedTemporaryFile(prefix='hdfs-', suffix='-' + bname, dir=tmpdir)
 
     if verbose:
-        print >>stderr,'opening: ',hdfs_url,'for reading, staging in temp file:',temp_file.name
+        print >> stderr, 'opening: ', hdfs_url, 'for reading, staging in temp file:', temp_file.name
 
     command = 'hadoop fs -cat %s' % hdfs_url
     pobj = subprocess.Popen(command, stdout=PIPE, stderr=PIPE, shell=True)
 
-    buffsize = 2*1024*1024
+    buffsize = 2 * 1024 * 1024
     while True:
         data = pobj.stdout.read(buffsize)
         if len(data) == 0:
@@ -164,33 +169,34 @@ def opent(hdfs_url, tmpdir=None, verbose=False):
         temp_file.write(data)
 
     # we're done, just need to wait for exit
-    ret=pobj.wait()
+    ret = pobj.wait()
     if ret != 0:
-        raise RuntimeError("Failed to copy to hdfs %s -> %s: %s" % (temp_file.name,hdfs_url,pobj.stderr.read()))
+        raise RuntimeError("Failed to copy to hdfs %s -> %s: %s" % (temp_file.name, hdfs_url, pobj.stderr.read()))
 
     temp_file.seek(0)
     return temp_file
+
 
 def rm(hdfs_url, recurse=False, verbose=False):
     """
     Remove the specified hdfs url
     """
-    mess='removing '+hdfs_url
-        
+    mess = 'removing ' + hdfs_url
 
     if recurse:
-        cmd='rmr'
-        mess+=' recursively'
+        cmd = 'rmr'
+        mess += ' recursively'
     else:
-        cmd='rm'
+        cmd = 'rm'
 
     if verbose:
-        print >>stderr,mess
+        print >> stderr, mess
 
     command = 'hadoop fs -%s %s' % (cmd, hdfs_url)
     exit_code, stdo, stde = exec_command(command)
     if exit_code != 0:
         raise RuntimeError("hdfs %s" % stde)
+
 
 def rmr(hdfs_url, verbose=False):
     """
@@ -200,14 +206,15 @@ def rmr(hdfs_url, verbose=False):
     """
     rm(hdfs_url, recurse=True, verbose=verbose)
 
+
 def mkdir(hdfs_url, verbose=False):
     """
     Equivalent of mkdir -p in unix
     """
     if verbose:
-        print >>stderr,'mkdir',hdfs_url
+        print >> stderr, 'mkdir', hdfs_url
 
-    command = 'hadoop fs -mkdir '+hdfs_url
+    command = 'hadoop fs -mkdir ' + hdfs_url
     exit_code, stdo, stde = exec_command(command)
     if exit_code != 0:
         raise RuntimeError("hdfs %s" % stde)
@@ -287,7 +294,7 @@ class HDFSFile:
     def __init__(self, hdfs_url, verbose=False, tmpdir=None):
         self.hdfs_url = hdfs_url
         self.verbose = verbose
-        self.tmpdir=tmpdir
+        self.tmpdir = tmpdir
 
         self.set_localfile()
 
@@ -300,18 +307,18 @@ class HDFSFile:
         """
         import subprocess
 
-        command = 'hadoop fs -get %s %s' % (self.hdfs_url,self.localfile)
+        command = 'hadoop fs -get %s %s' % (self.hdfs_url, self.localfile)
 
         if self.verbose:
-            print >>stderr,"staging",self.hdfs_url,"->",self.localfile
+            print >> stderr, "staging", self.hdfs_url, "->", self.localfile
 
         exit_code, stdo, stde = exec_command(command)
 
         if exit_code != 0:
-            raise RuntimeError("Failed to copy from hdfs %s -> %s: %s" % (self.hdfs_url,self.localfile,stde))
+            raise RuntimeError("Failed to copy from hdfs %s -> %s: %s" % (self.hdfs_url, self.localfile, stde))
 
         if not os.path.exists(self.localfile):
-            raise RuntimeError("In copy from hdfs %s -> %s, local copy not found" % (self.hdfs_url,self.localfile))
+            raise RuntimeError("In copy from hdfs %s -> %s, local copy not found" % (self.hdfs_url, self.localfile))
 
         return self.localfile
 
@@ -325,10 +332,9 @@ class HDFSFile:
         try:
             put(self.localfile, self.hdfs_url, verbose=self.verbose, **keys)
         finally:
-            cleanup=keys.get('cleanup',True)
+            cleanup = keys.get('cleanup', True)
             if cleanup:
                 self.cleanup()
-
 
     def read(self, reader, **keys):
         """
@@ -355,7 +361,7 @@ class HDFSFile:
         try:
             data = reader(self.localfile, **keys)
         finally:
-            cleanup=keys.get('cleanup',True)
+            cleanup = keys.get('cleanup', True)
             if cleanup:
                 self.cleanup()
 
@@ -384,49 +390,48 @@ class HDFSFile:
         """
 
         if exists(self.hdfs_url):
-            clobber=keys.get('clobber',False)
+            clobber = keys.get('clobber', False)
             if clobber:
                 if self.verbose:
-                    print >>stderr,'removing existing hdfs file:',self.hdfs_url
+                    print >> stderr, 'removing existing hdfs file:', self.hdfs_url
                 rm(self.hdfs_url)
             else:
                 raise ValueError("hdfs file already exists: %s, "
                                  "send clobber=True to remove" % self.hdfs_url)
-            
-        tmpdir=keys.get('tmpdir',None)
+
+        tmpdir = keys.get('tmpdir', None)
 
         try:
             writer(self.localfile, data, **keys)
             put(self.localfile, self.hdfs_url, verbose=self.verbose)
         finally:
-            cleanup=keys.get('cleanup',True)
+            cleanup = keys.get('cleanup', True)
             if cleanup:
                 self.cleanup()
-
 
     def temp_filename(self, fname, tmpdir=None):
         import tempfile
         bname = os.path.basename(fname)
-        tfile = tempfile.mktemp(prefix='hdfs-', suffix='-'+bname, dir=tmpdir)
+        tfile = tempfile.mktemp(prefix='hdfs-', suffix='-' + bname, dir=tmpdir)
         return tfile
 
     def cleanup(self):
         if self.localfile is not None:
             if os.path.exists(self.localfile):
                 if self.verbose:
-                    print >>stderr,"removing staged file", self.localfile
+                    print >> stderr, "removing staged file", self.localfile
                 os.remove(self.localfile)
 
-            self.localfile=None
-
+            self.localfile = None
 
     def __enter__(self):
         return self
+
     def __exit__(self, exception_type, exception_value, traceback):
         self.cleanup()
+
     def __del__(self):
         self.cleanup()
-
 
 
 def exec_command(command):
@@ -441,5 +446,3 @@ def exec_command(command):
     exit_code = pobj.returncode
 
     return exit_code, stdo, stde
-
-

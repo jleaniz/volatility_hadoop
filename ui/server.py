@@ -27,12 +27,12 @@ def run_server(app):
         'log.screen': True,
         'response.stream': True,
         'response.timeout': 3600,
-        #'server.ssl_module': 'builtin',
+        # 'server.ssl_module': 'builtin',
         'server.socket_port': 5432,
         'server.socket_host': '0.0.0.0'
     })
-    #cherrypy.server.ssl_certificate = "cert.pem"
-    #cherrypy.server.ssl_private_key = "privkey.pem"
+    # cherrypy.server.ssl_certificate = "cert.pem"
+    # cherrypy.server.ssl_private_key = "privkey.pem"
     # Start the CherryPy WSGI web server
     cherrypy.engine.start()
     cherrypy.engine.block()

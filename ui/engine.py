@@ -230,12 +230,12 @@ class AnalyticsEngine:
             if table == 'firewall':
                 parquetPaths.append(
                     '/user/cloudera/%s/off/year=%s/month=%s/day=%s' % (
-                    table, day.year, str(day).split('-')[1], str(day).split('-')[2])
+                        table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
             else:
                 parquetPaths.append(
                     '/user/cloudera/%s/year=%s/month=%s/day=%s' % (
-                    table, day.year, str(day).split('-')[1], str(day).split('-')[2])
+                        table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
 
         _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
@@ -251,5 +251,5 @@ class AnalyticsEngine:
         except Py4JJavaError:
             yield ['']
 
-        #jsonRDD = results.toJSON().collect()
-        #return jsonRDD
+            # jsonRDD = results.toJSON().collect()
+            # return jsonRDD

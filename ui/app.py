@@ -17,6 +17,7 @@ from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Email
 import gzip
 
+
 class UserForm(Form):
     name = StringField(u'VPN Username', validators=[Email(message="Invalid input. Ex: srm-ais@ubisoft.com")])
     submit = SubmitField(u'Lookup')
@@ -42,9 +43,10 @@ class SearchForm(Form):
     edate = DateField(u'End Date', format='%Y-%m-%d',
                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     query = StringField(u'Query', validators=[DataRequired(message="Field required")])
-    num = SelectField(choices=[('10', '10'), ('100', '100'), ('1000', '1000'), ('10000', '10000'), ('100000','100000')],
-                    validators=[DataRequired(message='Required field')]
-                    )
+    num = SelectField(
+        choices=[('10', '10'), ('100', '100'), ('1000', '1000'), ('10000', '10000'), ('100000', '100000')],
+        validators=[DataRequired(message='Required field')]
+    )
     submit = SubmitField(u'Lookup')
 
 
@@ -87,11 +89,13 @@ from engine import AnalyticsEngine
 def vpnJSON(username):
     if username:
         rdd = analytics_engine.getVPNLoginsByUserJSON(username)
+
         def generate():
-            yield '{"%s": [\n' %(username)
+            yield '{"%s": [\n' % (username)
             for doc in rdd.collect():
                 yield doc + ',\n'
             yield "{}\n]}"
+
         return Response(generate(), mimetype='application/json')
     else:
         return 'Username unspecified.'
@@ -130,11 +134,13 @@ def getProxyTopTransfers(date):
 @main.route('/search/<table>/<sdate>/<edate>/<query>/<num>')
 def search(table, sdate, edate, query, num):
     jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query, num)
+
     def generate():
-        yield '{"%s": [\n' %(table)
+        yield '{"%s": [\n' % (table)
         for doc in jsonResult:
             yield doc + ',\n'
         yield "{}\n]}"
+
     return Response(generate(), mimetype='application/json')
 
 
@@ -142,7 +148,7 @@ def buildJSON(table, sdate, edate, query, num):
     jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query, num)
     results = []
 
-    results.append('{"%s": [\n' %(table) )
+    results.append('{"%s": [\n' % (table))
     for item in jsonResult:
         results.append(item + ',\n')
     results.append('{}\n]}')
@@ -152,8 +158,7 @@ def buildJSON(table, sdate, edate, query, num):
 
 @main.route('/download/<file>')
 def download(content):
-
-    #with gzip.open('file.txt.gz', 'wb') as f:
+    # with gzip.open('file.txt.gz', 'wb') as f:
     #    f.write(content)
     f = gzip.open('results.gz', 'wb')
     f.write(content)
@@ -195,9 +200,10 @@ def proxyTopTransfers():
 def search_view():
     form = SearchForm(csrf_enabled=False)
     if form.validate_on_submit():
-        #return redirect(url_for('main.search', table=form.table.data, sdate=form.sdate.data.strftime('%Y-%m-%d'),
+        # return redirect(url_for('main.search', table=form.table.data, sdate=form.sdate.data.strftime('%Y-%m-%d'),
         #                       edate=form.edate.data.strftime('%Y-%m-%d'), query=form.query.data, num=form.num.data))
-        data = buildJSON(form.table.data,form.sdate.data,form.edate.data,form.query.data,form.num.data)
+        data = buildJSON(form.table.data, form.sdate.data.strftime('%Y-%m-%d'), form.edate.data.strftime('%Y-%m-%d'),
+                         form.query.data, form.num.data)
         download(data)
 
     return render_template("search.html", form=form)
