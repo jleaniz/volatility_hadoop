@@ -244,8 +244,8 @@ class AnalyticsEngine:
 
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
 
-        results = self.sqlctx.sql('%s limit %s' % (query, num))
         try:
+            results = self.sqlctx.sql('%s limit %s' % (query, num))
             for json in results.toJSON().collect():
                 yield json
         except Py4JJavaError:
