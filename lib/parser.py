@@ -68,8 +68,9 @@ class Parser(object):
                 'PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
             ),
             'bashlog': re.compile(
-                "(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) bash: user: (\S+) as (\S+)' \
-                'from ip: (\d+.\d+.\d+.\d+):pts\/(\d) execs: '(.*)"),
+                "(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) bash: user: (\S+) as (\S+) from ip: ("
+                "\d+.\d+.\d+.\d+):pts\/(\d{1,2}) execs: '(.*)'"
+            ),
             'ciscovpnLogin': re.compile(
                 '(\d\d\d\d-\d\d-\d\d)T(\d\d:\d\d:\d\d)\+\d\d:\d\d (\S+) : %ASA-\d-722051: \S+ \S+ User <(\S+)> IP <('
                 '\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})> IPv4 Address <(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})>'
