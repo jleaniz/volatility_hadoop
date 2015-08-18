@@ -113,7 +113,7 @@ def vpnJSON(username):
 
 
 @main.route("/api/vpn/identifyUser/<date>/<remoteip>")
-def vpnJSON(date, remoteip):
+def identifyVPNAPI(date, remoteip):
     if date and remoteip:
         rdd = analytics_engine.identifyVPNUser(remoteip, date)
 
