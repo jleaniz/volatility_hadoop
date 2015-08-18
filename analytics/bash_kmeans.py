@@ -43,6 +43,7 @@ testVector = model.transform("ssh")
 # -0.3098, -0.2402, -0.677, -0.2316, -0.3523, 0.0687, -0.3109, -0.1301, 0.501])
 clusters.predict(numpy.array(testVector))
 
+'''
 # Find synonyms for ssh
 model.findSynonyms("ssh", 2)
 # [(u'ping', 0.70947927236557007), (u'exit', 0.67307734489440918)]
@@ -50,6 +51,7 @@ model.findSynonyms("ssh", 2)
 # Find cluster for a synonym of ssh
 testVector = model.transform("ping")
 clusters.predict(numpy.array(testVector))
+'''
 
 try:
     for command in commandsList:
