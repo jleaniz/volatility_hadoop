@@ -8,6 +8,7 @@ bashlogsDF = sqlctx.parquetFile('/user/cloudera/bashlog')
 commandsDF = bashlogsDF.select(bashlogsDF.command)
 
 # RDD of list of words in each command
+# Review: each command should be considered a "word" instead of each command + arg being an individual word
 commandsRDD = commandsDF.rdd.map(lambda row: row.command.split(" "))
 # [[u'ssh', u'buc-0f0-as01'], [u'ssh', u'buc-0f0-cs01'], [u'ssh', u'buc-0f0-as01'], [u'ssh', u'msr-mail-inc01'],
 # [u'ssh', u'msr-mail-inc02'], [u'ssh', u'216.98.54.4'], [u'exit'], [u'ssh', u'216.98.54.4'], [u'exit'], [u'ssh',

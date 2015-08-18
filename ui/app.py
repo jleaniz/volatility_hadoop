@@ -51,8 +51,6 @@ class SearchForm(Form):
     download = SubmitField(u'Download')
 
 
-
-
 main = Blueprint('main', __name__)
 nav = Nav()
 
@@ -87,13 +85,16 @@ logger = logging.getLogger(__name__)
 
 from engine import AnalyticsEngine
 
+
 @main.app_errorhandler(404)
 def page_not_found(e):
     return render_template('404.html', error=e.message)
 
+
 @main.app_errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html', error=e.message)
+
 
 @main.route("/api/vpn/byUser/<username>")
 def vpnJSON(username):
@@ -102,6 +103,22 @@ def vpnJSON(username):
 
         def generate():
             yield '{"%s": [\n' % (username)
+            for doc in rdd.collect():
+                yield doc + ',\n'
+            yield "{}\n]}"
+
+        return Response(generate(), mimetype='application/json')
+    else:
+        return 'Username unspecified.'
+
+
+@main.route("/api/vpn/identifyUser/<date>/<remoteip>")
+def vpnJSON(date, remoteip):
+    if date and remoteip:
+        rdd = analytics_engine.identifyVPNUser(remoteip, date)
+
+        def generate():
+            yield '{"%s": [\n' % (remoteip)
             for doc in rdd.collect():
                 yield doc + ',\n'
             yield "{}\n]}"
@@ -219,10 +236,13 @@ def search_view():
     Lookupform = SearchForm(csrf_enabled=False)
 
     if Lookupform.validate_on_submit() and Lookupform.lookup.data:
-         return redirect(url_for('main.search', table=Lookupform.table.data, sdate=Lookupform.sdate.data.strftime('%Y-%m-%d'),
-                              edate=Lookupform.edate.data.strftime('%Y-%m-%d'), query=Lookupform.query.data, num=Lookupform.num.data))
+        return redirect(
+            url_for('main.search', table=Lookupform.table.data, sdate=Lookupform.sdate.data.strftime('%Y-%m-%d'),
+                    edate=Lookupform.edate.data.strftime('%Y-%m-%d'), query=Lookupform.query.data,
+                    num=Lookupform.num.data))
     if Lookupform.validate_on_submit() and Lookupform.download.data:
-        data = buildJSON(Lookupform.table.data, Lookupform.sdate.data.strftime('%Y-%m-%d'), Lookupform.edate.data.strftime('%Y-%m-%d'),
+        data = buildJSON(Lookupform.table.data, Lookupform.sdate.data.strftime('%Y-%m-%d'),
+                         Lookupform.edate.data.strftime('%Y-%m-%d'),
                          Lookupform.query.data, Lookupform.num.data)
         response = download(data)
         return response

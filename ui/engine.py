@@ -253,3 +253,26 @@ class AnalyticsEngine:
 
             # jsonRDD = results.toJSON().collect()
             # return jsonRDD
+
+
+    def identifyVPNUser(self, remoteip, date):
+        '''
+
+        :param username:
+        :return:
+        '''
+        (year, month, day) = date.split('-')
+
+        self.vpnLogsDF = self.sqlctx.load(
+            "/user/cloudera/ciscovpn/year=%s/month=%s/day=%s" %(year, month, day)
+        )
+
+        self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
+
+        loginsByUser = self.sqlctx.sql(
+            "select user from vpn where year=%s and month=%s and day=%s and remoteip=%s" %(year, month, day, remoteip)
+        )
+
+        jsonRDD = loginsByUser.toJSON()
+
+        return jsonRDD
