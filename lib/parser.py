@@ -240,7 +240,7 @@ class Parser(object):
                     username=m.group(6),
                     exec_as=m.group(7),
                     srcip=m.group(8),
-                    command=m.group(10)
+                    command=m.group(9)
                 )
 
     def parseApacheAL(self, partition):
