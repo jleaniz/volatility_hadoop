@@ -270,7 +270,7 @@ class AnalyticsEngine:
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
 
         loginsByUser = self.sqlctx.sql(
-            "select user from vpn where year=%s and month=%s and day=%s and remoteip=%s" %(year, month, day, remoteip)
+            "select user from vpn where year=%s and month=%s and day=%s and remoteip='%s'" %(year, month, day, remoteip)
         )
 
         jsonRDD = loginsByUser.toJSON()
