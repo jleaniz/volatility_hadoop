@@ -69,7 +69,7 @@ class Parser(object):
             ),
             'bashlog': re.compile(
                 "(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) bash: user: (\S+) as (\S+) from ip: ("
-                "\d+.\d+.\d+.\d+):pts\/(\d{1,2}) execs: '(.*)'"
+                "\d+.\d+.\d+.\d+|\S+):pts\/\d{1,2} execs: '(.*)'"
             ),
             'ciscovpnLogin': re.compile(
                 '(\d\d\d\d-\d\d-\d\d)T(\d\d:\d\d:\d\d)\+\d\d:\d\d (\S+) : %ASA-\d-722051: \S+ \S+ User <(\S+)> IP <('
