@@ -72,7 +72,7 @@ class Parser(object):
                 "\d+.\d+.\d+.\d+|\S+):pts\/\d{1,2} execs: '(.*)'"
             ),
             'bashlogWarn': re.compile(
-              "(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) bash: WARNING (.*) execs '(.*)'"
+                "(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) bash: WARNING (.*) execs '(.*)'"
             ),
             'ciscovpnLogin': re.compile(
                 '(\d\d\d\d-\d\d-\d\d)T(\d\d:\d\d:\d\d)\+\d\d:\d\d (\S+) : %ASA-\d-722051: \S+ \S+ User <(\S+)> IP <('
@@ -235,8 +235,8 @@ class Parser(object):
         """
 
         patterns = [self.patterns['bashlog'],
-            self.patterns['bashlogWarn']
-            ]
+                    self.patterns['bashlogWarn']
+                    ]
 
         for element in partition:
             for pattern in patterns:
