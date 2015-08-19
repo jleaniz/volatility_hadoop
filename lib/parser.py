@@ -71,6 +71,9 @@ class Parser(object):
                 "(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) bash: user: (\S+) as (\S+) from ip: ("
                 "\d+.\d+.\d+.\d+|\S+):pts\/\d{1,2} execs: '(.*)'"
             ),
+            'bashlogWarn': re.compile(
+              "(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) bash: WARNING (.*) execs '(.*)'"
+            ),
             'ciscovpnLogin': re.compile(
                 '(\d\d\d\d-\d\d-\d\d)T(\d\d:\d\d:\d\d)\+\d\d:\d\d (\S+) : %ASA-\d-722051: \S+ \S+ User <(\S+)> IP <('
                 '\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})> IPv4 Address <(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})>'
@@ -231,17 +234,21 @@ class Parser(object):
         :return: Row
         """
 
-        bashlog = self.patterns['bashlog']
+        patterns = [self.patterns['bashlog'],
+            self.patterns['bashlogWarn']
+            ]
+
         for element in partition:
-            m = re.search(bashlog, element)
-            if m:
-                yield Row(
-                    logsrc=m.group(5),
-                    username=m.group(6),
-                    exec_as=m.group(7),
-                    srcip=m.group(8),
-                    command=m.group(9)
-                )
+            for pattern in patterns:
+                m = re.search(pattern, element)
+                if m:
+                    yield Row(
+                        logsrc=m.group(5),
+                        username=m.group(6),
+                        exec_as=m.group(7),
+                        srcip=m.group(8),
+                        command=m.group(9)
+                    )
 
     def parseApacheAL(self, partition):
         '''
