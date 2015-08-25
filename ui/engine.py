@@ -246,10 +246,8 @@ class AnalyticsEngine:
 
         try:
             results = self.sqlctx.sql('%s limit %s' % (query, num))
-            r = results.toJSON()
-#            for json in results.toJSON().collect():
-#                yield json
-            yield r
+            for json in results.toJSON().collect():
+                yield json
         except Py4JJavaError:
             yield ['']
 
