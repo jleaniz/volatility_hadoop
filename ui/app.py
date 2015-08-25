@@ -58,9 +58,9 @@ nav = Nav()
 # navbar has an usual amount of Link-Elements, more commonly you will have a
 # lot more View instances.
 nav.register_element('frontend_top', Navbar(
-    View('BDSA', '/'),
-    View('Home', '/'),
-    View('Dashboard', '/'),
+    View('BDSA', '.index'),
+    View('Home', '.index'),
+    View('Dashboard', '.index'),
     Subgroup(
         'Search',
         Link('Custom query', '/search'),
