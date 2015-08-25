@@ -38,9 +38,9 @@ class SearchForm(Form):
     table = SelectField(choices=[('proxysg', 'proxysg'), ('firewall', 'firewall'), ('ciscovpn', 'ciscovpn')],
                         validators=[DataRequired(message='Required field')]
                         )
-    sdate = DateField(u'Start Date', format='%Y-%m-%d',
+    sdate = DateField(u'From', format='%Y-%m-%d',
                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
-    edate = DateField(u'End Date', format='%Y-%m-%d',
+    edate = DateField(u'To', format='%Y-%m-%d',
                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     query = StringField(u'Query', validators=[DataRequired(message="Field required")])
     num = SelectField(
