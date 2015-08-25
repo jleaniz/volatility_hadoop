@@ -19,7 +19,7 @@ import gzip
 
 
 class UserForm(Form):
-    name = StringField(u'VPN Username', validators=[Email(message="Invalid input. Ex: srm-ais@ubisoft.com")])
+    name = StringField(u'VPN Username', validators=[Email(message="Invalid input. Ex: srm-ais@email.com")])
     submit = SubmitField(u'Lookup')
 
 
