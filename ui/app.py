@@ -225,7 +225,7 @@ def proxy_user():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
         return redirect(
-            url_for('main.proxyGoogleFormat', username=form.name.data, date=form.fromdate.data.strftime('%Y-%m-%d'), todate=form.todate.data.strftime('%Y-%m-%d')))
+            url_for('main.proxyGoogleFormat', username=form.name.data, fromdate=form.fromdate.data.strftime('%Y-%m-%d'), todate=form.todate.data.strftime('%Y-%m-%d')))
     return render_template("proxy.html", form=form)
 
 
