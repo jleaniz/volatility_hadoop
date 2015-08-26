@@ -43,6 +43,9 @@ class AnalyticsEngine:
         )
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
+        self.sqlctx.cacheTable('vpn')
+        self.sqlctx.cacheTable('firewall')
+
     def getVPNLoginsByUserJSON(self, username):
         '''
         This function queries a DataFrame for logon/logoff data
