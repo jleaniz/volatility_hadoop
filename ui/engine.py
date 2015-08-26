@@ -5,6 +5,8 @@ from pyspark import StorageLevel
 from py4j.java_gateway import Py4JJavaError
 import gviz_api
 import lib.hdfs as hdfs
+import os
+
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -241,7 +243,8 @@ class AnalyticsEngine:
                         table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
 
-        _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
+        #_parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
+        _parquetPaths = [x for x in parquetPaths if os.path.exists('/mnt/hdfs'+x)]
         return _parquetPaths
 
     def getSearchResults(self, table, sdate, edate, query, num):
