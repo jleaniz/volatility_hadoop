@@ -255,16 +255,16 @@ class AnalyticsEngine:
         days = self.buildDateList(sdate, edate)
 
         if table == 'proxysg':
-            self.tempDF = self.proxyDF
+            tempDF = self.proxyDF
         elif table == 'ciscovpn':
-            self.tempDF = self.vpnLogsDF
+            tempDF = self.vpnLogsDF
         elif table == 'firewall':
-            self.tempDF = self.firewallDF
+            tempDF = self.firewallDF
 
         for day in days:
             try:
                 #resultsDF = self.tempDF.where(self.tempDF.year == day.year).where(self.tempDF.month == str(day).split('-')[1]).where(self.tempDF.day == str(day).split('-')[2])
-                filteredDF = self.tempDF.filter('year=%s and month=%s and day=%s' %( day.year, str(day).split('-')[1], str(day).split('-')[2] ) )
+                filteredDF = tempDF.filter('year=%s and month=%s and day=%s' %( day.year, str(day).split('-')[1], str(day).split('-')[2] ) )
                 self.sqlctx.registerDataFrameAsTable(filteredDF, table)
                 resultsDF = self.sqlctx.sql('%s limit %s' %(query, num))
                 results = resultsDF.toJSON().collect()
