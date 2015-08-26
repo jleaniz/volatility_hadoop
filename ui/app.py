@@ -170,8 +170,8 @@ def search(table, fromdate, todate, query, num):
 
     def generate():
         yield '{"%s": [\n' % (table)
-        #for doc in jsonResult:
-        yield jsonResult + ',\n'
+        for doc in jsonResult:
+            yield jsonResult + ',\n'
         yield "{}\n]}"
 
     return Response(generate(), mimetype='application/json')
