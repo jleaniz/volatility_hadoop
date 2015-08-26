@@ -24,13 +24,19 @@ class UserForm(Form):
 
 
 class UserDateForm(Form):
-    date = DateField(u'Date', format='%Y-%m-%d', validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+    sdate = DateField(u'From', format='%Y-%m-%d',
+                      validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+    edate = DateField(u'To', format='%Y-%m-%d',
+                      validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     name = StringField(u'Username', validators=[DataRequired(message="Invalid input. Ex: jdoe")])
     submit = SubmitField(u'Lookup')
 
 
 class DateForm(Form):
-    date = DateField(u'Date', format='%Y-%m-%d', validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+    sdate = DateField(u'From', format='%Y-%m-%d',
+                      validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+    edate = DateField(u'To', format='%Y-%m-%d',
+                      validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     submit = SubmitField(u'Lookup')
 
 
@@ -148,10 +154,10 @@ def proxyGoogleFormat(username, date):
         return 'Username or date unspecified.'
 
 
-@main.route('/proxy/topTransfers/google/<date>')
-def getProxyTopTransfers(date):
-    if date:
-        (jsonTable, jsonChart) = analytics_engine.getTopTransfersProxy(date)
+@main.route('/proxy/topTransfers/google/<fromdate>/<todate>')
+def getProxyTopTransfers(fromdate, todate):
+    if fromdate and todate:
+        (jsonTable, jsonChart) = analytics_engine.getTopTransfersProxy(fromdate, todate)
         # logging.info(jsonTable, jsonChart)
         return render_template('proxyTopTransfers.html', jsonTable=jsonTable, jsonChart=jsonChart)
     else:

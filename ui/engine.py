@@ -146,17 +146,14 @@ class AnalyticsEngine:
 
         return json
 
-    def getTopTransfersProxy(self, timerange):
+    def getTopTransfersProxy(self, fromdate, todate):
         '''
         :return:
         '''
+        _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
 
-        (year, month, day) = timerange.split('-')
-
-        self.proxyDF = self.sqlctx.load(
-            "/user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
-        )
-        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
+        self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
+        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
         topTransfers = self.sqlctx.sql(
             'select clientip, host, cast(csbytes as Double) as bytes from proxy '
