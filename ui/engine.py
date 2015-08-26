@@ -241,12 +241,12 @@ class AnalyticsEngine:
         _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
 
         # spark 1.3
-        #self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
-        #self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
+        self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
+        self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
 
         # spark 1.4+ compatible
-        self.tableDF = self.sqlctx.read.parquet(*_parquetPaths)
-        self.tableDF.registerTempTable(table)
+        #self.tableDF = self.sqlctx.read.parquet(*_parquetPaths)
+        #self.tableDF.registerTempTable(table)
 
         try:
             results = self.sqlctx.sql('%s limit %s' % (query, num))
