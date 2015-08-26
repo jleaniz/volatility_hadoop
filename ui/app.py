@@ -24,18 +24,18 @@ class UserForm(Form):
 
 
 class UserDateForm(Form):
-    sdate = DateField(u'From', format='%Y-%m-%d',
+    fromdate = DateField(u'From', format='%Y-%m-%d',
                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
-    edate = DateField(u'To', format='%Y-%m-%d',
+    todate = DateField(u'To', format='%Y-%m-%d',
                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     name = StringField(u'Username', validators=[DataRequired(message="Invalid input. Ex: jdoe")])
     submit = SubmitField(u'Lookup')
 
 
 class DateForm(Form):
-    sdate = DateField(u'From', format='%Y-%m-%d',
+    fromdate = DateField(u'From', format='%Y-%m-%d',
                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
-    edate = DateField(u'To', format='%Y-%m-%d',
+    todate = DateField(u'To', format='%Y-%m-%d',
                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     submit = SubmitField(u'Lookup')
 
@@ -44,9 +44,9 @@ class SearchForm(Form):
     table = SelectField(choices=[('proxysg', 'proxysg'), ('firewall', 'firewall'), ('ciscovpn', 'ciscovpn')],
                         validators=[DataRequired(message='Required field')]
                         )
-    sdate = DateField(u'From', format='%Y-%m-%d',
+    fromdate = DateField(u'From', format='%Y-%m-%d',
                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
-    edate = DateField(u'To', format='%Y-%m-%d',
+    todate = DateField(u'To', format='%Y-%m-%d',
                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     query = StringField(u'Query', validators=[DataRequired(message="Field required")])
     num = SelectField(
@@ -164,9 +164,9 @@ def getProxyTopTransfers(fromdate, todate):
         return 'Date unspecified.'
 
 
-@main.route('/search/<table>/<sdate>/<edate>/<query>/<num>')
-def search(table, sdate, edate, query, num):
-    jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query, num)
+@main.route('/search/<table>/<fromdate>/<todate>/<query>/<num>')
+def search(table, fromdate, todate, query, num):
+    jsonResult = analytics_engine.getSearchResults(table, fromdate, todate, query, num)
 
     def generate():
         yield '{"%s": [\n' % (table)
@@ -177,8 +177,8 @@ def search(table, sdate, edate, query, num):
     return Response(generate(), mimetype='application/json')
 
 
-def buildJSON(table, sdate, edate, query, num):
-    jsonResult = analytics_engine.getSearchResults(table, sdate, edate, query, num)
+def buildJSON(table, fromdate, todate, query, num):
+    jsonResult = analytics_engine.getSearchResults(table, fromdate, todate, query, num)
     results = []
 
     results.append('{"%s": [\n' % (table))
@@ -233,7 +233,7 @@ def proxy_user():
 def proxyTopTransfers():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
-        return redirect(url_for('main.getProxyTopTransfers', date=form.date.data.strftime('%Y-%m-%d')))
+        return redirect(url_for('main.getProxyTopTransfers', fromdate=form.fromdate.data.strftime('%Y-%m-%d'), todate=form.todate.data.strftime('%Y-%m-%d')))
     return render_template("proxy.html", form=form)
 
 
@@ -243,12 +243,12 @@ def search_view():
 
     if Lookupform.validate_on_submit() and Lookupform.lookup.data:
         return redirect(
-            url_for('main.search', table=Lookupform.table.data, sdate=Lookupform.sdate.data.strftime('%Y-%m-%d'),
-                    edate=Lookupform.edate.data.strftime('%Y-%m-%d'), query=Lookupform.query.data,
+            url_for('main.search', table=Lookupform.table.data, fromdate=Lookupform.fromdate.data.strftime('%Y-%m-%d'),
+                    todate=Lookupform.todate.data.strftime('%Y-%m-%d'), query=Lookupform.query.data,
                     num=Lookupform.num.data))
     if Lookupform.validate_on_submit() and Lookupform.download.data:
-        data = buildJSON(Lookupform.table.data, Lookupform.sdate.data.strftime('%Y-%m-%d'),
-                         Lookupform.edate.data.strftime('%Y-%m-%d'),
+        data = buildJSON(Lookupform.table.data, Lookupform.fromdate.data.strftime('%Y-%m-%d'),
+                         Lookupform.todate.data.strftime('%Y-%m-%d'),
                          Lookupform.query.data, Lookupform.num.data)
         response = download(data)
         return response
