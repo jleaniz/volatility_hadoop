@@ -43,8 +43,16 @@ class AnalyticsEngine:
         )
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
+        logger.info("Loading Proxy data")
+        self.proxyDF = self.sqlctx.load(
+            "/user/cloudera/proxysg"
+        )
+        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+
         self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         self.firewallDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+
 
     def getVPNLoginsByUserJSON(self, username):
         '''
@@ -99,7 +107,6 @@ class AnalyticsEngine:
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
 
         self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
         # Register DataFrame as a Spark SQL Table
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
