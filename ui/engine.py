@@ -53,7 +53,6 @@ class AnalyticsEngine:
         self.firewallDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-
     def getVPNLoginsByUserJSON(self, username):
         '''
         This function queries a DataFrame for logon/logoff data
@@ -211,8 +210,7 @@ class AnalyticsEngine:
 
         return (jsonTable, jsonChart)
 
-
-    def buildParquetFileList(self, table, sdate, edate):
+    def buildDateList(self, sdate, edate):
 
         (syear, smonth, sday) = sdate.split('-')
         (eyear, emonth, eday) = edate.split('-')
@@ -223,6 +221,12 @@ class AnalyticsEngine:
         days = []
         for i in range(delta.days + 1):
             days.append(_sdate + td(days=i))
+
+        return days
+
+    def buildParquetFileList(self, table, sdate, edate):
+
+        days = self.buildDateList(sdate, edate)
 
         parquetPaths = []
         for day in days:
@@ -237,26 +241,39 @@ class AnalyticsEngine:
                         table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
 
-        #_parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
-        _parquetPaths = [x for x in parquetPaths if os.path.exists('/mnt/hdfs'+x)]
+        # _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
+        _parquetPaths = [x for x in parquetPaths if os.path.exists('/mnt/hdfs' + x)]
         return _parquetPaths
 
     def getSearchResults(self, table, sdate, edate, query, num):
-
-        _parquetPaths = self.buildParquetFileList(table, sdate, edate)
+        # _parquetPaths = self.buildParquetFileList(table, sdate, edate)
 
         self.sqlctx.setConf("spark.sql.parquet.useDataSourceApi", "false")
         self.sqlctx.setConf("spark.sql.planner.externalSort", "true")
         self.sqlctx.setConf('spark.sql.parquet.mergeSchema', 'false')
 
-        # spark 1.3
+        days = self.buildDateList(sdate, edate)
+
+        if table == 'proxysg':
+            self.tempDF = self.proxyDF
+        elif table == 'ciscovpn':
+            self.tempDF = self.vpnLogsDF
+        elif table == 'firewall':
+            self.tempDF = self.firewallDF
+
+        for day in days:
+            try:
+                resultsDF = self.tempDF.where(self.tempDF.year == day.year).where(
+                    self.tempDF.month == str(day).split('-')[1]).where(self.tempDF.day == str(day).split('-')[2])
+                results = resultsDF.toJSON().collect()
+                yield results
+            except Py4JJavaError:
+                pass
+
+        '''
         self.tempDF = self.sqlctx.parquetFile(*_parquetPaths)
         self.sqlctx.registerDataFrameAsTable(self.tempDF, table)
         self.tempDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
-
-        # spark 1.4+ compatible
-        #self.tableDF = self.sqlctx.read.parquet(*_parquetPaths)
-        #self.tableDF.registerTempTable(table)
 
         try:
             results = self.sqlctx.sql('%s limit %s' % (query, num))
@@ -265,7 +282,7 @@ class AnalyticsEngine:
             return results.toJSON().collect()
         except Py4JJavaError:
             pass
-
+        '''
 
     def identifyVPNUser(self, remoteip, date):
         '''
@@ -275,7 +292,8 @@ class AnalyticsEngine:
         '''
 
         loginsByUser = self.sqlctx.sql(
-            "select user from vpn where year=%s and month=%s and day=%s and remoteip='%s'" %(year, month, day, remoteip)
+            "select user from vpn where year=%s and month=%s and day=%s and remoteip='%s'" % (
+            year, month, day, remoteip)
         )
 
         jsonRDD = loginsByUser.toJSON()
