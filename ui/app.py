@@ -144,10 +144,10 @@ def vpnGoogleFormat(username):
         return 'Username unspecified.'
 
 
-@main.route('/proxy/LoginsByUser/google/<username>/<date>')
-def proxyGoogleFormat(username, date):
-    if username and date:
-        json = analytics_engine.getProxyUserMalwareHits(username, date)
+@main.route('/proxy/LoginsByUser/google/<username>/<fromdate>/<todate>')
+def proxyGoogleFormat(username, fromdate, todate):
+    if username and fromdate and todate:
+        json = analytics_engine.getProxyUserMalwareHits(username, fromdate, todate)
         logging.info(json)
         return render_template('proxyGC.html', json=json)
     else:

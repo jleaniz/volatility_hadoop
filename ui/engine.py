@@ -91,15 +91,12 @@ class AnalyticsEngine:
 
         return json
 
-    def getProxyUserMalwareHits(self, username, timerange):
+    def getProxyUserMalwareHits(self, username, fromdate, todate):
 
-        # Get the specified date
-        (year, month, day) = timerange.split('-')
+        _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
 
-        # Load Spark SQL DataFrame
-        self.proxyDF = self.sqlctx.load(
-            "/user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
-        )
+        self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
+        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
         # Register DataFrame as a Spark SQL Table
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
