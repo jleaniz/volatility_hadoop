@@ -240,6 +240,9 @@ class AnalyticsEngine:
 
         _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
 
+        self.sqlctx.setConf("spark.sql.parquet.useDataSourceApi", "false")
+        self.sqlctx.setConf("spark.sql.planner.externalSort", "true")
+        self.sqlctx.setConf('spark.sql.parquet.mergeSchema', 'false')
         # spark 1.3
         self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
