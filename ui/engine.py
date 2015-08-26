@@ -33,8 +33,13 @@ class AnalyticsEngine:
         self.vpnLogsDF = self.sqlctx.load(
             "/user/cloudera/ciscovpn"
         )
-
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
+
+        logger.info("Loading Firewall data")
+        self.firewallDF = self.sqlctx.load(
+            "/user/cloudera/firewall/off"
+        )
+        self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
     def getVPNLoginsByUserJSON(self, username):
         '''
