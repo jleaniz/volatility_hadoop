@@ -101,9 +101,9 @@ class AnalyticsEngine:
             "/user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
         )
         # Register DataFrame as a Spark SQL Table
-        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
+        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
-        query = ("select clientip, username, host, port, path, query, count(*) as hits from proxy"
+        query = ("select clientip, username, host, port, path, query, count(*) as hits from proxysg"
                  " where username like '%s' and categories like '%s'"
                  " group by clientip, username, host, port, path, query"
                  " order by cast(hits as int) desc" % (username, '%Mal%'))
@@ -156,7 +156,7 @@ class AnalyticsEngine:
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
         topTransfers = self.sqlctx.sql(
-            'select clientip, host, cast(csbytes as Double) as bytes from proxy '
+            'select clientip, host, cast(csbytes as Double) as bytes from proxysg '
             'group by clientip, host, cast(csbytes as Double) order by bytes desc limit 10'
         )
         entries = topTransfers.collect()
