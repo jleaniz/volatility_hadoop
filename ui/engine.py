@@ -45,7 +45,6 @@ class AnalyticsEngine:
 
         self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         self.firewallDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
-        self.firewallDF.count()
 
     def getVPNLoginsByUserJSON(self, username):
         '''
@@ -253,13 +252,14 @@ class AnalyticsEngine:
         self.sqlctx.setConf("spark.sql.planner.externalSort", "true")
         self.sqlctx.setConf('spark.sql.parquet.mergeSchema', 'false')
 
-        # spark 1.3
-        self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
+        if table == 'proxysg':
+            # spark 1.3
+            self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
+            self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
-        # spark 1.4+ compatible
-        #self.tableDF = self.sqlctx.read.parquet(*_parquetPaths)
-        #self.tableDF.registerTempTable(table)
+            # spark 1.4+ compatible
+            #self.tableDF = self.sqlctx.read.parquet(*_parquetPaths)
+            #self.tableDF.registerTempTable(table)
 
         try:
             results = self.sqlctx.sql('%s limit %s' % (query, num))
