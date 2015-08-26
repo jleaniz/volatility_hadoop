@@ -246,7 +246,7 @@ class AnalyticsEngine:
 
         # spark 1.4+ compatible
         self.tableDF = self.sqlctx.read.parquet(*_parquetPaths)
-        self.sqlctx.registerTempTable(self.tableDF, table)
+        self.tableDF.registerTempTable(table)
 
         try:
             results = self.sqlctx.sql('%s limit %s' % (query, num))
