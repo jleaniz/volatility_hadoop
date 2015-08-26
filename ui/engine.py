@@ -267,8 +267,8 @@ class AnalyticsEngine:
                 filteredDF = tempDF.filter('year=%s and month=%s and day=%s' %( day.year, str(day).split('-')[1], str(day).split('-')[2] ) )
                 self.sqlctx.registerDataFrameAsTable(filteredDF, table)
                 resultsDF = self.sqlctx.sql('%s limit %s' %(query, num))
-                results = resultsDF.toJSON().collect()
-                yield results
+                for result in resultsDF.toJSON().collect()
+                    yield result
             except Py4JJavaError:
                 pass
 
