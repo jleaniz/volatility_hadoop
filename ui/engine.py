@@ -37,7 +37,7 @@ class AnalyticsEngine:
         :return:
         '''
         self.vpnLogsDF = self.sqlctx.load(
-            "hdfs://mtl-ah374//user/cloudera/ciscovpn"
+            "/user/cloudera/ciscovpn"
         )
 
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
@@ -61,7 +61,7 @@ class AnalyticsEngine:
         '''
 
         self.vpnLogsDF = self.sqlctx.load(
-            "hdfs://mtl-ah374//user/cloudera/ciscovpn"
+            "/user/cloudera/ciscovpn"
         )
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
 
@@ -93,7 +93,7 @@ class AnalyticsEngine:
 
         # Load Spark SQL DataFrame
         self.proxyDF = self.sqlctx.load(
-            "hdfs://mtl-ah374//user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
+            "/user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
         )
         # Register DataFrame as a Spark SQL Table
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
@@ -149,7 +149,7 @@ class AnalyticsEngine:
         (year, month, day) = timerange.split('-')
 
         self.proxyDF = self.sqlctx.load(
-            "hdfs://mtl-ah374//user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
+            "/user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
         )
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
 
@@ -229,12 +229,12 @@ class AnalyticsEngine:
         for day in days:
             if table == 'firewall':
                 parquetPaths.append(
-                    'hdfs://mtl-ah374//user/cloudera/%s/off/year=%s/month=%s/day=%s' % (
+                    '/user/cloudera/%s/off/year=%s/month=%s/day=%s' % (
                         table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
             else:
                 parquetPaths.append(
-                    'hdfs://mtl-ah374//user/cloudera/%s/year=%s/month=%s/day=%s' % (
+                    '/user/cloudera/%s/year=%s/month=%s/day=%s' % (
                         table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
 
@@ -269,7 +269,7 @@ class AnalyticsEngine:
         (year, month, day) = date.split('-')
 
         self.vpnLogsDF = self.sqlctx.load(
-            "hdfs://mtl-ah374//user/cloudera/ciscovpn/year=%s/month=%s/day=%s" %(year, month, day)
+            "/user/cloudera/ciscovpn/year=%s/month=%s/day=%s" %(year, month, day)
         )
 
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
