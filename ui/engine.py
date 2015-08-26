@@ -252,6 +252,7 @@ class AnalyticsEngine:
         # spark 1.3
         self.tempDF = self.sqlctx.parquetFile(*_parquetPaths)
         self.sqlctx.registerDataFrameAsTable(self.tempDF, table)
+        self.tempDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
         # spark 1.4+ compatible
         #self.tableDF = self.sqlctx.read.parquet(*_parquetPaths)
