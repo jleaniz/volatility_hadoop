@@ -51,7 +51,7 @@ class AnalyticsEngine:
 
         self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         self.firewallDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
-        self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER) # not enough capacity for this right now
 
     def getVPNLoginsByUserJSON(self, username):
         '''
