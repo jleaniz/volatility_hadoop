@@ -28,6 +28,14 @@ class AnalyticsEngine:
         logger.info("Creating Spark SQL context:")
         self.sqlctx = SQLContext(self.sc)
 
+        # pre-laod some data
+        logger.info("Loading Cisco VPN data")
+        self.vpnLogsDF = self.sqlctx.load(
+            "/user/cloudera/ciscovpn"
+        )
+
+        self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
+
     def getVPNLoginsByUserJSON(self, username):
         '''
         This function queries a DataFrame for logon/logoff data
@@ -36,11 +44,6 @@ class AnalyticsEngine:
         :param username:
         :return:
         '''
-        self.vpnLogsDF = self.sqlctx.load(
-            "/user/cloudera/ciscovpn"
-        )
-
-        self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
 
         loginsByUser = self.sqlctx.sql(
             "select `date`, time, remoteip, reason from vpn where user='%s' group by `date`, time, "
@@ -59,11 +62,6 @@ class AnalyticsEngine:
         :param username:
         :return:
         '''
-
-        self.vpnLogsDF = self.sqlctx.load(
-            "/user/cloudera/ciscovpn"
-        )
-        self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
 
         loginsByUser = self.sqlctx.sql(
             "select remoteip, count(*) as hits from vpn where user='%s' group by remoteip" % (username)
@@ -213,7 +211,7 @@ class AnalyticsEngine:
             return False
     '''
 
-    def getSearchResults(self, table, sdate, edate, query, num):
+    def buildParquetFileList(self, table, sdate, edate):
 
         (syear, smonth, sday) = sdate.split('-')
         (eyear, emonth, eday) = edate.split('-')
@@ -239,6 +237,11 @@ class AnalyticsEngine:
                 )
 
         _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
+        return _parquetPaths
+
+    def getSearchResults(self, table, sdate, edate, query, num):
+
+        _parquetPaths = self.buildParquetFileList(table, sdate, edate)
 
         self.sqlctx.setConf("spark.sql.parquet.useDataSourceApi", "false")
         self.sqlctx.setConf("spark.sql.planner.externalSort", "true")
@@ -253,14 +256,11 @@ class AnalyticsEngine:
 
         try:
             results = self.sqlctx.sql('%s limit %s' % (query, num))
-            for json in results.toJSON().collect():
-                yield json
-            #yield results.collect()
+            #for json in results.toJSON().collect():
+            #    yield json
+            return results.toJSON().collect()
         except Py4JJavaError:
-            yield ['']
-
-            # jsonRDD = results.toJSON().collect()
-            # return jsonRDD
+            pass
 
 
     def identifyVPNUser(self, remoteip, date):
@@ -269,13 +269,6 @@ class AnalyticsEngine:
         :param username:
         :return:
         '''
-        (year, month, day) = date.split('-')
-
-        self.vpnLogsDF = self.sqlctx.load(
-            "/user/cloudera/ciscovpn/year=%s/month=%s/day=%s" %(year, month, day)
-        )
-
-        self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
 
         loginsByUser = self.sqlctx.sql(
             "select user from vpn where year=%s and month=%s and day=%s and remoteip='%s'" %(year, month, day, remoteip)
