@@ -211,16 +211,6 @@ class AnalyticsEngine:
 
         return (jsonTable, jsonChart)
 
-    '''
-    def ifExistsSlow(self, item):
-        try:
-            self.tableDF = self.sqlctx.parquetFile(item)
-            self.tableDF = None
-            return True
-        except Py4JJavaError:
-            logger.info('unable to load file %s. skipping' %(item))
-            return False
-    '''
 
     def buildParquetFileList(self, table, sdate, edate):
 
