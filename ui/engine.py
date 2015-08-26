@@ -37,7 +37,7 @@ class AnalyticsEngine:
         :return:
         '''
         self.vpnLogsDF = self.sqlctx.load(
-            "/user/cloudera/ciscovpn"
+            "hdfs://mtl-ah374//user/cloudera/ciscovpn"
         )
 
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
@@ -61,7 +61,7 @@ class AnalyticsEngine:
         '''
 
         self.vpnLogsDF = self.sqlctx.load(
-            "/user/cloudera/ciscovpn"
+            "hdfs://mtl-ah374//user/cloudera/ciscovpn"
         )
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
 
@@ -93,7 +93,7 @@ class AnalyticsEngine:
 
         # Load Spark SQL DataFrame
         self.proxyDF = self.sqlctx.load(
-            "/user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
+            "hdfs://mtl-ah374//user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
         )
         # Register DataFrame as a Spark SQL Table
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
@@ -149,7 +149,7 @@ class AnalyticsEngine:
         (year, month, day) = timerange.split('-')
 
         self.proxyDF = self.sqlctx.load(
-            "/user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
+            "hdfs://mtl-ah374//user/cloudera/proxysg/year=%s/month=%s/day=%s" % (year, month, day)
         )
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxy')
 
@@ -229,20 +229,24 @@ class AnalyticsEngine:
         for day in days:
             if table == 'firewall':
                 parquetPaths.append(
-                    '/user/cloudera/%s/off/year=%s/month=%s/day=%s' % (
+                    'hdfs://mtl-ah374//user/cloudera/%s/off/year=%s/month=%s/day=%s' % (
                         table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
             else:
                 parquetPaths.append(
-                    '/user/cloudera/%s/year=%s/month=%s/day=%s' % (
+                    'hdfs://mtl-ah374//user/cloudera/%s/year=%s/month=%s/day=%s' % (
                         table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
 
         _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
 
-        self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
+        # spark 1.3
+        #self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
+        #self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
 
-        self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
+        # spark 1.4+ compatible
+        self.tableDF = self.sqlctx.read.parquet(*_parquetPaths)
+        self.sqlctx.registerTempTable(self.tableDF, table)
 
         try:
             results = self.sqlctx.sql('%s limit %s' % (query, num))
@@ -264,7 +268,7 @@ class AnalyticsEngine:
         (year, month, day) = date.split('-')
 
         self.vpnLogsDF = self.sqlctx.load(
-            "/user/cloudera/ciscovpn/year=%s/month=%s/day=%s" %(year, month, day)
+            "hdfs://mtl-ah374//user/cloudera/ciscovpn/year=%s/month=%s/day=%s" %(year, month, day)
         )
 
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
