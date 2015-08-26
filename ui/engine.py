@@ -45,7 +45,7 @@ class AnalyticsEngine:
 
         self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         self.firewallDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
-
+        self.firewallDF.count()
 
     def getVPNLoginsByUserJSON(self, username):
         '''
@@ -252,6 +252,7 @@ class AnalyticsEngine:
         self.sqlctx.setConf("spark.sql.parquet.useDataSourceApi", "false")
         self.sqlctx.setConf("spark.sql.planner.externalSort", "true")
         self.sqlctx.setConf('spark.sql.parquet.mergeSchema', 'false')
+
         # spark 1.3
         self.tableDF = self.sqlctx.parquetFile(*_parquetPaths)
         self.sqlctx.registerDataFrameAsTable(self.tableDF, table)
