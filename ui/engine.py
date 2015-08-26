@@ -43,8 +43,9 @@ class AnalyticsEngine:
         )
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
-        self.sqlctx.cacheTable('vpn')
-        self.sqlctx.cacheTable('firewall')
+        self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        self.firewallDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+
 
     def getVPNLoginsByUserJSON(self, username):
         '''
