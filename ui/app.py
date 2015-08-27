@@ -194,7 +194,7 @@ def bashKeyword(keyword):
         return 'Keyword or date unspecified.'
 
 @main.route("/bash/keyword", methods=('GET', 'POST'))
-def proxy_user():
+def bash_keyword():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
         return redirect(
