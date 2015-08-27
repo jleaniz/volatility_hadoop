@@ -55,6 +55,8 @@ class AnalyticsEngine:
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
 
+        self.bashDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+
         '''
         Caching will make queries faster but for some reason
         it won't let you read certain partitions on a cached DF.
