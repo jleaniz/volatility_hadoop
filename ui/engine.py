@@ -49,6 +49,12 @@ class AnalyticsEngine:
         )
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
+        logger.info("Loading Bash data")
+        self.bashDF = self.sqlctx.load(
+            "/user/cloudera/bashlog"
+        )
+        self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
+
         '''
         Caching will make queries faster but for some reason
         it won't let you read certain partitions on a cached DF.
@@ -292,6 +298,42 @@ class AnalyticsEngine:
         except Py4JJavaError:
             pass
         '''
+
+    def bashKeywordSearch(self, keyword):
+
+        query = ("select * from bashlog where command like '%s'" %(keyword) )
+        logger.info(query)
+
+        # Query using Spark SQL
+        keywordDF = self.sqlctx.sql(query)
+
+        entries = keywordDF.collect()
+        data = []
+        description = {
+            "logsrc": ("string", "Server"),
+            "username": ("string", "Username"),
+            "exec_as": ("string", "Sudo user"),
+            "srcip": ("string", "Client IP"),
+            "command": ("string", "Command")
+        }
+
+        for entry in entries:
+            data.append(
+                {
+                    "logsrc": entry.logsrc,
+                    "username": entry.username,
+                    "exec_as": entry.exec_as,
+                    "srcip": entry.srcip,
+                    "command": entry.command,
+                }
+            )
+
+        data_table = gviz_api.DataTable(description)
+        data_table.LoadData(data)
+        # Creating a JSon string
+        json = data_table.ToJSon(columns_order=("logsrc", "username", "exec_as", "srcip", "command"))
+
+        return json
 
     def identifyVPNUser(self, remoteip, date):
         '''

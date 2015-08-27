@@ -184,6 +184,22 @@ def search(table, fromdate, todate, query, num):
 
     return Response(generate(), mimetype='application/json')
 
+@main.route('/api/bash/keyword/<keyword>')
+def bashKeyword(keyword):
+    if keyword:
+        json = analytics_engine.bashKeywordSearch(keyword)
+        logging.info(json)
+        return render_template('proxyGC.html', json=json)
+    else:
+        return 'Keyword or date unspecified.'
+
+@main.route("/bash/keyword", methods=('GET', 'POST'))
+def proxy_user():
+    form = UserDateForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        return redirect(
+            url_for('main.bashKeyword', keyword=form.name.data ))
+    return render_template("proxy.html", form=form)
 
 def buildJSON(table, fromdate, todate, query, num):
     jsonResult = analytics_engine.getSearchResults(table, fromdate, todate, query, num)
