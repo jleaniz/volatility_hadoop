@@ -303,7 +303,7 @@ class AnalyticsEngine:
 
     def bashKeywordSearch(self, keyword):
 
-        query = ("select * from bashlog where command like '%s'" %(keyword) )
+        query = ("select * from bashlog where username like '%s'" %(keyword) )
         logger.info(query)
 
         # Query using Spark SQL
