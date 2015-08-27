@@ -44,10 +44,10 @@ class AnalyticsEngine:
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
         logger.info("Loading Proxy data")
-        self.proxyDF = self.sqlctx.load(
-            "/user/cloudera/proxysg"
-        )
-        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+        #self.proxyDF = self.sqlctx.load(
+        #    "/user/cloudera/proxysg"
+        #)
+        #self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
         logger.info("Loading Bash data")
         self.bashDF = self.sqlctx.load(
