@@ -187,9 +187,9 @@ def search(table, fromdate, todate, query, num):
 @main.route('/api/bash/keyword/<keyword>')
 def bashKeyword(keyword):
     if keyword:
-        #json = analytics_engine.bashKeywordSearch(keyword)
-        #logging.info(json)
-        return Response(analytics_engine.bashKeywordSearch(keyword), mimetype='application/json')
+        json = analytics_engine.bashKeywordSearch(keyword)
+        logging.info(json)
+        return render_template('proxyGC.html', json=json.decode('utf-8'))
     else:
         return 'Keyword or date unspecified.'
 
