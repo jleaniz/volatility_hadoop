@@ -320,11 +320,11 @@ class AnalyticsEngine:
         for entry in entries:
             data.append(
                 {
-                    "logsrc": entry.logsrc.encode('utf-8'),
-                    "username": entry.username.encode('utf-8'),
-                    "exec_as": entry.exec_as.encode('utf-8'),
-                    "srcip": entry.srcip.encode('utf-8'),
-                    "command": entry.command.encode('utf-8'),
+                    "logsrc": entry.logsrc,
+                    "username": entry.username,
+                    "exec_as": entry.exec_as,
+                    "srcip": entry.srcip,
+                    "command": entry.command,
                 }
             )
 
