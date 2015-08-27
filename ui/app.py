@@ -67,6 +67,21 @@ nav.register_element('frontend_top', Navbar(
     View('BDSA', '.index'),
     View('Dashboard', '.index'),
     Subgroup(
+    'Analytics',
+    Text('VPN'),
+    Separator(),
+    Link('User stats', '/vpn/user'),
+    Separator(),
+    Text('Proxy'),
+    Separator(),
+    Link('Malware by user', '/proxy/malware/user'),
+    Link('Top 10 Transfers', '/proxy/top/transfers'),
+    Separator(),
+    Text('Bash'),
+    Separator(),
+    Link('Keyword search', '/bash/keyword'),
+    ),
+    Subgroup(
         'Forensics',
         Link('Timeline analysis', '/search'),
     ),
@@ -74,21 +89,7 @@ nav.register_element('frontend_top', Navbar(
         'Search',
         Link('Custom query', '/search'),
     ),
-    Subgroup(
-        'Analytics',
-        Text('VPN'),
-        Separator(),
-        Link('User stats', '/vpn/user'),
-        Separator(),
-        Text('Proxy'),
-        Separator(),
-        Link('Malware by user', '/proxy/malware/user'),
-        Link('Top 10 Transfers', '/proxy/top/transfers'),
-        Separator(),
-        Text('Bash'),
-        Separator(),
-        Link('Keyword search', '/bash/keyword'),
-    ),
+
 ))
 
 import logging
