@@ -70,7 +70,7 @@ def main():
                 for path in args.path:
                     log.path = path
                     log.destPath = path.rsplit('/', 1)[0]
-                    print 'Ingesting bash logs...%s' %(log.path)
+                    print 'Ingesting bash logs...%s' % (log.path)
                     log.saveLogByDate()
             elif arg == 'ciscovpn':
                 log.type = 'ciscovpn'

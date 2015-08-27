@@ -25,18 +25,18 @@ class UserForm(Form):
 
 class UserDateForm(Form):
     fromdate = DateField(u'From', format='%Y-%m-%d',
-                      validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+                         validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     todate = DateField(u'To', format='%Y-%m-%d',
-                      validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     name = StringField(u'Username', validators=[DataRequired(message="Invalid input. Ex: jdoe")])
     submit = SubmitField(u'Lookup')
 
 
 class DateForm(Form):
     fromdate = DateField(u'From', format='%Y-%m-%d',
-                      validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+                         validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     todate = DateField(u'To', format='%Y-%m-%d',
-                      validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     submit = SubmitField(u'Lookup')
 
 
@@ -45,9 +45,9 @@ class SearchForm(Form):
                         validators=[DataRequired(message='Required field')]
                         )
     fromdate = DateField(u'From', format='%Y-%m-%d',
-                      validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+                         validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     todate = DateField(u'To', format='%Y-%m-%d',
-                      validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
+                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     query = StringField(u'Query', validators=[DataRequired(message="Field required")])
     num = SelectField(
         choices=[('10', '10'), ('100', '100'), ('1000', '1000'), ('10000', '10000'), ('100000', '100000')],
@@ -65,8 +65,11 @@ nav = Nav()
 # lot more View instances.
 nav.register_element('frontend_top', Navbar(
     View('BDSA', '.index'),
-    View('Home', '.index'),
     View('Dashboard', '.index'),
+    Subgroup(
+        'Forensics',
+        Link('Timeline analysis', '/search'),
+    ),
     Subgroup(
         'Search',
         Link('Custom query', '/search'),
@@ -81,6 +84,10 @@ nav.register_element('frontend_top', Navbar(
         Separator(),
         Link('Malware by user', '/proxy/malware/user'),
         Link('Top 10 Transfers', '/proxy/top/transfers'),
+        Separator(),
+        Text('Bash'),
+        Separator(),
+        Link('Keyword search', '/bash/keyword'),
     ),
 ))
 
@@ -225,7 +232,8 @@ def proxy_user():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
         return redirect(
-            url_for('main.proxyGoogleFormat', username=form.name.data, fromdate=form.fromdate.data.strftime('%Y-%m-%d'), todate=form.todate.data.strftime('%Y-%m-%d')))
+            url_for('main.proxyGoogleFormat', username=form.name.data, fromdate=form.fromdate.data.strftime('%Y-%m-%d'),
+                    todate=form.todate.data.strftime('%Y-%m-%d')))
     return render_template("proxy.html", form=form)
 
 
@@ -233,7 +241,8 @@ def proxy_user():
 def proxyTopTransfers():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
-        return redirect(url_for('main.getProxyTopTransfers', fromdate=form.fromdate.data.strftime('%Y-%m-%d'), todate=form.todate.data.strftime('%Y-%m-%d')))
+        return redirect(url_for('main.getProxyTopTransfers', fromdate=form.fromdate.data.strftime('%Y-%m-%d'),
+                                todate=form.todate.data.strftime('%Y-%m-%d')))
     return render_template("proxy.html", form=form)
 
 

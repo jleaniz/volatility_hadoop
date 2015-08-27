@@ -49,9 +49,15 @@ class AnalyticsEngine:
         )
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
-        #self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
-        #self.firewallDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
-        #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER) # not enough capacity for this right now
+        '''
+        Caching will make queries faster but for some reason
+        it won't let you read certain partitions on a cached DF.
+        Seems to read the entire DF every time, even if cached, it would be
+        generally slower, unless querying a lot of data.
+        '''
+        # self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        # self.firewallDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        # self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER) # not enough capacity for this right now
 
     def getVPNLoginsByUserJSON(self, username):
         '''
@@ -263,10 +269,11 @@ class AnalyticsEngine:
 
         for day in days:
             try:
-                #resultsDF = self.tempDF.where(self.tempDF.year == day.year).where(self.tempDF.month == str(day).split('-')[1]).where(self.tempDF.day == str(day).split('-')[2])
-                filteredDF = tempDF.filter('year=%s and month=%s and day=%s' %( day.year, str(day).split('-')[1], str(day).split('-')[2] ) )
+                # resultsDF = self.tempDF.where(self.tempDF.year == day.year).where(self.tempDF.month == str(day).split('-')[1]).where(self.tempDF.day == str(day).split('-')[2])
+                filteredDF = tempDF.filter(
+                    'year=%s and month=%s and day=%s' % (day.year, str(day).split('-')[1], str(day).split('-')[2]))
                 self.sqlctx.registerDataFrameAsTable(filteredDF, table)
-                resultsDF = self.sqlctx.sql('%s limit %s' %(query, num))
+                resultsDF = self.sqlctx.sql('%s limit %s' % (query, num))
                 for result in resultsDF.toJSON().collect():
                     yield result
             except Py4JJavaError:
@@ -295,7 +302,7 @@ class AnalyticsEngine:
 
         loginsByUser = self.sqlctx.sql(
             "select user from vpn where year=%s and month=%s and day=%s and remoteip='%s'" % (
-            year, month, day, remoteip)
+                year, month, day, remoteip)
         )
 
         jsonRDD = loginsByUser.toJSON()
