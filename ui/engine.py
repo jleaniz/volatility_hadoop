@@ -55,7 +55,6 @@ class AnalyticsEngine:
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
 
-        self.bashDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
         '''
         Caching will make queries faster but for some reason
@@ -66,6 +65,7 @@ class AnalyticsEngine:
         # self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         # self.firewallDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         # self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER) # not enough capacity for this right now
+        #self.bashDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
     def getVPNLoginsByUserJSON(self, username):
         '''

@@ -6,99 +6,17 @@ from flask_bootstrap import (
     __version__ as FLASK_BOOTSTRAP_VERSION, Bootstrap
 )
 
-from flask_nav.elements import (
-    Navbar, View, Subgroup, Link, Text, Separator
-)
+from forms import DateForm, SearchForm, UserDateForm, UserForm
+from nav import nav
+from engine import AnalyticsEngine
 
-from flask_nav import Nav
-from flask_wtf import Form
-from wtforms.fields import StringField, SubmitField, SelectField
-from wtforms.fields.html5 import DateField
-from wtforms.validators import DataRequired, Email
 import gzip
-
-
-class UserForm(Form):
-    name = StringField(u'VPN Username', validators=[Email(message="Invalid input. Ex: srm-ais@email.com")])
-    submit = SubmitField(u'Lookup')
-
-
-class UserDateForm(Form):
-    fromdate = DateField(u'From', format='%Y-%m-%d',
-                         validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
-    todate = DateField(u'To', format='%Y-%m-%d',
-                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
-    name = StringField(u'Username', validators=[DataRequired(message="Invalid input. Ex: jdoe")])
-    submit = SubmitField(u'Lookup')
-
-
-class DateForm(Form):
-    fromdate = DateField(u'From', format='%Y-%m-%d',
-                         validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
-    todate = DateField(u'To', format='%Y-%m-%d',
-                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
-    submit = SubmitField(u'Lookup')
-
-
-class SearchForm(Form):
-    table = SelectField(choices=[('proxysg', 'proxysg'), ('firewall', 'firewall'), ('ciscovpn', 'ciscovpn')],
-                        validators=[DataRequired(message='Required field')]
-                        )
-    fromdate = DateField(u'From', format='%Y-%m-%d',
-                         validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
-    todate = DateField(u'To', format='%Y-%m-%d',
-                       validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
-    query = StringField(u'Query', validators=[DataRequired(message="Field required")])
-    num = SelectField(
-        choices=[('10', '10'), ('100', '100'), ('1000', '1000'), ('10000', '10000'), ('100000', '100000')],
-        validators=[DataRequired(message='Required field')]
-    )
-    lookup = SubmitField(u'Lookup')
-    download = SubmitField(u'Download')
-
-
-main = Blueprint('main', __name__)
-nav = Nav()
-
-# We're adding a navbar as well through flask-navbar. In our example, the
-# navbar has an usual amount of Link-Elements, more commonly you will have a
-# lot more View instances.
-nav.register_element('frontend_top', Navbar(
-    View('BDSA', '.index'),
-    View('Dashboard', '.index'),
-    Subgroup(
-    'Analytics',
-    Text('VPN'),
-    Separator(),
-    Link('User stats', '/vpn/user'),
-    Separator(),
-    Text('Proxy'),
-    Separator(),
-    Link('Malware by user', '/proxy/malware/user'),
-    Link('Top 10 Transfers', '/proxy/top/transfers'),
-    Separator(),
-    Text('Bash'),
-    Separator(),
-    Link('Keyword search', '/bash/keyword'),
-    ),
-    Subgroup(
-        'Forensics',
-        Link('Timeline analysis', '/search'),
-    ),
-    Subgroup(
-        'Search',
-        Link('Custom query', '/search'),
-    ),
-
-))
-
 import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-from engine import AnalyticsEngine
-
+main = Blueprint('main', __name__)
 
 @main.app_errorhandler(404)
 def page_not_found(e):
@@ -157,7 +75,7 @@ def proxyGoogleFormat(username, fromdate, todate):
     if username and fromdate and todate:
         json = analytics_engine.getProxyUserMalwareHits(username, fromdate, todate)
         logging.info(json)
-        return render_template('proxyGC.html', json=json)
+        return render_template('display_table.html', json=json)
     else:
         return 'Username or date unspecified.'
 
@@ -189,7 +107,7 @@ def bashKeyword(keyword):
     if keyword:
         json = analytics_engine.bashKeywordSearch(keyword)
         logging.info(json)
-        return render_template('proxyGC.html', json=json.decode('utf-8'))
+        return render_template('display_table.html', json=json.decode('utf-8'))
     else:
         return 'Keyword or date unspecified.'
 
