@@ -8,13 +8,23 @@ from flask_bootstrap import (
 
 from nav import nav
 from engine import AnalyticsEngine
-
+from views import views
 import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 main = Blueprint('main', __name__)
+
+
+@main.app_errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html', error=e.message)
+
+
+@main.app_errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html', error=e.message)
 
 
 @main.route("/api/vpn/byUser/<username>")
@@ -128,6 +138,7 @@ def create_app(spark_context):
     Bootstrap(app)
 
     app.register_blueprint(main)
+    app.register_blueprint(views)
 
     nav.init_app(app)
     return app

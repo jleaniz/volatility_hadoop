@@ -7,17 +7,12 @@ from flask import (
 from forms import DateForm, SearchForm, UserDateForm, UserForm
 from app import main, buildJSON
 
-@main.app_errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html', error=e.message)
+views = Blueprint('views', __name__)
 
 
-@main.app_errorhandler(500)
-def internal_server_error(e):
-    return render_template('500.html', error=e.message)
 
 
-@main.route('/download/<file>')
+@views.route('/download/<file>')
 def download(content):
     f = gzip.open('/tmp/results.gz', 'wb')
     try:
@@ -39,7 +34,7 @@ def download(content):
     return response
 
 
-@main.route("/vpn/user", methods=('GET', 'POST'))
+@views.route("/vpn/user", methods=('GET', 'POST'))
 def vpn_user():
     form = UserForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -47,7 +42,7 @@ def vpn_user():
     return render_template("vpn.html", form=form)
 
 
-@main.route("/proxy/malware/user", methods=('GET', 'POST'))
+@views.route("/proxy/malware/user", methods=('GET', 'POST'))
 def proxy_user():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -57,7 +52,7 @@ def proxy_user():
     return render_template("proxy.html", form=form)
 
 
-@main.route("/proxy/top/transfers", methods=('GET', 'POST'))
+@views.route("/proxy/top/transfers", methods=('GET', 'POST'))
 def proxyTopTransfers():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -66,7 +61,7 @@ def proxyTopTransfers():
     return render_template("proxy.html", form=form)
 
 
-@main.route("/search", methods=('GET', 'POST'))
+@views.route("/search", methods=('GET', 'POST'))
 def search_view():
     Lookupform = SearchForm(csrf_enabled=False)
 
@@ -84,7 +79,7 @@ def search_view():
 
     return render_template("search.html", form=Lookupform)
 
-@main.route("/bash/keyword", methods=('GET', 'POST'))
+@views.route("/bash/keyword", methods=('GET', 'POST'))
 def bash_keyword():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -93,6 +88,6 @@ def bash_keyword():
     return render_template("proxy.html", form=form)
 
 
-@main.route('/')
+@views.route('/')
 def index():
     return render_template('index.html')
