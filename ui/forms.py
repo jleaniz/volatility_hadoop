@@ -3,6 +3,7 @@ from wtforms.fields import StringField, SubmitField, SelectField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Email
 
+
 class UserForm(Form):
     name = StringField(u'VPN Username', validators=[Email(message="Invalid input. Ex: srm-ais@email.com")])
     submit = SubmitField(u'Lookup')

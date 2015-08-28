@@ -44,17 +44,16 @@ class AnalyticsEngine:
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
         logger.info("Loading Proxy data")
-        #self.proxyDF = self.sqlctx.load(
+        # self.proxyDF = self.sqlctx.load(
         #    "/user/cloudera/proxysg"
-        #)
-        #self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+        # )
+        # self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
         logger.info("Loading Bash data")
         self.bashDF = self.sqlctx.load(
             "/user/cloudera/bashlog"
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
-
 
         '''
         Caching will make queries faster but for some reason
@@ -65,7 +64,7 @@ class AnalyticsEngine:
         # self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         # self.firewallDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
         # self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER) # not enough capacity for this right now
-        #self.bashDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        # self.bashDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
     def getVPNLoginsByUserJSON(self, username):
         '''
@@ -303,7 +302,7 @@ class AnalyticsEngine:
 
     def bashKeywordSearch(self, keyword):
 
-        query = ("select * from bashlog where username like '%s'" %(keyword) )
+        query = ("select * from bashlog where username like '%s'" % (keyword))
         logger.info(query)
 
         # Query using Spark SQL

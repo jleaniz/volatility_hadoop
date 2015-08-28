@@ -26,7 +26,7 @@ for command in commandsList:
         pass
 
 kmdata = sc.parallelize(vectorsList, 1024)
-#kmdata = sc.parallelize( (numpy.array(model.transform(command[0])) for command in commandsList), 1024)
+# kmdata = sc.parallelize( (numpy.array(model.transform(command[0])) for command in commandsList), 1024)
 
 # Build the model (cluster the data using KMeans)
 clusters = KMeans.train(kmdata, 100, maxIterations=10, runs=10, initializationMode="random")
