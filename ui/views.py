@@ -65,3 +65,7 @@ def bash_keyword():
         return redirect(
             url_for('main.bashKeyword', keyword=form.name.data))
     return render_template("proxy.html", form=form)
+
+@mod_views.route('/')
+def index():
+    return render_template('index.html')
