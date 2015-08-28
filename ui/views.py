@@ -3,17 +3,16 @@ from flask import (
 )
 
 from forms import DateForm, SearchForm, UserDateForm, UserForm
-from app import buildJSON, download
 
 import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-views = Blueprint('views', __name__)
+mod_views = Blueprint('views', __name__)
 
 
-@views.route("/vpn/user", methods=('GET', 'POST'))
+@mod_views.route("/vpn/user", methods=('GET', 'POST'))
 def vpn_user():
     form = UserForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -21,7 +20,7 @@ def vpn_user():
     return render_template("vpn.html", form=form)
 
 
-@views.route("/proxy/malware/user", methods=('GET', 'POST'))
+@mod_views.route("/proxy/malware/user", methods=('GET', 'POST'))
 def proxy_user():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -31,7 +30,7 @@ def proxy_user():
     return render_template("proxy.html", form=form)
 
 
-@views.route("/proxy/top/transfers", methods=('GET', 'POST'))
+@mod_views.route("/proxy/top/transfers", methods=('GET', 'POST'))
 def proxyTopTransfers():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -40,7 +39,7 @@ def proxyTopTransfers():
     return render_template("proxy.html", form=form)
 
 
-@views.route("/search", methods=('GET', 'POST'))
+@mod_views.route("/search", methods=('GET', 'POST'))
 def search_view():
     Lookupform = SearchForm(csrf_enabled=False)
 
@@ -59,7 +58,7 @@ def search_view():
     return render_template("search.html", form=Lookupform)
 
 
-@views.route("/bash/keyword", methods=('GET', 'POST'))
+@mod_views.route("/bash/keyword", methods=('GET', 'POST'))
 def bash_keyword():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():

@@ -7,7 +7,7 @@ from flask import (
     Flask, request, render_template, flash, redirect, url_for, Response, Blueprint, make_response, abort
 )
 
-from views import views as views
+from views import mod_views
 
 from nav import nav
 from engine import AnalyticsEngine
@@ -166,7 +166,7 @@ def create_app(spark_context):
     Bootstrap(app)
 
     app.register_blueprint(main)
-    app.register_blueprint(views)
+    app.register_blueprint(mod_views)
 
     nav.init_app(app)
     return app
