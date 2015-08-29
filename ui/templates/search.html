@@ -4,21 +4,23 @@
 {% import "bootstrap/utils.html" as util %}
 
 {% block content %}
-{{util.flashed_messages(dismissible=True)}}
-<div class="container" style="width: 50%; height: 50%;">
-    <div class="panel panel-primary">
-        <div class="panel-heading">Custom lookup</div>
-        <div class="panel-body">
-            <blockquote>
-                <p>You can run custom Spark SQL queries from here. However, results will be limited in size as they need
-                    to fit in the master's memory when collected.</p>
+    {{ util.flashed_messages(dismissible=True) }}
+    <div class="container" style="width: 50%; height: 50%;">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Custom lookup</div>
+            <div class="panel-body">
+                <blockquote>
+                    <p>You can run custom Spark SQL queries from here. However, results will be limited in size as they
+                        need
+                        to fit in the master's memory when collected.</p>
 
-                <p>To get the full results, run the query manually through PySpark and save the results to HDFS. You can
-                    then manually download the files to your PC.</p>
-                <footer>- Yoda :-)</footer>
-            </blockquote>
-            {{ wtf.quick_form(form, button_map={'submit_button': 'primary'}) }}
+                    <p>To get the full results, run the query manually through PySpark and save the results to HDFS. You
+                        can
+                        then manually download the files to your PC.</p>
+                    <footer>- Yoda :-)</footer>
+                </blockquote>
+                {{ wtf.quick_form(form, button_map={'submit_button': 'primary'}) }}
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
