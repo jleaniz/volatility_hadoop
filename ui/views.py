@@ -28,7 +28,6 @@ logger = logging.getLogger(__name__)
 
 mod_views = Blueprint('views', __name__)
 
-
 @mod_views.route("/vpn/user", methods=('GET', 'POST'))
 def vpn_user():
     form = UserForm(csrf_enabled=False)
@@ -62,8 +61,7 @@ def search_view():
 
     if Lookupform.validate_on_submit() and Lookupform.lookup.data:
         return redirect(
-            url_for('main.search', table=Lookupform.table.data, tables=Lookupform.tables,
-                    fromdate=Lookupform.fromdate.data.strftime('%Y-%m-%d'),
+            url_for('main.search', table=Lookupform.table.data, tables=Lookupform.tables, fromdate=Lookupform.fromdate.data.strftime('%Y-%m-%d'),
                     todate=Lookupform.todate.data.strftime('%Y-%m-%d'), query=Lookupform.query.data,
                     num=Lookupform.num.data))
 
