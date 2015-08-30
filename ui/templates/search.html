@@ -20,8 +20,18 @@
                     <footer>- Yoda :-)</footer>
                 </blockquote>
                 <form method="POST" class="form-inline">
-                    <div>{{ form.table.label }}: {{ form.table() }}</div>
-                    <div>{{ form.fromdate.label }}: {{ form.fromdate() }}</div>
+                  <div class="form-group">
+                {{ form.fromdate.label }}: {{ form.fromdate() }}
+                  </div>
+                  <div class="form-group">
+                {{ form.todate.label }}: {{ form.todate() }}
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                      {{ form.lookup.label }}: {{ form.lookup() }}
+                  </button>
+                  <button type="submit" class="btn btn-primary">
+                      {{ form.download.label }}: {{ form.download() }}
+                  </button>
                 </form>
             </div>
         </div>

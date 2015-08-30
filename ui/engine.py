@@ -29,7 +29,7 @@ class AnalyticsEngine:
         # Load ratings data for later use
         logger.info("Creating Spark SQL context:")
         self.sqlctx = SQLContext(self.sc)
-
+        '''
         # pre-laod some data
         logger.info("Loading Cisco VPN data")
         self.vpnLogsDF = self.sqlctx.load(
@@ -54,7 +54,7 @@ class AnalyticsEngine:
             "/user/cloudera/bashlog"
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
-
+        '''
         '''
         Caching will make queries faster but for some reason
         it won't let you read certain partitions on a cached DF.
