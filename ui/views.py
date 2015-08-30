@@ -21,8 +21,6 @@ from flask import (
 
 from forms import DateForm, SearchForm, UserDateForm, UserForm, CustomSearchForm
 
-from app import buildJSON, buildJSONCustom, CustomSearch, download
-
 import logging
 
 logging.basicConfig(level=logging.INFO)

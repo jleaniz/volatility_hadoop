@@ -153,7 +153,6 @@ def bashKeyword(keyword):
     else:
         return 'Keyword or date unspecified.'
 
-
 def buildJSON(table, fromdate, todate, query, num):
     jsonResult = analytics_engine.getSearchResults(table, fromdate, todate, query, num)
     results = []
