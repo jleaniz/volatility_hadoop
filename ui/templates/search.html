@@ -4,43 +4,44 @@
 {% import "bootstrap/utils.html" as util %}
 
 {% block content %}
-    {{ util.flashed_messages(dismissible=True) }}
-    <div class="container" style="width: 50%; height: 50%;">
-        <div class="panel panel-primary">
-            <div class="panel-heading">Custom lookup</div>
-            <div class="panel-body">
-                <p>You can run custom Spark SQL queries from here. However, results will be limited in size as they
-                    need
-                    to fit in the master's memory when collected.</p>
+{{ util.flashed_messages(dismissible=True) }}
+<div class="container" style="width: 50%; height: 50%;">
+    <div class="panel panel-primary">
+        <div class="panel-heading">Custom lookup</div>
+        <div class="panel-body">
+            <p>You can run custom Spark SQL queries from here. However, results will be limited in size as they
+                need
+                to fit in the master's memory when collected.</p>
 
-                <p>To get the full results, run the query manually through PySpark and save the results to HDFS. You
-                    can
-                    then manually download the files to your PC.</p>
-                <h5>Available tables: </h5>
-                <ul class="text-info">
+            <p>To get the full results, run the query manually through PySpark and save the results to HDFS. You
+                can
+                then manually download the files to your PC.</p>
+            <h5>Available tables: </h5>
+            <ul class="text-info">
                 {% for table in form.tables %}
                 <li><kbd>{{ table }}</kbd></li>
                 {% endfor %}
-                </ul>
-                <form action="" method="post" class="form" role="form">
-                    <div class="form-inline required">
-                        {{ form.fromdate.label }}: {{ form.fromdate(class="form-control", required="") }}
-                        {{ form.todate.label }}: {{ form.todate(class="form-control", required="") }}
-                    </div>
-                    <br>
-                    <div class="form-group required">
-                        {{ form.table.label }}: {{ form.table(class="form-control", required="") }}
-                    </div>
-                    <div class="form-group required">
-                        {{ form.query.label }}: {{ form.query(class="form-control", required="") }}
-                    </div>
-                    <div class="form-group required">
-                        {{ form.num.label }}: {{ form.num(class="form-control", required="") }}
-                    </div>
-                    {{ form.lookup(class="btn btn-default") }}
-                    {{ form.download(class="btn btn-primary") }}
-                </form>
-            </div>
+            </ul>
+            <form action="" method="post" class="form" role="form">
+                <div class="form-inline required">
+                    {{ form.fromdate.label }}: {{ form.fromdate(class="form-control", required="") }}
+                    {{ form.todate.label }}: {{ form.todate(class="form-control", required="") }}
+                </div>
+                <br>
+
+                <div class="form-group required">
+                    {{ form.table.label }}: {{ form.table(class="form-control", required="") }}
+                </div>
+                <div class="form-group required">
+                    {{ form.query.label }}: {{ form.query(class="form-control", required="") }}
+                </div>
+                <div class="form-group required">
+                    {{ form.num.label }}: {{ form.num(class="form-control", required="") }}
+                </div>
+                {{ form.lookup(class="btn btn-default") }}
+                {{ form.download(class="btn btn-primary") }}
+            </form>
         </div>
     </div>
+</div>
 {% endblock %}

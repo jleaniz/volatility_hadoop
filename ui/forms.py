@@ -53,11 +53,13 @@ class SearchForm(Form):
                        validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     query = StringField(u'Query', validators=[DataRequired(message="Field required")])
     num = SelectField(u'Limit',
-        choices=[('10', '10'), ('100', '100'), ('1000', '1000'), ('10000', '10000'), ('100000', '100000')],
-        validators=[DataRequired(message='Required field')]
-    )
+                      choices=[('10', '10'), ('100', '100'), ('1000', '1000'), ('10000', '10000'),
+                               ('100000', '100000')],
+                      validators=[DataRequired(message='Required field')]
+                      )
     lookup = SubmitField(u'Lookup')
     download = SubmitField(u'Download')
+
 
 class CustomSearchForm(Form):
     query = TextAreaField(u'Query', validators=[DataRequired(message="Field required")])
