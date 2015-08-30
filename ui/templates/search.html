@@ -17,9 +17,11 @@
                     can
                     then manually download the files to your PC.</p>
                 <h5>Available tables: </h5>
+                <ul class="text-info">
                 {% for table in form.tables %}
-                <p class="alert-warning">{{ table }}</p>
+                <kbd>{{ table }}</kbd>
                 {% endfor %}
+                </ul>
                 <form action="" method="post" class="form" role="form">
                     <div class="form-inline required">
                         {{ form.fromdate.label }}: {{ form.fromdate(class="form-control", required="") }}
