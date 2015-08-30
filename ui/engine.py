@@ -29,14 +29,14 @@ class AnalyticsEngine:
         # Load ratings data for later use
         logger.info("Creating Spark SQL context:")
         self.sqlctx = SQLContext(self.sc)
-        '''
+
         # pre-laod some data
         logger.info("Loading Cisco VPN data")
         self.vpnLogsDF = self.sqlctx.load(
             "/user/cloudera/ciscovpn"
         )
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
-
+        '''
         logger.info("Loading Firewall data")
         self.firewallDF = self.sqlctx.load(
             "/user/cloudera/firewall/off"
