@@ -20,11 +20,23 @@
                     <footer>- Yoda :-)</footer>
                 </blockquote>
                 <form action="" method="post" class="form" role="form">
-                    <div class="form-group required">
-                        <label class="sr-only" for="fromdate">From</label>
+                    <div class="form-inline required">
                         {{ form.fromdate(class="form-control") }}
                     </div>
-                    {{ form.lookup(class="form-control") }}
+                    <div class="form-inline required">
+                        {{ form.todate(class="form-control") }}
+                    </div>
+                    <div class="form-group required">
+                        {{ form.table(class="form-control") }}
+                    </div>
+                    <div class="form-group required">
+                        {{ form.query(class="form-control") }}
+                    </div>
+                    <div class="form-group required">
+                        {{ form.num(class="form-control") }}
+                    </div>
+                    {{ form.lookup(class="btn btn-primary") }}
+                    {{ form.download(class="btn btn-default") }}
                 </form>
             </div>
         </div>
