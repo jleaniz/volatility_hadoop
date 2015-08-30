@@ -56,5 +56,5 @@ class SearchForm(Form):
         choices=[('10', '10'), ('100', '100'), ('1000', '1000'), ('10000', '10000'), ('100000', '100000')],
         validators=[DataRequired(message='Required field')]
     )
-    lookup = SubmitField(u'Lookup').widget.html_params(class_="btn btn-primary")
+    lookup = SubmitField(u'Lookup', class_="btn btn-primary")
     download = SubmitField(u'Download')
