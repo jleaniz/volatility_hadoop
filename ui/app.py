@@ -8,6 +8,8 @@ from flask import (
 
 from nav import nav
 from engine import AnalyticsEngine
+from views import mod_views
+
 import logging
 
 logging.basicConfig(level=logging.INFO)
