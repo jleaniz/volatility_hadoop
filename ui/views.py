@@ -65,6 +65,7 @@ def search_view():
             url_for('main.search', table=Lookupform.table.data, fromdate=Lookupform.fromdate.data.strftime('%Y-%m-%d'),
                     todate=Lookupform.todate.data.strftime('%Y-%m-%d'), query=Lookupform.query.data,
                     num=Lookupform.num.data))
+
     if Lookupform.validate_on_submit() and Lookupform.download.data:
         data = buildJSON(Lookupform.table.data, Lookupform.fromdate.data.strftime('%Y-%m-%d'),
                          Lookupform.todate.data.strftime('%Y-%m-%d'),

@@ -21,7 +21,7 @@
                 </blockquote>
                 <form action="" method="post" class="form" role="form">
                     <div class="form-inline required">
-                        {{ form.fromdate.label }}: {{ form.fromdate(class="form-control") }}
+                        {{ form.fromdate.label }}: {{ form.fromdate(class="form-control", required="date") }}
                         {{ form.todate.label }}: {{ form.todate(class="form-control") }}
                     </div>
                     <div class="form-group required">
