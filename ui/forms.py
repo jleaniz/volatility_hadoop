@@ -40,7 +40,7 @@ class DateForm(Form):
                          validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     todate = DateField(u'To', format='%Y-%m-%d',
                        validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
-    submit = SubmitField(u'Lookup').widget.html_params(_class="btn btn-primary")
+    submit = SubmitField(u'Lookup')
 
 
 class SearchForm(Form):
@@ -56,5 +56,5 @@ class SearchForm(Form):
         choices=[('10', '10'), ('100', '100'), ('1000', '1000'), ('10000', '10000'), ('100000', '100000')],
         validators=[DataRequired(message='Required field')]
     )
-    lookup = SubmitField(u'Lookup')
+    lookup = SubmitField(u'Lookup').widget.html_params(class_="btn btn-primary")
     download = SubmitField(u'Download')
