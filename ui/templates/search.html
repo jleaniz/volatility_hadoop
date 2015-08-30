@@ -21,17 +21,17 @@
                 </blockquote>
                 <form action="" method="post" class="form" role="form">
                     <div class="form-inline required">
-                        {{ form.fromdate.label }}: {{ form.fromdate(class="form-control", required) }}
-                        {{ form.todate.label }}: {{ form.todate(class="form-control", required) }}
+                        {{ form.fromdate.label }}: {{ form.fromdate(class="form-control", required="") }}
+                        {{ form.todate.label }}: {{ form.todate(class="form-control", required="") }}
                     </div>
                     <div class="form-group required">
-                        {{ form.todate.label }}: {{ form.table(class="form-control", required) }}
+                        {{ form.todate.label }}: {{ form.table(class="form-control", required="") }}
                     </div>
                     <div class="form-group required">
-                        {{ form.todate.label }}: {{ form.query(class="form-control", required) }}
+                        {{ form.todate.label }}: {{ form.query(class="form-control", required="") }}
                     </div>
                     <div class="form-group required">
-                        {{ form.todate.label }}: {{ form.num(class="form-control", required) }}
+                        {{ form.todate.label }}: {{ form.num(class="form-control", required="") }}
                     </div>
                     {{ form.lookup(class="btn btn-primary") }}
                     {{ form.download(class="btn btn-default") }}
