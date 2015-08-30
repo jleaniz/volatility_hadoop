@@ -166,6 +166,17 @@ def buildJSON(table, fromdate, todate, query, num):
 
     return results
 
+def buildJSONCustom(query):
+    jsonResult = analytics_engine.getCustomSearchResults(query)
+    results = []
+
+    results.append('{"%s": [\n' % ("search"))
+    for item in jsonResult:
+        results.append(item + ',\n')
+
+    results.append('{}\n]}')
+
+    return results
 
 def create_app(spark_context):
     global analytics_engine
