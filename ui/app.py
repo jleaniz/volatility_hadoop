@@ -14,7 +14,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 main = Blueprint('main', __name__)
-mod_views = Blueprint('views', __name__)
 
 
 @main.app_errorhandler(404)
@@ -47,6 +46,32 @@ def download(content):
     # to be downloaded, instead of just printed on the browser
     response.headers["Content-Disposition"] = "attachment; filename=results.gz"
     return response
+
+
+def buildJSON(table, fromdate, todate, query, num):
+    jsonResult = analytics_engine.getSearchResults(table, fromdate, todate, query, num)
+    results = []
+
+    results.append('{"%s": [\n' % (table))
+    for item in jsonResult:
+        results.append(item + ',\n')
+
+    results.append('{}\n]}')
+
+    return results
+
+
+def buildJSONCustom(query):
+    jsonResult = analytics_engine.getCustomSearchResults(query)
+    results = []
+
+    results.append('{"%s": [\n' % ("search"))
+    for item in jsonResult:
+        results.append(item + ',\n')
+
+    results.append('{}\n]}')
+
+    return results
 
 
 @main.route('/')
@@ -151,29 +176,6 @@ def bashKeyword(keyword):
     else:
         return 'Keyword or date unspecified.'
 
-def buildJSON(table, fromdate, todate, query, num):
-    jsonResult = analytics_engine.getSearchResults(table, fromdate, todate, query, num)
-    results = []
-
-    results.append('{"%s": [\n' % (table))
-    for item in jsonResult:
-        results.append(item + ',\n')
-
-    results.append('{}\n]}')
-
-    return results
-
-def buildJSONCustom(query):
-    jsonResult = analytics_engine.getCustomSearchResults(query)
-    results = []
-
-    results.append('{"%s": [\n' % ("search"))
-    for item in jsonResult:
-        results.append(item + ',\n')
-
-    results.append('{}\n]}')
-
-    return results
 
 def create_app(spark_context):
     global analytics_engine
