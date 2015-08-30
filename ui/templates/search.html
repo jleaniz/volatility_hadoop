@@ -18,7 +18,7 @@
                     then manually download the files to your PC.</p>
                 <h5>Available tables: </h5>
                 {% for table in form.tables %}
-                <p><kbd>{{ table }}</kbd></p>
+                <p class="alert-warning">{{ table }}</p>
                 {% endfor %}
                 <form action="" method="post" class="form" role="form">
                     <div class="form-inline required">
