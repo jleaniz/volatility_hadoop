@@ -21,6 +21,8 @@ from flask import (
 
 from forms import DateForm, SearchForm, UserDateForm, UserForm, CustomSearchForm
 
+from app import buildJSON, buildJSONCustom, CustomSearch, download
+
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -84,7 +86,7 @@ def custom_search_view():
         return redirect(url_for('main.CustomSearch', query=Search.query.data))
 
     if Search.validate_on_submit() and Search.download.data:
-        data = buildJSONCustom(Search.query.data)
+        data = CustomSearch(Search.query.data)
         response = download(data)
         return response
 
