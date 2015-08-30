@@ -26,6 +26,8 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+mod_views = Blueprint('views', __name__)
+
 @mod_views.route("/vpn/user", methods=('GET', 'POST'))
 def vpn_user():
     form = UserForm(csrf_enabled=False)

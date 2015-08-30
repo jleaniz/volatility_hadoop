@@ -8,7 +8,7 @@ from flask import (
 
 from nav import nav
 from engine import AnalyticsEngine
-from views import *
+from views import mod_views
 
 import logging
 
@@ -16,7 +16,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 main = Blueprint('main', __name__)
-mod_views = Blueprint('views', __name__)
 
 
 @main.app_errorhandler(404)
