@@ -19,21 +19,21 @@
                         then manually download the files to your PC.</p>
                     <footer>- Yoda :-)</footer>
                 </blockquote>
-                <form method="POST" class="form-group">
+                <form method="POST" class="form-group" action="">
                   <div class="form-group">
-                {{ form.table.label }}: {{ form.table() }}
+                {{ form.table.label }}: {{ form.table(class="form-control") }}
                   </div>
                   <div class="form-group">
-                {{ form.fromdate.label }}: {{ form.fromdate() }}
+                {{ form.fromdate.label }}: {{ form.fromdate(class="form-control") }}
                   </div>
                   <div class="form-group">
-                {{ form.todate.label }}: {{ form.todate() }}
+                {{ form.todate.label }}: {{ form.todate(class="form-control") }}
                   </div>
                 <div class="form-group">
-                {{ form.query.label }}: {{ form.query() }}
+                {{ form.query.label }}: {{ form.query(class="form-control") }}
                   </div>
                 <div class="form-group">
-                {{ form.num.label }}: {{ form.num() }}
+                {{ form.num.label }}: {{ form.num(class="form-control") }}
                   </div>
                   <button type="submit" class="btn btn-default">
                      {{ form.lookup() }}
