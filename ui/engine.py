@@ -13,8 +13,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-# test
-
 class AnalyticsEngine:
     '''
     Security analytics engine class

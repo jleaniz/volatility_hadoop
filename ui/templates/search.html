@@ -19,7 +19,10 @@
                         then manually download the files to your PC.</p>
                     <footer>- Yoda :-)</footer>
                 </blockquote>
-                {{ wtf.quick_form(form, button_map={'submit_button': 'primary'}) }}
+                <form method="POST" class="form-inline">
+                    <div>{{ form.table.label }}: {{ form.table() }}</div>
+                    <div>{{ form.fromdate.label }}: {{ form.fromdate() }}</div>
+                </form>
             </div>
         </div>
     </div>
