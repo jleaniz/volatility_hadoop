@@ -52,7 +52,7 @@ class SearchForm(Form):
     todate = DateField(u'To', format='%Y-%m-%d',
                        validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     query = StringField(u'Query', validators=[DataRequired(message="Field required")])
-    num = SelectField(
+    num = SelectField(u'Limit',
         choices=[('10', '10'), ('100', '100'), ('1000', '1000'), ('10000', '10000'), ('100000', '100000')],
         validators=[DataRequired(message='Required field')]
     )
