@@ -62,7 +62,7 @@ def search_view():
 
     if Lookupform.validate_on_submit() and Lookupform.lookup.data:
         return redirect(
-            url_for('main.search', tables=Lookupform.tables, fromdate=Lookupform.fromdate.data.strftime('%Y-%m-%d'),
+            url_for('main.search', table=Lookupform.table.data, tables=Lookupform.tables, fromdate=Lookupform.fromdate.data.strftime('%Y-%m-%d'),
                     todate=Lookupform.todate.data.strftime('%Y-%m-%d'), query=Lookupform.query.data,
                     num=Lookupform.num.data))
 

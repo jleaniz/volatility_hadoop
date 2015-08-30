@@ -44,10 +44,8 @@ class DateForm(Form):
 
 
 class SearchForm(Form):
-    #table = SelectField(choices=[('proxysg', 'proxysg'), ('firewall', 'firewall'), ('ciscovpn', 'ciscovpn')],
-    #                    validators=[DataRequired(message='Required field')]
-    #
-    #                     )
+    table = SelectField(choices=[('proxysg', 'proxysg'), ('firewall', 'firewall'), ('ciscovpn', 'ciscovpn')],
+                        validators=[DataRequired(message='Required field')])
     tables = ['vpn', 'firewall', 'proxysg', 'bashlog']
     fromdate = DateField(u'From', format='%Y-%m-%d',
                          validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
