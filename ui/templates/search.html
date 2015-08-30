@@ -19,22 +19,12 @@
                         then manually download the files to your PC.</p>
                     <footer>- Yoda :-)</footer>
                 </blockquote>
-                <form method="POST" class="form-group">
-                  <div class="form-group">
-                {{ form.table(class="form-control") }}
-                {{ form.query(class="form-control") }}
-                {{ form.num(class="form-control") }}
-                  </div>
-                  <div class="form-inline">
-                {{ form.fromdate(class="form-control") }}
-                {{ form.todate(class="form-control") }}
-                  </div>
-                  <button type="submit">
-                     {{ form.lookup() }}
-                  </button>
-                  <button type="submit">
-                      {{ form.download() }}
-                  </button>
+                <form action="" method="post" class="form" role="form">
+                    <div class="form-group  required">
+                        <label class="sr-only" for="fromdate">From</label>
+                        {{ form.fromdate(class="form-control", required_type="date") }}
+                    </div>
+                    {{ form.lookup(class="form-control") }}
                 </form>
             </div>
         </div>
