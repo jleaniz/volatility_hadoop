@@ -16,17 +16,15 @@
 #
 
 from flask import (
-    Flask, request, render_template, flash, redirect, url_for, Response, Blueprint, make_response, abort
+    render_template, redirect, url_for, Blueprint
 )
 
 from forms import DateForm, SearchForm, UserDateForm, UserForm, CustomSearchForm
-
+from app import mod_views, buildJSON, buildJSONCustom, download
 import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-mod_views = Blueprint('views', __name__)
 
 
 @mod_views.route("/vpn/user", methods=('GET', 'POST'))

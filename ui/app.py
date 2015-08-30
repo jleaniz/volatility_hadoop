@@ -2,12 +2,9 @@ from flask_bootstrap import (
     __version__ as FLASK_BOOTSTRAP_VERSION, Bootstrap
 )
 import gzip
-import forms
 from flask import (
-    Flask, request, render_template, flash, redirect, url_for, Response, Blueprint, make_response, abort
+    Flask, render_template, Response, Blueprint, make_response
 )
-
-from views import mod_views
 
 from nav import nav
 from engine import AnalyticsEngine
@@ -17,6 +14,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 main = Blueprint('main', __name__)
+mod_views = Blueprint('views', __name__)
 
 
 @main.app_errorhandler(404)
