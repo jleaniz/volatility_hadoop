@@ -21,19 +21,13 @@
                 </blockquote>
                 <form method="POST" class="form-group">
                   <div class="form-group">
-                {{ form.table.label }}: {{ form.table(class="form-control") }}
+                {{ form.table(class="form-control") }}
+                {{ form.query(class="form-control") }}
+                {{ form.num(class="form-control") }}
                   </div>
                   <div class="form-inline">
-                {{ form.fromdate.label }}: {{ form.fromdate(class="form-control") }}
-                  </div>
-                  <div class="form-inline">
-                {{ form.todate.label }}: {{ form.todate(class="form-control") }}
-                  </div>
-                <div class="form-group">
-                {{ form.query.label }}: {{ form.query(class="form-control") }}
-                  </div>
-                <div class="form-group">
-                {{ form.num.label }}: {{ form.num(class="form-control") }}
+                {{ form.fromdate(class="form-control") }}
+                {{ form.todate(class="form-control") }}
                   </div>
                   <button type="submit">
                      {{ form.lookup() }}
