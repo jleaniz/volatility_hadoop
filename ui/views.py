@@ -19,7 +19,7 @@ from flask import (
     Flask, request, render_template, flash, redirect, url_for, Response, Blueprint, make_response, abort
 )
 
-from forms import DateForm, SearchForm, UserDateForm, UserForm
+from forms import DateForm, SearchForm, UserDateForm, UserForm, CustomSearchForm
 
 import logging
 
@@ -74,6 +74,21 @@ def search_view():
         return response
 
     return render_template("search.html", form=Lookupform)
+
+
+@mod_views.route("/search/custom", methods=('GET', 'POST'))
+def custom_search_view():
+    Search = CustomSearchForm(csrf_enabled=False)
+
+    if Search.validate_on_submit() and Search.lookup.data:
+        return redirect(url_for('main.CustomSearch', query=Search.query.data))
+
+    if Search.validate_on_submit() and Search.download.data:
+        data = CustomSearch(Search.query.data)
+        response = download(data)
+        return response
+
+    return render_template("custom_search.html", form=Search)
 
 
 @mod_views.route("/bash/keyword", methods=('GET', 'POST'))

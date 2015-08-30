@@ -131,6 +131,19 @@ def search(table, fromdate, todate, query, num):
     return Response(generate(), mimetype='application/json')
 
 
+@main.route('/search/custom/<query>')
+def CustomSearch(query):
+    jsonResult = analytics_engine.getCustomSearchResults(query)
+
+    def generate():
+        yield '{"%s": [\n' % ('search')
+        for doc in jsonResult:
+            yield doc + ',\n'
+        yield "{}\n]}"
+
+    return Response(generate(), mimetype='application/json')
+
+
 @main.route('/api/bash/keyword/<keyword>')
 def bashKeyword(keyword):
     if keyword:

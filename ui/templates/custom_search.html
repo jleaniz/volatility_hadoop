@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
+{% block content %}
+    {{ util.flashed_messages(dismissible=True) }}
+    <div class="container" style="width: 50%; height: 50%;">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Custom lookup</div>
+            <div class="panel-body">
+                <h5>Available tables: </h5>
+                <ul class="text-info">
+                {% for table in form.tables %}
+                <li><kbd>{{ table }}</kbd></li>
+                {% endfor %}
+                </ul>
+                <form action="" method="post" class="form" role="form">
+                    <div class="form-group required">
+                        {{ form.query.label }}: {{ form.query(class="form-control", required="") }}
+                    </div>
+                    {{ form.lookup(class="btn btn-default") }}
+                    {{ form.download(class="btn btn-primary") }}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

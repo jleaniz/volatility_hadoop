@@ -276,7 +276,6 @@ class AnalyticsEngine:
 
         for day in days:
             try:
-                # resultsDF = self.tempDF.where(self.tempDF.year == day.year).where(self.tempDF.month == str(day).split('-')[1]).where(self.tempDF.day == str(day).split('-')[2])
                 filteredDF = tempDF.filter(
                     'year=%s and month=%s and day=%s' % (day.year, str(day).split('-')[1], str(day).split('-')[2]))
                 self.sqlctx.registerDataFrameAsTable(filteredDF, table)
@@ -286,19 +285,14 @@ class AnalyticsEngine:
             except Py4JJavaError:
                 pass
 
-        '''
-        self.tempDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.tempDF, table)
-        self.tempDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
-
+    def getCustomSearchResults(self, query):
         try:
-            results = self.sqlctx.sql('%s limit %s' % (query, num))
-            #for json in results.toJSON().collect():
-            #    yield json
-            return results.toJSON().collect()
+            resultsDF = self.sqlctx.sql('%s' % (query))
+            for result in resultsDF.toJSON().collect():
+                yield result
         except Py4JJavaError:
             pass
-        '''
+
 
     def bashKeywordSearch(self, keyword):
 
