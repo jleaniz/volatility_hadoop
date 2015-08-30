@@ -40,7 +40,7 @@ class DateForm(Form):
                          validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     todate = DateField(u'To', format='%Y-%m-%d',
                        validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
-    submit = SubmitField(u'Lookup').widget.html_params(class="btn btn-primary")
+    submit = SubmitField(u'Lookup').widget.html_params(_class="btn btn-primary")
 
 
 class SearchForm(Form):
