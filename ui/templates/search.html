@@ -21,10 +21,8 @@
                 </blockquote>
                 <form action="" method="post" class="form" role="form">
                     <div class="form-inline required">
-                        {{ form.fromdate.label }} {{ form.validators }} {{ form.fromdate(class="form-control") }}
-                    </div>
-                    <div class="form-inline required">
-                        {{ form.todate(class="form-control") }}
+                        {{ form.fromdate.label }}: {{ form.fromdate(class="form-control") }}
+                        {{ form.todate.label }}: {{ form.todate(class="form-control") }}
                     </div>
                     <div class="form-group required">
                         {{ form.table(class="form-control") }}
