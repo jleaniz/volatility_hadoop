@@ -20,7 +20,6 @@ from flask import (
 )
 
 from forms import DateForm, SearchForm, UserDateForm, UserForm, CustomSearchForm
-from app import download, buildJSONCustom, buildJSON, mod_views
 
 import logging
 
