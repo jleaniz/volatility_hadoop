@@ -8,6 +8,7 @@ from flask import (
 
 from nav import nav
 from engine import AnalyticsEngine
+from views import *
 
 import logging
 
