@@ -21,10 +21,19 @@
                 </blockquote>
                 <form method="POST" class="form-group">
                   <div class="form-group">
+                {{ form.table.label }}: {{ form.table() }}
+                  </div>
+                  <div class="form-group">
                 {{ form.fromdate.label }}: {{ form.fromdate() }}
                   </div>
                   <div class="form-group">
                 {{ form.todate.label }}: {{ form.todate() }}
+                  </div>
+                <div class="form-group">
+                {{ form.query.label }}: {{ form.query() }}
+                  </div>
+                <div class="form-group">
+                {{ form.num.label }}: {{ form.num() }}
                   </div>
                   <button type="submit" class="btn btn-primary">
                       {{ form.lookup.label }}: {{ form.lookup() }}
