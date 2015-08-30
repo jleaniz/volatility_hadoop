@@ -16,13 +16,14 @@
                 <p>To get the full results, run the query manually through PySpark and save the results to HDFS. You
                     can
                     then manually download the files to your PC.</p>
-
+                <p>Available tables: </p>
+                <ul class="list-inline"> {{ tables  }}</ul>
                 <form action="" method="post" class="form" role="form">
                     <div class="form-inline required">
                         {{ form.fromdate.label }}: {{ form.fromdate(class="form-control", required="") }}
                         {{ form.todate.label }}: {{ form.todate(class="form-control", required="") }}
                     </div>
-
+                    <br>
                     <div class="form-group required">
                         {{ form.table.label }}: {{ form.table(class="form-control", required="") }}
                     </div>
