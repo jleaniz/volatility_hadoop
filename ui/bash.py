@@ -3,7 +3,7 @@ from flask import (
 )
 
 from forms import UserDateForm
-from app import analytics_engine, logger
+from app import analytics_engine, logger, main
 
 @main.route('/api/bash/keyword/<keyword>')
 def bashKeyword(keyword):
@@ -15,7 +15,7 @@ def bashKeyword(keyword):
         return 'Keyword or date unspecified.'
 
 
-@mod_views.route("/bash/keyword", methods=('GET', 'POST'))
+@main.route("/bash/keyword", methods=('GET', 'POST'))
 def bash_keyword():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
