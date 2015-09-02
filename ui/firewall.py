@@ -20,4 +20,4 @@ def DisplayPortStats():
         #                        todate=form.todate.data.strftime('%Y-%m-%d')))
         return render_template('proxyTopTransfers.html', jsonTable=jsonChart, jsonChart=jsonChart)
 
-    return render_template("search.html", form=form)
+    return render_template("proxy.html", form=form)
