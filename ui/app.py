@@ -14,32 +14,58 @@
 # You should have received a copy of the GNU General Public License
 # along with BDSA.  If not, see <http://www.gnu.org/licenses/>.
 #
-from flask_bootstrap import (
-    __version__ as FLASK_BOOTSTRAP_VERSION, Bootstrap
-)
-import gzip
-from flask import (
-    Flask, render_template, Response, Blueprint, make_response
-)
-
-from flask import (
-    render_template, redirect, url_for, Blueprint
-)
-
-from forms import DateForm, SearchForm, UserDateForm, UserForm, CustomSearchForm
-
-from server import sc
-analytics_engine = AnalyticsEngine(sc)
+import cherrypy
+from paste.translogger import TransLogger
+from pyspark import SparkContext, SparkConf
+from config import config as conf
 
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+from flask_bootstrap import Bootstrap
+
+from flask import (
+    Flask, render_template, Blueprint
+)
 from nav import nav
 from engine import AnalyticsEngine
 
-
 main = Blueprint('main', __name__)
+
+def init_spark_context():
+    # load spark context
+    appConfig = conf.Config()
+    # IMPORTANT: pass aditional Python modules to each worker
+    sc = SparkContext(conf=appConfig.setSparkConf())
+
+    return sc
+
+sc = init_spark_context()
+analytics_engine = AnalyticsEngine(sc)
+
+def run_server(app):
+    # Enable WSGI access logging via Paste
+    app_logged = TransLogger(app)
+
+    # Mount the WSGI callable object (app) on the root directory
+    cherrypy.tree.graft(app_logged, '/')
+
+    # Set the configuration of the web server
+    cherrypy.config.update({
+        'engine.autoreload.on': True,
+        'log.screen': True,
+        'response.stream': True,
+        'response.timeout': 3600,
+        # 'server.ssl_module': 'builtin',
+        'server.socket_port': 5432,
+        'server.socket_host': '0.0.0.0'
+    })
+    # cherrypy.server.ssl_certificate = "cert.pem"
+    # cherrypy.server.ssl_private_key = "privkey.pem"
+    # Start the CherryPy WSGI web server
+    cherrypy.engine.start()
+    cherrypy.engine.block()
 
 @main.app_errorhandler(404)
 def page_not_found(e):
@@ -77,12 +103,8 @@ def buildJSONCustom(query):
     return results
 
 
-@main.route('/')
-def index():
-    return render_template('index.html')
-
-
-def create_app(spark_context):
+if __name__ == "__main__":
+    # Init spark context and load libraries
     app = Flask(__name__)
     app.config['SESSION_TYPE'] = 'filesystem'
     app.secret_key = 'super secret key'
@@ -92,4 +114,5 @@ def create_app(spark_context):
     app.register_blueprint(main)
 
     nav.init_app(app)
-    return app
+    # start web server
+    run_server(app)
