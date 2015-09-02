@@ -389,7 +389,7 @@ class AnalyticsEngine:
         :param username:
         :return:
         '''
-
+        (year, month, day) = date.split('-')
         loginsByUser = self.sqlctx.sql(
             "select user from vpn where year=%s and month=%s and day=%s and remoteip='%s'" % (
                 year, month, day, remoteip)
