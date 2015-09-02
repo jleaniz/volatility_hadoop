@@ -358,7 +358,7 @@ class AnalyticsEngine:
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
         PortStats = self.sqlctx.sql(
-            'select dstport, count(*) as hits from proxysg where action="DENY" '
+            'select dstport, count(*) as hits from firewall where action="DENY" '
             'group by dstport, hits order by hits desc limit 10'
         )
         entries = PortStats.collect()
