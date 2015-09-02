@@ -30,6 +30,7 @@ from forms import DateForm, UserDateForm, SearchForm, CustomSearchForm, UserForm
 from nav import nav
 from engine import analytics_engine
 from search import mod_search
+from firewall import mod_firewall
 
 main = Blueprint('main', __name__)
 
@@ -191,6 +192,9 @@ if __name__ == "__main__":
 
     app.register_blueprint(main)
     app.register_blueprint(mod_search)
+    app.register_blueprint(mod_firewall)
+
     nav.init_app(app)
+
     # start web server
     run_server(app)
