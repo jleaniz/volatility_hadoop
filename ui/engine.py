@@ -400,17 +400,28 @@ class AnalyticsEngine:
         return jsonRDD
 
 
-def init_spark_context():
-    # load spark context
-    appConfig = conf.Config()
-    # IMPORTANT: pass aditional Python modules to each worker
-    sc = SparkContext(conf=appConfig.setSparkConf())
+    def GenerateDashboard(self):
+        '''
+        By default this function generates the dashboard
+        using data from the last 30 days
+        :return:
+        '''
+        #_parquetPaths = self.buildParquetFileList(table, today, edate)
+        today = date.today()
+        start = today - td(today.day + 30)
 
+        pass
+
+
+def init_spark_context():
+    appConfig = conf.Config()
+    sc = SparkContext(conf=appConfig.setSparkConf())
     return sc
 
 
 sc = init_spark_context()
 analytics_engine = AnalyticsEngine(sc)
+
 
 def buildJSON(table, fromdate, todate, query, num):
     jsonResult = analytics_engine.getSearchResults(table, fromdate, todate, query, num)
@@ -421,7 +432,6 @@ def buildJSON(table, fromdate, todate, query, num):
         results.append(item + ',\n')
 
     results.append('{}\n]}')
-
     return results
 
 
@@ -434,5 +444,4 @@ def buildJSONCustom(query):
         results.append(item + ',\n')
 
     results.append('{}\n]}')
-
     return results
