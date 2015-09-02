@@ -29,7 +29,7 @@ from flask import (
 from forms import DateForm, UserDateForm, SearchForm, CustomSearchForm, UserForm
 from nav import nav
 from engine import analytics_engine
-from search import search as mod_search
+from search import mod_search
 
 main = Blueprint('main', __name__)
 

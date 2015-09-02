@@ -3,12 +3,13 @@ from flask import (
     render_template, redirect, url_for, Response, make_response, Blueprint
 )
 from forms import SearchForm, CustomSearchForm
-from app import analytics_engine, buildJSON
+from engine import analytics_engine
+from app import buildJSON
 
-search = Blueprint('search', __name__)
+mod_search = Blueprint('search', __name__)
 
 
-@search.route('/download/<file>')
+@mod_search.route('/download/<file>')
 def download(content):
     f = gzip.open('/tmp/results.gz', 'wb')
     try:
@@ -30,7 +31,7 @@ def download(content):
     return response
 
 
-@search.route('/search/<table>/<fromdate>/<todate>/<query>/<num>')
+@mod_search.route('/search/<table>/<fromdate>/<todate>/<query>/<num>')
 def search(table, fromdate, todate, query, num):
     jsonResult = analytics_engine.getSearchResults(table, fromdate, todate, query, num)
 
@@ -43,7 +44,7 @@ def search(table, fromdate, todate, query, num):
     return Response(generate(), mimetype='application/json')
 
 
-@search.route('/search/custom/<query>')
+@mod_search.route('/search/custom/<query>')
 def CustomSearch(query):
     jsonResult = analytics_engine.getCustomSearchResults(query)
 
@@ -56,7 +57,7 @@ def CustomSearch(query):
     return Response(generate(), mimetype='application/json')
 
 
-@search.route("/search", methods=('GET', 'POST'))
+@mod_search.route("/search", methods=('GET', 'POST'))
 def search_view():
     Lookupform = SearchForm(csrf_enabled=False)
 
@@ -77,7 +78,7 @@ def search_view():
     return render_template("search.html", form=Lookupform)
 
 
-@search.route("/search/custom", methods=('GET', 'POST'))
+@mod_search.route("/search/custom", methods=('GET', 'POST'))
 def custom_search_view():
     Search = CustomSearchForm(csrf_enabled=False)
 
