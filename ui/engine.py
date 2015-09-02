@@ -348,6 +348,41 @@ class AnalyticsEngine:
 
         return json
 
+    def getFirewallPortStats(self, fromdate, todate):
+        '''
+        :return:
+        '''
+        _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
+
+        self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
+        self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+
+        PortStats = self.sqlctx.sql(
+            'select dstport, count(*) as hits from proxysg where action="DENY" '
+            'group by dstport, hits order by hits desc limit 10'
+        )
+        entries = PortStats.collect()
+
+        # Build json object for the table
+        dataChart = []
+        descriptionChart = {
+            "port": ("string", "Destination Port"),
+            "hits": ("number", "Hits")
+        }
+
+        for entry in entries:
+            dataChart.append( {"port": entry.port, "hits": entry.hits}  )
+
+        data_tableChart = gviz_api.DataTable(descriptionChart)
+        data_tableChart.LoadData(dataChart)
+        # Creating a JSon string
+        jsonChart = data_tableChart.ToJSon(
+            columns_order=("port", "hits"),
+            order_by="hits"
+        )
+
+        return jsonChart
+
     def identifyVPNUser(self, remoteip, date):
         '''
 
