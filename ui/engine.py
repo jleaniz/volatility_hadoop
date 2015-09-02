@@ -19,6 +19,9 @@ from datetime import date, timedelta as td
 
 from pyspark.sql import SQLContext
 from pyspark import StorageLevel
+from pyspark import SparkContext, SparkConf
+from config import config as conf
+
 from py4j.java_gateway import Py4JJavaError
 import gviz_api
 import os
@@ -360,3 +363,16 @@ class AnalyticsEngine:
         jsonRDD = loginsByUser.toJSON()
 
         return jsonRDD
+
+
+def init_spark_context():
+    # load spark context
+    appConfig = conf.Config()
+    # IMPORTANT: pass aditional Python modules to each worker
+    sc = SparkContext(conf=appConfig.setSparkConf())
+
+    return sc
+
+
+sc = init_spark_context()
+analytics_engine = AnalyticsEngine(sc)

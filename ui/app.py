@@ -16,10 +16,7 @@
 #
 import cherrypy
 from paste.translogger import TransLogger
-from pyspark import SparkContext, SparkConf
-from config import config as conf
 
-import gzip
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -31,23 +28,10 @@ from flask import (
 )
 from forms import DateForm, UserDateForm, SearchForm, CustomSearchForm, UserForm
 from nav import nav
-from engine import AnalyticsEngine
+from engine import analytics_engine
 from search import search as mod_search
 
 main = Blueprint('main', __name__)
-
-
-def init_spark_context():
-    # load spark context
-    appConfig = conf.Config()
-    # IMPORTANT: pass aditional Python modules to each worker
-    sc = SparkContext(conf=appConfig.setSparkConf())
-
-    return sc
-
-
-sc = init_spark_context()
-analytics_engine = AnalyticsEngine(sc)
 
 
 def run_server(app):
