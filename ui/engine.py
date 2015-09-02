@@ -376,3 +376,28 @@ def init_spark_context():
 
 sc = init_spark_context()
 analytics_engine = AnalyticsEngine(sc)
+
+def buildJSON(table, fromdate, todate, query, num):
+    jsonResult = analytics_engine.getSearchResults(table, fromdate, todate, query, num)
+    results = []
+
+    results.append('{"%s": [\n' % (table))
+    for item in jsonResult:
+        results.append(item + ',\n')
+
+    results.append('{}\n]}')
+
+    return results
+
+
+def buildJSONCustom(query):
+    jsonResult = analytics_engine.getCustomSearchResults(query)
+    results = []
+
+    results.append('{"%s": [\n' % ("search"))
+    for item in jsonResult:
+        results.append(item + ',\n')
+
+    results.append('{}\n]}')
+
+    return results

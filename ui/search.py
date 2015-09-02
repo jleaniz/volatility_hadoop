@@ -3,8 +3,7 @@ from flask import (
     render_template, redirect, url_for, Response, make_response, Blueprint
 )
 from forms import SearchForm, CustomSearchForm
-from engine import analytics_engine
-from app import buildJSON
+from engine import analytics_engine, buildJSON
 
 mod_search = Blueprint('search', __name__)
 

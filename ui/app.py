@@ -73,32 +73,6 @@ def index():
     return render_template('index.html')
 
 
-def buildJSON(table, fromdate, todate, query, num):
-    jsonResult = analytics_engine.getSearchResults(table, fromdate, todate, query, num)
-    results = []
-
-    results.append('{"%s": [\n' % (table))
-    for item in jsonResult:
-        results.append(item + ',\n')
-
-    results.append('{}\n]}')
-
-    return results
-
-
-def buildJSONCustom(query):
-    jsonResult = analytics_engine.getCustomSearchResults(query)
-    results = []
-
-    results.append('{"%s": [\n' % ("search"))
-    for item in jsonResult:
-        results.append(item + ',\n')
-
-    results.append('{}\n]}')
-
-    return results
-
-
 @main.route('/proxy/LoginsByUser/google/<username>/<fromdate>/<todate>')
 def proxyGoogleFormat(username, fromdate, todate):
     if username and fromdate and todate:
