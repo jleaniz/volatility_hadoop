@@ -82,6 +82,11 @@ def internal_server_error(e):
     return render_template('500.html', error=e.message)
 
 
+@main.route('/')
+def index():
+    return render_template('index.html')
+
+
 def buildJSON(table, fromdate, todate, query, num):
     jsonResult = analytics_engine.getSearchResults(table, fromdate, todate, query, num)
     results = []
