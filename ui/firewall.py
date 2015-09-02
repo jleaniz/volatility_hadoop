@@ -5,7 +5,7 @@ from flask import (
 from forms import  DateForm
 from engine import analytics_engine
 
-mod_firewall = Blueprint('search', __name__)
+mod_firewall = Blueprint('firewall', __name__)
 
 @mod_firewall.route('/')
 def index():
