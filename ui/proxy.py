@@ -27,3 +27,7 @@ def proxyTopTransfers():
         return render_template('proxyTopTransfers.html', jsonTable=jsonTable, jsonChart=jsonChart)
 
     return render_template("proxy.html", form=form)
+
+@mod_proxy.route('/')
+def index():
+    return render_template('index.html')

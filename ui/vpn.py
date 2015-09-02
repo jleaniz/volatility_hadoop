@@ -54,3 +54,7 @@ def vpn_user():
     if form.validate_on_submit():
         return redirect(url_for('main.vpnGoogleFormat', username=form.name.data))
     return render_template("vpn.html", form=form)
+
+@mod_vpn.route('/')
+def index():
+    return render_template('index.html')
