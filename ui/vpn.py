@@ -1,5 +1,5 @@
 from flask import (
-    render_template, redirect, url_for, Blueprint, Response
+    render_template, Blueprint, Response
 )
 from forms import  UserForm
 from engine import analytics_engine
@@ -39,20 +39,13 @@ def identifyVPNAPI(date, remoteip):
         return 'Username unspecified.'
 
 
-@mod_vpn.route('/vpn/LoginsByUser/google/<username>')
-def vpnGoogleFormat(username):
-    if username:
-        json = analytics_engine.getVPNLoginsByUserGoogle(username)
-        return render_template('vpnGC.html', json=json)
-    else:
-        return 'Username unspecified.'
-
-
 @mod_vpn.route("/vpn/user", methods=('GET', 'POST'))
 def vpn_user():
     form = UserForm(csrf_enabled=False)
     if form.validate_on_submit():
-        return redirect(url_for('main.vpnGoogleFormat', username=form.name.data))
+        json = analytics_engine.getVPNLoginsByUserGoogle(form.name.data)
+        return render_template('vpnGC.html', json=json)
+
     return render_template("vpn.html", form=form)
 
 @mod_vpn.route('/')
