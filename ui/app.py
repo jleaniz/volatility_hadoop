@@ -19,6 +19,7 @@ from paste.translogger import TransLogger
 from pyspark import SparkContext, SparkConf
 from config import config as conf
 
+import gzip
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -28,9 +29,10 @@ from flask_bootstrap import Bootstrap
 from flask import (
     Flask, render_template, Blueprint, redirect, url_for, Response, make_response
 )
-from forms import DateForm, UserDateForm, SearchForm, CustomSearchForm
+from forms import DateForm, UserDateForm, SearchForm, CustomSearchForm, UserForm
 from nav import nav
 from engine import AnalyticsEngine
+
 
 main = Blueprint('main', __name__)
 
