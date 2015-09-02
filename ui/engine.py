@@ -359,7 +359,7 @@ class AnalyticsEngine:
 
         PortStats = self.sqlctx.sql(
             'select dstport, count(*) as hits from firewall where action="DENY" '
-            'group by dstport, hits order by hits desc limit 10'
+            'group by dstport order by hits desc limit 10'
         )
         entries = PortStats.collect()
 
