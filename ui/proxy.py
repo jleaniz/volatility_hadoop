@@ -6,6 +6,10 @@ from flask import (
 
 from forms import DateForm, UserDateForm
 
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 @main.route('/proxy/LoginsByUser/google/<username>/<fromdate>/<todate>')
 def proxyGoogleFormat(username, fromdate, todate):
     if username and fromdate and todate:

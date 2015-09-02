@@ -30,6 +30,7 @@ from flask import (
 )
 from nav import nav
 from engine import AnalyticsEngine
+import bash, firewall, proxy, search, vpn
 
 main = Blueprint('main', __name__)
 
