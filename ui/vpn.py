@@ -1,8 +1,12 @@
 from flask import (
     render_template, redirect, url_for, Response
 )
-from app import analytics_engine, logger, main
+from app import analytics_engine, main
 from forms import UserForm
+
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @main.route("/api/vpn/byUser/<username>")
 def vpnJSON(username):

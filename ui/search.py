@@ -5,6 +5,10 @@ from app import analytics_engine, main, buildJSON, buildJSONCustom
 from forms import CustomSearchForm, SearchForm
 import gzip
 
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 @main.route('/download/<file>')
 def download(content):
     f = gzip.open('/tmp/results.gz', 'wb')

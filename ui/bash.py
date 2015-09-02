@@ -3,7 +3,11 @@ from flask import (
 )
 
 from forms import UserDateForm
-from app import analytics_engine, logger, main
+from app import analytics_engine, main
+
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @main.route('/api/bash/keyword/<keyword>')
 def bashKeyword(keyword):

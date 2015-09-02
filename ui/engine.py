@@ -21,10 +21,11 @@ from pyspark.sql import SQLContext
 from pyspark import StorageLevel
 from py4j.java_gateway import Py4JJavaError
 import gviz_api
-import lib.hdfs as hdfs
 import os
-from app import logger
 
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class AnalyticsEngine:
     '''
