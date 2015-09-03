@@ -461,8 +461,7 @@ class AnalyticsEngine:
             self.firewallDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         fw_port_stats = self.getFirewallPortStats(fromdate, todate)
-        fw_srcip_stats = self.getFirewallPortStats(fromdate, todate)
-        fw_dstip_stats = self.getFirewallPortStats(fromdate, todate)
+        (fw_srcip_stats, fw_dstip_stats) = self.getFirewallIPStats(fromdate, todate)
 
 
         return (fw_port_stats, fw_dstip_stats, fw_srcip_stats)
