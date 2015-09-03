@@ -38,7 +38,7 @@ def run_server(app):
     app_logged = TransLogger(app)
 
     # Mount the WSGI callable object (app) on the root directory
-    cherrypy.tree.graft(app_logged, '/')
+    cherrypy.tree.graft(app_logged, '/', 'cherry.conf')
 
     # Set the configuration of the web server
     cherrypy.config.update({
@@ -51,14 +51,6 @@ def run_server(app):
         'server.socket_host': '0.0.0.0'
     })
 
-    cherrypy.config.update(
-        {
-            '/logo.png':
-            {
-                'tools.staticfile.on': True,
-                'tools.staticfile.filename': '/home/cloudera/bdsa/ui/logo.png'
-            }
-        })
     # cherrypy.server.ssl_certificate = "cert.pem"
     # cherrypy.server.ssl_private_key = "privkey.pem"
     # Start the CherryPy WSGI web server
