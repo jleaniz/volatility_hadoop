@@ -465,9 +465,9 @@ class AnalyticsEngine:
         str_start = start.strftime('%Y-%m-%d')
         logger.info(str_start + ' ' + str_today)
         (fw_port_stats, fw_dstip_stats, fw_srcip_stats) = self.getFirewallStats(str_start, str_today)
-        proxy_top_transfers = self.getTopTransfersProxy(str_start, str_today)
+        #proxy_top_transfers = self.getTopTransfersProxy(str_start, str_today)
 
-        return (fw_port_stats, fw_dstip_stats, fw_srcip_stats, proxy_top_transfers)
+        return (fw_port_stats, fw_dstip_stats, fw_srcip_stats)
 
 
 def init_spark_context():
