@@ -56,7 +56,7 @@ def run_server(app):
             '/logo.png':
             {
                 'tools.staticfile.on': True,
-                'tools.staticfile.filename': 'logo.png'
+                'tools.staticfile.filename': '/home/cloudera/bdsa/ui/logo.png'
             }
         })
     # cherrypy.server.ssl_certificate = "cert.pem"
