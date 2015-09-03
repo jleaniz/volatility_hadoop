@@ -358,20 +358,20 @@ class AnalyticsEngine:
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
         PortStats = self.sqlctx.sql(
-            'select dstport, count(*) as hits from firewall where action="DENY" '
-            'group by dstport order by hits desc limit 10'
+            'select dstport, proto, count(*) as hits from firewall where action="DENY" '
+            'group by dstport, proto order by hits desc limit 10'
         )
         entries = PortStats.collect()
 
         # Build json object for the table
         dataChart = []
         descriptionChart = {
-            "port": ("string", "Destination Port"),
+            "port": ("string", "Destination Port/Proto"),
             "hits": ("number", "Hits")
         }
 
         for entry in entries:
-            dataChart.append( {"port": entry.dstport, "hits": entry.hits}  )
+            dataChart.append( {"port": entry.dstport + '/' + entry.proto, "hits": entry.hits}  )
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
@@ -410,7 +410,8 @@ class AnalyticsEngine:
         today = date.today()
         start = today - td(today.day + 30)
 
-        pass
+        fw_port_stats = self.getFirewallPortStats(start, today)
+        proxy_top_ransfers = self.getTopTransfersProxy(start, today)
 
 
 def init_spark_context():
