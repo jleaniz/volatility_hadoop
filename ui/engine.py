@@ -354,6 +354,7 @@ class AnalyticsEngine:
         '''
         _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
 
+        # TODO: try / except
         self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
