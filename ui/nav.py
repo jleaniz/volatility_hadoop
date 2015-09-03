@@ -28,7 +28,7 @@ nav = Nav()
 # lot more View instances.
 nav.register_element('frontend_top', Navbar(
     View('BDSA', '.index'),
-    View('Dashboard', '.index'),
+    View('Dashboard', '/dashboard'),
     Subgroup(
         'Analytics',
         Text('VPN'),
