@@ -38,7 +38,7 @@ def run_server(app):
     app_logged = TransLogger(app)
 
     # Mount the WSGI callable object (app) on the root directory
-    cherrypy.tree.mount(app_logged, '/', '/home/cloudera/bdsa/ui/cherry.conf')
+    cherrypy.tree.graft(app_logged, '/')
 
     # Set the configuration of the web server
     cherrypy.config.update({
