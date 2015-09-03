@@ -350,7 +350,7 @@ class AnalyticsEngine:
 
         return json
 
-    def getFirewallPortStats(self, formdate, todate):
+    def getFirewallPortStats(self, fromdate, todate):
         try:
             if self.firewallDF:
                 logger.info("Already loaded this DataFrame")
