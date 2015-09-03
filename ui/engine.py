@@ -356,7 +356,7 @@ class AnalyticsEngine:
         self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
-        self.firewallDF.persist(StorageLevel.MEMORY_ONLY_SER)
+        #self.firewallDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         PortStats = self.sqlctx.sql(
             'select dstport, proto, count(*) as hits from firewall where action="DENY" '
