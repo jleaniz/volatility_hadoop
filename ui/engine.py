@@ -350,10 +350,7 @@ class AnalyticsEngine:
 
         return json
 
-    def getFirewallStats(self, fromdate, todate):
-
-
-        # TODO: try / except
+    def getFirewallPortStats(self, formdate, todate):
         try:
             if self.firewallDF:
                 logger.info("Already loaded this DataFrame")
@@ -387,6 +384,20 @@ class AnalyticsEngine:
             columns_order=("port", "hits"),
             order_by="hits"
         )
+
+        return fw_port_stats
+
+
+    def getFirewallIPStats(self, fromdate, todate):
+        try:
+            if self.firewallDF:
+                logger.info("Already loaded this DataFrame")
+                pass
+        except AttributeError:
+            _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
+            self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
+            self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+            self.firewallDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         dstIPStats = self.sqlctx.sql(
             'select dstip, dstport, proto, count(*) as hits from firewall where action="DENY" '
@@ -435,6 +446,24 @@ class AnalyticsEngine:
             columns_order=("srcip", "hits"),
             order_by="hits"
         )
+
+        return (fw_srcip_stats, fw_dstip_stats)
+
+    def getFirewallStats(self, fromdate, todate):
+        try:
+            if self.firewallDF:
+                logger.info("Already loaded this DataFrame")
+                pass
+        except AttributeError:
+            _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
+            self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
+            self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+            self.firewallDF.persist(StorageLevel.MEMORY_ONLY_SER)
+
+        fw_port_stats = self.getFirewallPortStats(fromdate, todate)
+        fw_srcip_stats = self.getFirewallPortStats(fromdate, todate)
+        fw_dstip_stats = self.getFirewallPortStats(fromdate, todate)
+
 
         return (fw_port_stats, fw_dstip_stats, fw_srcip_stats)
 
