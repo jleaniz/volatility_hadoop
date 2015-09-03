@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
+{% block content %}
+{{ util.flashed_messages(dismissible=True) }}
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+        google.load("visualization", "1", {packages: ["corechart", "table"]});
+        google.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var fw_port_statsData = new google.visualization.DataTable({{ fw_port_stats|safe }});
+            var fw_dstip_statsData = new google.visualization.DataTable({{ fw_dstip_stats|safe }});
+            var fw_srcip_statsData = new google.visualization.DataTable({{ fw_srcip_stats|safe }});
+            var proxy_top_transfersData = new google.visualization.DataTable({{ proxy_top_transfers|safe }});
+
+            var pieChartOptions = {title: '', width: '100%', height: '100%'};
+
+            var fw_port_statsChart = new google.visualization.PieChart(document.getElementById('fw_port_stats_chart'));
+            var fw_srcip_statsChart = new google.visualization.PieChart(document.getElementById('fw_srcip_stats_chart'));
+            var fw_dstip_statsChart = new google.visualization.PieChart(document.getElementById('fw_dstip_stats_chart'));
+            var proxy_top_transfersChart = new google.visualization.PieChart(document.getElementById('proxy_top_transfers_stats_chart'));
+
+            fw_port_statsChart.draw(fw_port_statsData, pieChartOptions);
+            fw_srcip_statsChart.draw(fw_srcip_statsData, pieChartOptions);
+            fw_dstip_statsChart.draw(fw_dstip_statsData, pieChartOptions);
+            proxy_top_transfersChart.draw(proxy_top_transfersData, pieChartOptions);
+
+
+        }
+</script>
+
+<div class="container" style="width: 100%; height: 100%;">
+    <div class="panel panel-primary">
+        <div class="panel-heading"></div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"></div>
+                    <div class="panel-body">
+                        <div id="fw_port_stats_chart" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"></div>
+                    <div class="panel-body">
+                        <div id="fw_srcip_stats_chart" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"></div>
+                    <div class="panel-body">
+                        <div id="fw_dstip_stats_chart" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"></div>
+                    <div class="panel-body">
+                        <div id="proxy_top_transfers_stats_chart" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

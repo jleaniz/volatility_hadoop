@@ -25,6 +25,7 @@ from firewall import mod_firewall
 from vpn import mod_vpn
 from bash import mod_bash
 from proxy import mod_proxy
+from dashboard import mod_dashboard
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -86,6 +87,7 @@ if __name__ == "__main__":
     app.register_blueprint(mod_vpn)
     app.register_blueprint(mod_bash)
     app.register_blueprint(mod_proxy)
+    app.register_blueprint(mod_dashboard)
 
     # Initialize nav bar
     nav.init_app(app)

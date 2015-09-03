@@ -383,6 +383,76 @@ class AnalyticsEngine:
 
         return jsonChart
 
+    def getFirewallDstIPStats(self, fromdate, todate):
+        '''
+        :return:
+        '''
+        _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
+
+        self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
+        self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+
+        dstIPStats = self.sqlctx.sql(
+            'select dstip, dstport, proto, count(*) as hits from firewall where action="DENY" '
+            'group by dstip, dstport, proto order by hits desc limit 10'
+        )
+        entries = dstIPStats.collect()
+
+        # Build json object for the table
+        dataChart = []
+        descriptionChart = {
+            "dstip": ("string", "Destination IP/Port/Proto"),
+            "hits": ("number", "Hits")
+        }
+
+        for entry in entries:
+            dataChart.append( {"dstip": str(entry.dstip) + '/' + entry.dstport + '/' + entry.proto, "hits": entry.hits}  )
+
+        data_tableChart = gviz_api.DataTable(descriptionChart)
+        data_tableChart.LoadData(dataChart)
+        # Creating a JSon string
+        jsonChart = data_tableChart.ToJSon(
+            columns_order=("dstip", "hits"),
+            order_by="hits"
+        )
+
+        return jsonChart
+
+    def getFirewallSrcIPStats(self, fromdate, todate):
+        '''
+        :return:
+        '''
+        _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
+
+        self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
+        self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+
+        dstIPStats = self.sqlctx.sql(
+            'select srcip, dstport, proto, count(*) as hits from firewall where action="DENY" '
+            'group by srcip, dstport, proto order by hits desc limit 10'
+        )
+        entries = dstIPStats.collect()
+
+        # Build json object for the table
+        dataChart = []
+        descriptionChart = {
+            "srcip": ("string", "Destination IP/Port/Proto"),
+            "hits": ("number", "Hits")
+        }
+
+        for entry in entries:
+            dataChart.append( {"srcip": str(entry.dstip) + '/' + entry.dstport + '/' + entry.proto, "hits": entry.hits}  )
+
+        data_tableChart = gviz_api.DataTable(descriptionChart)
+        data_tableChart.LoadData(dataChart)
+        # Creating a JSon string
+        jsonChart = data_tableChart.ToJSon(
+            columns_order=("srcip", "hits"),
+            order_by="hits"
+        )
+
+        return jsonChart
+
     def identifyVPNUser(self, remoteip, date):
         '''
 
@@ -406,12 +476,15 @@ class AnalyticsEngine:
         using data from the last 30 days
         :return:
         '''
-        #_parquetPaths = self.buildParquetFileList(table, today, edate)
         today = date.today()
         start = today - td(today.day + 30)
 
         fw_port_stats = self.getFirewallPortStats(start, today)
-        proxy_top_ransfers = self.getTopTransfersProxy(start, today)
+        fw_dstip_stats = self.getFirewallDstIPStats(start, today)
+        fw_srcip_stats = self.getFirewallSrcIPStats(start, today)
+        proxy_top_transfers = self.getTopTransfersProxy(start, today)
+
+        return (fw_port_stats, fw_dstip_stats, fw_srcip_stats, proxy_top_transfers)
 
 
 def init_spark_context():

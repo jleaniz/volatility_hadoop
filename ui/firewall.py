@@ -1,6 +1,5 @@
-import gzip
 from flask import (
-    render_template, redirect, url_for, Blueprint
+    render_template, Blueprint
 )
 from forms import  DateForm
 from engine import analytics_engine
