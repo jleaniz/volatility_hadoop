@@ -42,13 +42,13 @@ class Config(object):
         self.spark_core_connection_ack_wait_timeout = '3000'
         self.spark_storage_memoryFraction = '0.6'
         # self.spark_metrics_conf = '/opt/cloudera/parcels/CDH/etc/spark/conf.dist/metrics.properties'
-        self.spark_default_parallelism = '120'
+        #self.spark_default_parallelism = '120'
         self.spark_io_compression_codec = 'snappy'
         self.spark_serializer = 'org.apache.spark.serializer.KryoSerializer'
         self.spark_kryoserializer_buffer_max_mb = '128'
         self.spark_rdd_compress = 'true'
-        self.spark_sql_shuffle_partitions = '512'
-        self.spark_sql_codegen = 'true'
+        #self.spark_sql_shuffle_partitions = '512'
+        #self.spark_sql_codegen = 'true'
         self.spark_sql_planner_externalSort = 'true'
 
     def setSparkConf(self):
@@ -71,13 +71,13 @@ class Config(object):
                 .set("spark.network.timeout", self.spark_network_timeout)
                 .set("spark.core.connection.ack.wait.timeout", self.spark_core_connection_ack_wait_timeout)
                 .set("spark.storage.memoryFraction", self.spark_storage_memoryFraction)
-                .set("spark.default.parallelism", self.spark_default_parallelism)
+                #.set("spark.default.parallelism", self.spark_default_parallelism)
                 .set("spark.serializer", self.spark_serializer)
                 .set("spark.kryoserializer.buffer.max.mb", self.spark_kryoserializer_buffer_max_mb)
                 .set("spark.rdd.compress", self.spark_rdd_compress)
-                .set('spark.sql.shuffle.partitions', self.spark_sql_shuffle_partitions)
+                #.set('spark.sql.shuffle.partitions', self.spark_sql_shuffle_partitions)
                 .set('spark.sql.planner.externalSort', self.spark_sql_planner_externalSort)
-                .set('spark.sql.codegen', self.spark_sql_codegen)
+                #.set('spark.sql.codegen', self.spark_sql_codegen)
                 .set("spark.io.compression.codec", self.spark_io_compression_codec))
 
         return conf
