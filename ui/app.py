@@ -50,6 +50,15 @@ def run_server(app):
         'server.socket_port': 5432,
         'server.socket_host': '0.0.0.0'
     })
+
+    cherrypy.config.update(
+        {
+            '/logo.png':
+            {
+                'tools.staticfile.on': True,
+                'tools.staticfile.filename': 'logo.png'
+            }
+        })
     # cherrypy.server.ssl_certificate = "cert.pem"
     # cherrypy.server.ssl_private_key = "privkey.pem"
     # Start the CherryPy WSGI web server
