@@ -479,10 +479,13 @@ class AnalyticsEngine:
         today = date.today()
         start = today - td(today.day + 30)
 
-        fw_port_stats = self.getFirewallPortStats(start, today)
-        fw_dstip_stats = self.getFirewallDstIPStats(start, today)
-        fw_srcip_stats = self.getFirewallSrcIPStats(start, today)
-        proxy_top_transfers = self.getTopTransfersProxy(start, today)
+        str_today = today.strftime('%Y-%m-%d')
+        str_start = start.strftime('%Y-%m-%d')
+
+        fw_port_stats = self.getFirewallPortStats(str_start, str_today)
+        fw_dstip_stats = self.getFirewallDstIPStats(str_start, str_today)
+        fw_srcip_stats = self.getFirewallSrcIPStats(str_start, str_today)
+        proxy_top_transfers = self.getTopTransfersProxy(str_start, str_today)
 
         return (fw_port_stats, fw_dstip_stats, fw_srcip_stats, proxy_top_transfers)
 
