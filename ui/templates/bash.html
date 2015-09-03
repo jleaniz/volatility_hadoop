@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
+{% block content %}
+{{ util.flashed_messages(dismissible=True) }}
+<div class="container" style="width: 50%; height: 50%;">
+    <div class="panel panel-primary">
+        <div class="panel-heading">Keyword lookup</div>
+        <div class="panel-body">
+            {%- if form.__contains__('name') %}
+            <pre>Enter a keyword.)</pre>
+            {%- endif %}
+            {{ wtf.quick_form(form, button_map={'submit_button': 'primary'}) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

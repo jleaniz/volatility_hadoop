@@ -13,7 +13,7 @@ def proxy_user():
     if form.validate_on_submit():
         json = analytics_engine.getProxyUserMalwareHits(form.name.data, form.fromdate.data.strftime('%Y-%m-%d'),
                     form.todate.data.strftime('%Y-%m-%d'))
-        return render_template('display_table.html', json=json)
+        return render_template('DisplayTable.html', json=json)
 
     return render_template("proxy.html", form=form)
 
