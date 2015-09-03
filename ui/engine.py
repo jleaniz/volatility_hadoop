@@ -481,7 +481,7 @@ class AnalyticsEngine:
 
         str_today = today.strftime('%Y-%m-%d')
         str_start = start.strftime('%Y-%m-%d')
-
+        logger.info(str_start + ' ' + str_today)
         fw_port_stats = self.getFirewallPortStats(str_start, str_today)
         fw_dstip_stats = self.getFirewallDstIPStats(str_start, str_today)
         fw_srcip_stats = self.getFirewallSrcIPStats(str_start, str_today)
