@@ -348,15 +348,15 @@ class AnalyticsEngine:
 
         return json
 
-    def getFirewallPortStats(self, fromdate, todate):
-        '''
-        :return:
-        '''
+    def getFirewallStats(self, fromdate, todate):
+
         _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
 
         # TODO: try / except
         self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+
+        self.firewallDF.persist(StorageLevel.MEM_AND_DISK_SER)
 
         PortStats = self.sqlctx.sql(
             'select dstport, proto, count(*) as hits from firewall where action="DENY" '
@@ -377,21 +377,10 @@ class AnalyticsEngine:
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
         # Creating a JSon string
-        jsonChart = data_tableChart.ToJSon(
+        fw_port_stats = data_tableChart.ToJSon(
             columns_order=("port", "hits"),
             order_by="hits"
         )
-
-        return jsonChart
-
-    def getFirewallDstIPStats(self, fromdate, todate):
-        '''
-        :return:
-        '''
-        _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
-
-        self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
         dstIPStats = self.sqlctx.sql(
             'select dstip, dstport, proto, count(*) as hits from firewall where action="DENY" '
@@ -407,52 +396,42 @@ class AnalyticsEngine:
         }
 
         for entry in entries:
-            dataChart.append( {"dstip": str(entry.dstip) + '/' + entry.dstport + '/' + entry.proto, "hits": entry.hits}  )
+            dataChart.append( {"dstip": str(entry.dstip) + '/' + str(entry.dstport) + '/' + entry.proto, "hits": entry.hits}  )
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
         # Creating a JSon string
-        jsonChart = data_tableChart.ToJSon(
+        fw_dstip_stats = data_tableChart.ToJSon(
             columns_order=("dstip", "hits"),
             order_by="hits"
         )
 
-        return jsonChart
-
-    def getFirewallSrcIPStats(self, fromdate, todate):
-        '''
-        :return:
-        '''
-        _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
-
-        self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
-
-        dstIPStats = self.sqlctx.sql(
+        srcIPStats = self.sqlctx.sql(
             'select srcip, dstport, proto, count(*) as hits from firewall where action="DENY" '
             'group by srcip, dstport, proto order by hits desc limit 10'
         )
-        entries = dstIPStats.collect()
+        entries = srcIPStats.collect()
 
         # Build json object for the table
         dataChart = []
         descriptionChart = {
-            "srcip": ("string", "Destination IP/Port/Proto"),
+            "srcip": ("string", "Source IP/Port/Proto"),
             "hits": ("number", "Hits")
         }
 
         for entry in entries:
-            dataChart.append( {"srcip": str(entry.dstip) + '/' + entry.dstport + '/' + entry.proto, "hits": entry.hits}  )
+            dataChart.append( {"srcip": str(entry.dstip) + '/' + str(entry.dstport) + '/' + entry.proto, "hits": entry.hits}  )
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
         # Creating a JSon string
-        jsonChart = data_tableChart.ToJSon(
+        fw_srcip_stats = data_tableChart.ToJSon(
             columns_order=("srcip", "hits"),
             order_by="hits"
         )
 
-        return jsonChart
+        return (fw_port_stats, fw_dstip_stats, fw_srcip_stats)
+
 
     def identifyVPNUser(self, remoteip, date):
         '''
@@ -483,9 +462,7 @@ class AnalyticsEngine:
         str_today = today.strftime('%Y-%m-%d')
         str_start = start.strftime('%Y-%m-%d')
         logger.info(str_start + ' ' + str_today)
-        fw_port_stats = self.getFirewallPortStats(str_start, str_today)
-        fw_dstip_stats = self.getFirewallDstIPStats(str_start, str_today)
-        fw_srcip_stats = self.getFirewallSrcIPStats(str_start, str_today)
+        (fw_port_stats, fw_dstip_stats, fw_srcip_stats) = self.getFirewallStats(str_start, str_today)
         proxy_top_transfers = self.getTopTransfersProxy(str_start, str_today)
 
         return (fw_port_stats, fw_dstip_stats, fw_srcip_stats, proxy_top_transfers)
