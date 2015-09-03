@@ -70,7 +70,7 @@ def internal_server_error(e):
 
 @main.route('/static/logo.png')
 def serve_logo():
-    return send_from_directory('/static/logo.png')
+    return send_from_directory('/static', 'logo.png')
 
 
 @main.route('/')
