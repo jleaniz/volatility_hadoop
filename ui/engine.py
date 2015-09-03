@@ -371,7 +371,7 @@ class AnalyticsEngine:
         }
 
         for entry in entries:
-            dataChart.append( {"port": entry.dstport + '/' + entry.proto, "hits": entry.hits}  )
+            dataChart.append( {"port": str(entry.dstport) + '/' + entry.proto, "hits": entry.hits}  )
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
