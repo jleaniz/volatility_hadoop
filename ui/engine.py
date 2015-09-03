@@ -420,7 +420,7 @@ class AnalyticsEngine:
         }
 
         for entry in entries:
-            dataChart.append( {"srcip": entry.dstip + '/' + str(entry.dstport) + '/' + entry.proto, "hits": entry.hits}  )
+            dataChart.append( {"srcip": entry.srcip + '/' + str(entry.dstport) + '/' + entry.proto, "hits": entry.hits}  )
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
