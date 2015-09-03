@@ -15,7 +15,7 @@
             var fw_dstip_statsData = new google.visualization.DataTable({{ fw_dstip_stats|safe }});
             var fw_srcip_statsData = new google.visualization.DataTable({{ fw_srcip_stats|safe }});
 
-            var pieChartOptions = {title: '', width: '50%', height: '50%'};
+            var pieChartOptions = {title: '', width: '100%', height: '100%'};
 
             var fw_port_statsChart = new google.visualization.PieChart(document.getElementById('fw_port_stats_chart'));
             var fw_srcip_statsChart = new google.visualization.PieChart(document.getElementById('fw_srcip_stats_chart'));
@@ -29,7 +29,7 @@
         }
 </script>
 
-<div class="container" style="width: 50%; height: 50%;">
+<div class="container" style="width: 100%; height: 100%;">
     <div class="panel panel-primary">
         <div class="panel-heading">Firewalls</div>
         <div class="row">

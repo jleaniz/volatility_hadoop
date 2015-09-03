@@ -24,7 +24,7 @@ def proxyTopTransfers():
     if form.validate_on_submit():
         (jsonTable, jsonChart) = analytics_engine.getTopTransfersProxy(form.fromdate.data.strftime('%Y-%m-%d'),
                                                                        form.todate.data.strftime('%Y-%m-%d'))
-        return render_template('proxyTopTransfers.html', jsonTable=jsonTable, jsonChart=jsonChart)
+        return render_template('DisplayTableAndCharts.html', jsonTable=jsonTable, jsonChart=jsonChart)
 
     return render_template("proxy.html", form=form)
 
