@@ -352,13 +352,13 @@ class AnalyticsEngine:
 
     def getFirewallStats(self, fromdate, todate):
 
-        _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
 
         # TODO: try / except
-        self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
-
-        self.firewallDF.persist(StorageLevel.MEMORY_ONLY_SER)
+        if not self.firewallDF:
+            _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
+            self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
+            self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+            self.firewallDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         PortStats = self.sqlctx.sql(
             'select dstport, proto, count(*) as hits from firewall where action="DENY" '
@@ -422,7 +422,7 @@ class AnalyticsEngine:
         }
 
         for entry in entries:
-            dataChart.append( {"srcip": entry.srcip + '/' + str(entry.dstport) + '/' + entry.proto, "hits": entry.hits}  )
+            dataChart.append( {"srcip": entry.srcip + ' ' + str(entry.dstport) + '/' + entry.proto, "hits": entry.hits}  )
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
@@ -463,7 +463,6 @@ class AnalyticsEngine:
 
         str_today = today.strftime('%Y-%m-%d')
         str_start = start.strftime('%Y-%m-%d')
-        logger.info(str_start + ' ' + str_today)
         (fw_port_stats, fw_dstip_stats, fw_srcip_stats) = self.getFirewallStats(str_start, str_today)
         #proxy_top_transfers = self.getTopTransfersProxy(str_start, str_today)
 
