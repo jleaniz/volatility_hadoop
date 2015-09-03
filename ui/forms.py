@@ -31,7 +31,7 @@ class UserDateForm(Form):
                          validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     todate = DateField(u'To', format='%Y-%m-%d',
                        validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
-    name = StringField(u'Username', validators=[DataRequired(message="Invalid input. Ex: jdoe")])
+    name = StringField(u'Search keyword', validators=[DataRequired(message="Invalid input. Ex: jdoe")])
     submit = SubmitField(u'Lookup')
 
 
