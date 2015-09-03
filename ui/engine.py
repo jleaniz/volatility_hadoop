@@ -356,6 +356,7 @@ class AnalyticsEngine:
         # TODO: try / except
         try:
             if self.firewallDF:
+                logger.info("Already loaded this DataFrame")
                 pass
         except AttributeError:
             _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
