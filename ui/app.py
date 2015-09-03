@@ -68,9 +68,9 @@ def internal_server_error(e):
     return render_template('500.html', error=e.message), 500
 
 
-@main.route('/static/logo.png')
-def serve_logo():
-    return send_from_directory('static', 'logo.png')
+@main.route('/static/<path:filename>')
+def serve_file(filename):
+    return send_from_directory('/static', filename)
 
 
 @main.route('/')
