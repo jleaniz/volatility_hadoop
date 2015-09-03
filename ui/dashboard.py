@@ -11,7 +11,7 @@ def index():
 
 @mod_dashboard.route("/dashboard", methods=('GET', 'POST'))
 def Dashboard():
-       (fw_port_stats, fw_dstip_stats, fw_srcip_stats, proxy_top_transfers) = analytics_engine.GenerateDashboard()
+       (fw_port_stats, fw_dstip_stats, fw_srcip_stats) = analytics_engine.GenerateDashboard()
        return render_template('dashboard.html', fw_port_stats=fw_port_stats, fw_dstip_stats=fw_dstip_stats,
                               fw_srcip_stats=fw_srcip_stats)
 
