@@ -459,7 +459,7 @@ class AnalyticsEngine:
         :return:
         '''
         today = date.today()
-        start = today - td(today.day + 60)
+        start = today - td(today.day + 45)
 
         str_today = today.strftime('%Y-%m-%d')
         str_start = start.strftime('%Y-%m-%d')
