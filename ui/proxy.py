@@ -12,7 +12,7 @@ def proxy_user():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
         json = analytics_engine.getProxyUserMalwareHits(form.name.data, form.fromdate.data.strftime('%Y-%m-%d'),
-                    form.todate.data.strftime('%Y-%m-%d'))
+                                                        form.todate.data.strftime('%Y-%m-%d'))
         return render_template('DisplayTable.html', json=json)
 
     return render_template("proxy.html", form=form)
@@ -27,6 +27,7 @@ def proxyTopTransfers():
         return render_template('DisplayTableAndCharts.html', jsonTable=jsonTable, jsonChart=jsonChart)
 
     return render_template("proxy.html", form=form)
+
 
 @mod_proxy.route('/')
 def index():

@@ -1,7 +1,7 @@
 from flask import (
     render_template, Blueprint
 )
-from forms import  UserDateForm
+from forms import UserDateForm
 from engine import analytics_engine
 
 mod_bash = Blueprint('bash', __name__)
@@ -15,6 +15,7 @@ def bash_keyword():
         return render_template('DisplayTable.html', json=json.decode('utf-8'))
 
     return render_template("bash.html", form=form)
+
 
 @mod_bash.route('/')
 def index():

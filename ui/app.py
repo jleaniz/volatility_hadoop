@@ -18,7 +18,7 @@ import logging
 import cherrypy
 from paste.translogger import TransLogger
 from flask_bootstrap import Bootstrap
-from flask import Flask, render_template, Blueprint
+from flask import Flask, render_template, Blueprint, send_from_directory
 from nav import nav
 from search import mod_search
 from firewall import mod_firewall
@@ -66,6 +66,11 @@ def page_not_found(e):
 @main.app_errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html', error=e.message), 500
+
+
+@main.route('/static/logo.png')
+def serve_logo():
+    return send_from_directory('/static/logo.png')
 
 
 @main.route('/')

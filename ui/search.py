@@ -7,6 +7,7 @@ from engine import analytics_engine, buildJSON
 
 mod_search = Blueprint('search', __name__)
 
+
 @mod_search.route('/')
 def index():
     return render_template('search.html')

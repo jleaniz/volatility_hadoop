@@ -1,7 +1,7 @@
 from flask import (
     render_template, Blueprint, Response
 )
-from forms import  UserForm
+from forms import UserForm
 from engine import analytics_engine
 
 mod_vpn = Blueprint('vpn', __name__)
@@ -47,6 +47,7 @@ def vpn_user():
         return render_template('vpnGC.html', json=json)
 
     return render_template("vpn.html", form=form)
+
 
 @mod_vpn.route('/')
 def index():

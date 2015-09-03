@@ -375,7 +375,7 @@ class AnalyticsEngine:
         }
 
         for entry in entries:
-            dataChart.append( {"port": str(entry.dstport) + '/' + entry.proto, "hits": entry.hits}  )
+            dataChart.append({"port": str(entry.dstport) + '/' + entry.proto, "hits": entry.hits})
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
@@ -386,7 +386,6 @@ class AnalyticsEngine:
         )
 
         return fw_port_stats
-
 
     def getFirewallIPStats(self, fromdate, todate):
         try:
@@ -413,7 +412,7 @@ class AnalyticsEngine:
         }
 
         for entry in entries:
-            dataChart.append( {"dstip": entry.dstip + ' ' + str(entry.dstport) + '/' + entry.proto, "hits": entry.hits}  )
+            dataChart.append({"dstip": entry.dstip + ' ' + str(entry.dstport) + '/' + entry.proto, "hits": entry.hits})
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
@@ -437,7 +436,7 @@ class AnalyticsEngine:
         }
 
         for entry in entries:
-            dataChart.append( {"srcip": entry.srcip + ' ' + str(entry.dstport) + '/' + entry.proto, "hits": entry.hits}  )
+            dataChart.append({"srcip": entry.srcip + ' ' + str(entry.dstport) + '/' + entry.proto, "hits": entry.hits})
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
@@ -463,9 +462,7 @@ class AnalyticsEngine:
         fw_port_stats = self.getFirewallPortStats(fromdate, todate)
         (fw_srcip_stats, fw_dstip_stats) = self.getFirewallIPStats(fromdate, todate)
 
-
         return (fw_port_stats, fw_dstip_stats, fw_srcip_stats)
-
 
     def identifyVPNUser(self, remoteip, date):
         '''
@@ -483,7 +480,6 @@ class AnalyticsEngine:
 
         return jsonRDD
 
-
     def GenerateDashboard(self):
         '''
         By default this function generates the dashboard
@@ -496,7 +492,7 @@ class AnalyticsEngine:
         str_today = today.strftime('%Y-%m-%d')
         str_start = start.strftime('%Y-%m-%d')
         (fw_port_stats, fw_dstip_stats, fw_srcip_stats) = self.getFirewallStats(str_start, str_today)
-        #proxy_top_transfers = self.getTopTransfersProxy(str_start, str_today)
+        # proxy_top_transfers = self.getTopTransfersProxy(str_start, str_today)
 
         return (fw_port_stats, fw_dstip_stats, fw_srcip_stats)
 
