@@ -193,6 +193,8 @@ class AnalyticsEngine:
         self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
+        self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+
         topTransfers = self.sqlctx.sql(
             'select clientip, host, cast(csbytes as Double) as bytes from proxysg '
             'group by clientip, host, cast(csbytes as Double) order by bytes desc limit 10'
