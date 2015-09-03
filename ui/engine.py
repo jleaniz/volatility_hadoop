@@ -354,7 +354,10 @@ class AnalyticsEngine:
 
 
         # TODO: try / except
-        if not self.firewallDF:
+        try:
+            if self.firewallDF:
+                pass
+        except AttributeError:
             _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
             self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
             self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
