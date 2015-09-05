@@ -55,7 +55,7 @@ class AnalyticsEngine:
             "/user/cloudera/ciscovpn"
         )
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
-        '''
+
         logger.info("Loading Firewall data")
         self.firewallDF = self.sqlctx.load(
             "/user/cloudera/firewall/off"
@@ -63,17 +63,17 @@ class AnalyticsEngine:
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
         logger.info("Loading Proxy data")
-        # self.proxyDF = self.sqlctx.load(
-        #    "/user/cloudera/proxysg"
-        # )
-        # self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+        self.proxyDF = self.sqlctx.load(
+           "/user/cloudera/proxysg"
+        )
+        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
         logger.info("Loading Bash data")
         self.bashDF = self.sqlctx.load(
             "/user/cloudera/bashlog"
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
-        '''
+
         '''
         Caching will make queries faster but for some reason
         it won't let you read certain partitions on a cached DF.
@@ -288,12 +288,15 @@ class AnalyticsEngine:
 
         days = self.buildDateList(sdate, edate)
 
-        if table == 'proxysg':
-            tempDF = self.proxyDF
-        elif table == 'ciscovpn':
-            tempDF = self.vpnLogsDF
-        elif table == 'firewall':
-            tempDF = self.firewallDF
+        try:
+            if table == 'proxysg':
+                tempDF = self.proxyDF
+            elif table == 'ciscovpn':
+                tempDF = self.vpnLogsDF
+            elif table == 'firewall':
+                tempDF = self.firewallDF
+        except AttributeError:
+            pass
 
         for day in days:
             try:
