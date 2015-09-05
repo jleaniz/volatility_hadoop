@@ -501,8 +501,10 @@ class AnalyticsEngine:
         try:
             self.firewallDF.unpersist()
             self.proxyDF.unpersist()
+            logger.info("Cache cleared")
             return True
         except:
+            logger.info("Cache not cleared")
             return False
 
 
