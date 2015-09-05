@@ -58,13 +58,13 @@ class AnalyticsEngine:
 
         logger.info("Loading Firewall data")
         self.firewallDF = self.sqlctx.load(
-            "/user/cloudera/firewall/off"
+            "/user/cloudera/firewall/off/year=2015/month=07"
         )
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
         logger.info("Loading Proxy data")
         self.proxyDF = self.sqlctx.load(
-           "/user/cloudera/proxysg"
+           "/user/cloudera/proxysg/year=2015/month=07"
         )
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
