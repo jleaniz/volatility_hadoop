@@ -14,28 +14,37 @@
         var chartEditorDiv = null;
         // Populates the chart div on startup and initiates global vars. Called on page load.
         function drawChartEditor(){
-        // Initialize Chart editor handle
-        chartEd = new google.visualization.ChartEditor();
-        google.visualization.events.addListener(chartEd, 'ok', saveChart);
-        chartEditorDiv = document.getElementById('chartEditorDiv');
+            // Initialize Chart editor handle
+            chartEd = new google.visualization.ChartEditor();
+            google.visualization.events.addListener(chartEd, 'ok', saveChart);
+            chartEditorDiv = document.getElementById('chartEditorDiv');
 
-        // Add the chart to the page
-        wrap = new google.visualization.ChartWrapper({
-           'chartType':'BarChart',
-           'dataTable': {{ jsonChart|safe }},
-           'options': {'title':'', 'legend':'none'}
-        });
-        wrap.draw(chartEditorDiv);
+            // Add the chart to the page
+            wrap = new google.visualization.ChartWrapper({
+               'chartType':'BarChart',
+               'dataTable': {{ jsonChart|safe }},
+               'options': {'title':'', 'legend':'none'}
+            });
+            wrap.draw(chartEditorDiv);
+
+            // Create a range slider, passing some options
+            var donutRangeSlider = new google.visualization.ControlWrapper({
+              'controlType': 'NumberRangeFilter',
+              'containerId': 'filter_div',
+              'options': {
+                'filterColumnLabel': 'Donuts eaten'
+              }
+            });
         }
 
         // User clicked 'ok' to save chart
         function saveChart(){
-        chartEd.getChartWrapper().draw(chartEditorDiv);
+            chartEd.getChartWrapper().draw(chartEditorDiv);
         }
 
         // Onclick handler, opens the editor
         function loadEditor() {
-        chartEd.openDialog(wrap, {});
+            chartEd.openDialog(wrap, {});
         }
 
         google.setOnLoadCallback(drawChartEditor);
@@ -50,6 +59,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading"></div>
                     <div class="panel-body">
+                        <div id="filter_div" style="width: 100%; height: 380px;"></div>
                         <div id="chartEditorDiv" style="width: 100%; height: 380px;"></div>
                         <input class="btn btn-default" type="submit" name="loadcharteditor" id="loadcharteditor" value="Edit" onClick="loadEditor()"></p>
                     </div>
