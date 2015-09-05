@@ -16,7 +16,7 @@
             // Create the chart to edit.
             var wrapper = new google.visualization.ChartWrapper({
              'chartType':'BarChart',
-             'dataTable': jsonChart|safe,
+             'dataTable': {{ jsonChart|safe }},
              'options': {'title':'', 'legend':'none'}
             });
 
