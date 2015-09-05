@@ -84,6 +84,8 @@ def clearCache():
         flash('Spark: Cache cleared')
         return render_template('index.html')
 
+    return render_template('index.html')
+
 if __name__ == "__main__":
     # Init spark context and load libraries
     app = Flask(__name__)
