@@ -9,27 +9,36 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
         google.load("visualization", "1", {packages: ["corechart", "charteditor", "table"]});
-        google.setOnLoadCallback(loadEditor);
-        var chartEditor = null;
+        var chartEd = null;
+        var wrap = null;
+        var chartEditorDiv = null;
+        // Populates the chart div on startup and initiates global vars. Called on page load.
+        function drawChartEditor(){
+        // Initialize Chart editor handle
+        chartEd = new google.visualization.ChartEditor();
+        google.visualization.events.addListener(chartEd, 'ok', saveChart);
+        chartEditorDiv = document.getElementById('chartEditorDiv');
 
+        // Add the chart to the page
+        wrap = new google.visualization.ChartWrapper({
+           'chartType':'BarChart',
+           'dataTable': {{ jsonChart|safe }},
+           'options': {'title':'', 'legend':'none'}
+        });
+        wrap.draw(chartEditorDiv);
+        }
+
+        // User clicked 'ok' to save chart
+        function saveChart(){
+        chartEd.getChartWrapper().draw(chartEditorDiv);
+        }
+
+        // Onclick handler, opens the editor
         function loadEditor() {
-            // Create the chart to edit.
-            var wrapper = new google.visualization.ChartWrapper({
-             'chartType':'BarChart',
-             'dataTable': {{ jsonChart|safe }},
-             'options': {'title':'', 'legend':'none'}
-            });
-
-            chartEditor = new google.visualization.ChartEditor();
-            google.visualization.events.addListener(chartEditor, 'ok', redrawChart);
-            chartEditor.openDialog(wrapper, {});
+        chartEd.openDialog(wrap, {});
         }
 
-        // On "OK" save the chart to a <div> on the page.
-        function redrawChart(){
-          chartEditor.getChartWrapper().draw(document.getElementById('barchart'));
-        }
-
+        google.setOnLoadCallback(drawChartEditor);
 
 </script>
 
@@ -39,9 +48,10 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Bar Chart</div>
+                    <p>Try it out!<input type="submit" name="loadcharteditor" id="loadcharteditor" value="Edit me!" onClick="loadEditor()" style="font-size:18px;"></p>
+                    <div class="panel-heading"></div>
                     <div class="panel-body">
-                        <div id="barchart" style="width: 100%; height: 380px;"></div>
+                        <div id="chartEditorDiv" style="width: 100%; height: 380px;"></div>
                     </div>
                 </div>
             </div>
