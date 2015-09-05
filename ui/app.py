@@ -80,7 +80,7 @@ def index():
 
 @main.route('/clearcache')
 def clearCache():
-    if analytics_engine.clearcache() == "ok":
+    if analytics_engine.clearcache():
         flash('Spark: Cache cleared')
         return render_template('index.html')
 

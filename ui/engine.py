@@ -501,9 +501,9 @@ class AnalyticsEngine:
         try:
             self.firewallDF.unpersist()
             self.proxyDF.unpersist()
-            return "ok"
+            return True
         except:
-            return "error"
+            return False
 
 
 def init_spark_context():
