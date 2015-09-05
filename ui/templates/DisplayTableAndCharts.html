@@ -8,27 +8,45 @@
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
-        google.load("visualization", "1", {packages: ["corechart", "table"]});
-        google.setOnLoadCallback(drawChart);
-        function drawChart() {
+        google.load("visualization", "1", {packages: ["corechart", "charteditor", "controls", "table"]});
+        var chartEd = null;
+        var wrap = null;
+        var chartEditorDiv = null;
+        // Populates the chart div on startup and initiates global vars. Called on page load.
+        function drawChartEditor(){
+            // Initialize Chart editor handle
+            chartEd = new google.visualization.ChartEditor();
+            google.visualization.events.addListener(chartEd, 'ok', saveChart);
+            chartEditorDiv = document.getElementById('chartEditorDiv');
 
-            var pieChartData = new google.visualization.DataTable({{ jsonChart|safe }});
+            // Add the chart to the page
+            wrap = new google.visualization.ChartWrapper({
+               'chartType':'BarChart',
+               'dataTable': {{ jsonChart|safe }},
+               'options': {'title':'', 'legend':'none'}
+            });
+
+            wrap.draw(chartEditorDiv);
+
             var tableData = new google.visualization.DataTable({{ jsonTable|safe }});
-            var barChartData = new google.visualization.DataTable({{ jsonChart|safe }});
-
-            var pieChartOptions = {title: '', width: '100%', height: '100%'};
-            var barChartOptions = {title: '', width: '100%', height: '100%'};
-            var tableOptions = {showRowNumber: false, width: '100%', height: '100%'};
-
-            var barChart = new google.visualization.BarChart(document.getElementById('barchart'));
-            var pieChart = new google.visualization.PieChart(document.getElementById('piechart'));
             var table = new google.visualization.Table(document.getElementById('table'));
-
-            barChart.draw(barChartData, barChartOptions);
-            pieChart.draw(pieChartData, pieChartOptions);
+            var tableOptions = {showRowNumber: false, width: '100%', height: '100%'};
             table.draw(tableData, tableOptions);
 
         }
+
+        // User clicked 'ok' to save chart
+        function saveChart(){
+            chartEd.getChartWrapper().draw(chartEditorDiv);
+        }
+
+        // Onclick handler, opens the editor
+        function loadEditor() {
+            chartEd.openDialog(wrap, {});
+        }
+
+        google.setOnLoadCallback(drawChartEditor);
+
 
 </script>
 
@@ -38,23 +56,16 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Bar Chart</div>
+                    <div class="panel-heading"></div>
                     <div class="panel-body">
-                        <div id="barchart" style="width: 100%; height: 380px;"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Pie Chart</div>
-                    <div class="panel-body">
-                        <div id="piechart" style="width: 100%; height: 380px;"></div>
+                        <div id="chartEditorDiv" style="width: 100%; height: 380px;"></div>
+                        <input class="btn btn-default" type="submit" name="loadcharteditor" id="loadcharteditor" value="Edit" onClick="loadEditor()"></p>
                     </div>
                 </div>
             </div>
             <div class="col-md-5">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Table</div>
+                    <div class="panel-heading"></div>
                     <div class="panel-body">
                         <div id="table" style="width: 100%; height: 100%;"></div>
                     </div>
