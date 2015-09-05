@@ -19,11 +19,6 @@
             google.visualization.events.addListener(chartEd, 'ok', saveChart);
             chartEditorDiv = document.getElementById('chartEditorDiv');
 
-            var tableData = new google.visualization.DataTable({{ jsonTable|safe }});
-            var table = new google.visualization.Table(document.getElementById('table'));
-            var tableOptions = {showRowNumber: false, width: '100%', height: '100%'};
-            table.draw(tableData, tableOptions);
-
             // Add the chart to the page
             wrap = new google.visualization.ChartWrapper({
                'chartType':'BarChart',
@@ -32,6 +27,11 @@
             });
 
             wrap.draw(chartEditorDiv);
+
+            var tableData = new google.visualization.DataTable({{ jsonTable|safe }});
+            var table = new google.visualization.Table(document.getElementById('table'));
+            var tableOptions = {showRowNumber: false, width: '100%', height: '100%'};
+            table.draw(tableData, tableOptions);
 
         }
 
@@ -58,7 +58,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Bar Chart</div>
                     <div class="panel-body">
-                        <div id="barchart" style="width: 100%; height: 380px;"></div>
+                        <div id="chartEditorDiv" style="width: 100%; height: 380px;"></div>
                         <input class="btn btn-default" type="submit" name="loadcharteditor" id="loadcharteditor" value="Edit" onClick="loadEditor()"></p>
                     </div>
                 </div>
