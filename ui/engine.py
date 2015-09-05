@@ -497,6 +497,15 @@ class AnalyticsEngine:
         return (fw_port_stats, fw_dstip_stats, fw_srcip_stats)
 
 
+    def clearcache(self):
+        try:
+            self.firewallDF.unpersist()
+            self.proxyDF.unpersist()
+            return True
+        except:
+            return False
+
+
 def init_spark_context():
     appConfig = conf.Config()
     sc = SparkContext(conf=appConfig.setSparkConf())

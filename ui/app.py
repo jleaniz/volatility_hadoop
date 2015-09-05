@@ -18,7 +18,7 @@ import logging
 import cherrypy
 from paste.translogger import TransLogger
 from flask_bootstrap import Bootstrap
-from flask import Flask, render_template, Blueprint, send_from_directory
+from flask import Flask, render_template, Blueprint, send_from_directory, flash, redirect, url_for
 from nav import nav
 from search import mod_search
 from firewall import mod_firewall
@@ -26,6 +26,7 @@ from vpn import mod_vpn
 from bash import mod_bash
 from proxy import mod_proxy
 from dashboard import mod_dashboard
+from engine import analytics_engine
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -77,6 +78,11 @@ def serve_file(filename):
 def index():
     return render_template('index.html')
 
+@main.route('/clearcache')
+def clearCache():
+    if analytics_engine.clearcache():
+        flash('Spark: Cache cleared')
+        return redirect(url_for('index'))
 
 if __name__ == "__main__":
     # Init spark context and load libraries
