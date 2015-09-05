@@ -82,7 +82,7 @@ def index():
 def clearCache():
     if analytics_engine.clearcache():
         flash('Spark: Cache cleared')
-        return redirect(url_for('index'))
+        return render_template('index.html')
 
 if __name__ == "__main__":
     # Init spark context and load libraries
