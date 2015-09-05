@@ -21,6 +21,7 @@
 
             var tableData = new google.visualization.DataTable({{ jsonTable|safe }});
             var table = new google.visualization.Table(document.getElementById('table'));
+            var tableOptions = {showRowNumber: false, width: '100%', height: '100%'};
             table.draw(tableData, tableOptions);
 
             // Add the chart to the page
