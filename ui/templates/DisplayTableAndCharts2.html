@@ -18,7 +18,10 @@
             chartEd = new google.visualization.ChartEditor();
             google.visualization.events.addListener(chartEd, 'ok', saveChart);
             chartEditorDiv = document.getElementById('chartEditorDiv');
-            tabledivv = document.getElementById('tabledivv');
+
+            var tableData = new google.visualization.DataTable({{ jsonTable|safe }});
+            var table = new google.visualization.Table(document.getElementById('table'));
+            table.draw(tableData, tableOptions);
 
             // Add the chart to the page
             wrap = new google.visualization.ChartWrapper({
@@ -27,13 +30,7 @@
                'options': {'title':'', 'legend':'none'}
             });
 
-            wrapT = new google.visualization.ChartWrapper({
-               'chartType':'Table',
-               'dataTable': {{ jsonTable|safe }},
-               'options': {'title':'', 'legend':'none'}
-            });
             wrap.draw(chartEditorDiv);
-            wrapT.draw(tabledivv);
 
         }
 
@@ -61,7 +58,7 @@
                        onClick="loadEditor()"></p>
             </div>
             <div class="panel-body">
-                <div id="tablediv" style="width: 100%; height: 380px;"></div>
+                <div id="table" style="width: 100%; height: 380px;"></div>
             </div>
         </div>
 </div>
