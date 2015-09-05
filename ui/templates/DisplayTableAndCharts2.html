@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
+{% block content %}
+{{ util.flashed_messages(dismissible=True) }}
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+        google.load("visualization", "1", {packages: ["corechart", "table"]});
+        google.setOnLoadCallback(loadEditor);
+        var chartEditor = null;
+
+        function loadEditor() {
+            // Create the chart to edit.
+            var wrapper = new google.visualization.ChartWrapper({
+             'chartType':'BarChart',
+             'dataTable': jsonChart|safe,
+             'options': {'title':'', 'legend':'none'}
+            });
+
+            chartEditor = new google.visualization.ChartEditor();
+            google.visualization.events.addListener(chartEditor, 'ok', redrawChart);
+            chartEditor.openDialog(wrapper, {});
+        }
+
+        // On "OK" save the chart to a <div> on the page.
+        function redrawChart(){
+          chartEditor.getChartWrapper().draw(document.getElementById('barchart'));
+        }
+
+
+</script>
+
+<div class="container" style="width: 100%; height: 100%;">
+    <div class="panel panel-primary">
+        <div class="panel-heading"></div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Bar Chart</div>
+                    <div class="panel-body">
+                        <div id="barchart" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
