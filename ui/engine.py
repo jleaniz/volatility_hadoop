@@ -507,6 +507,15 @@ class AnalyticsEngine:
             logger.info("Cache not cleared")
             return False
 
+    def canceljobs(self):
+        try:
+            self.sc.cancelAllJobs()
+            logger.info("Jobs cancelled")
+            return True
+        except:
+            logger.info("Unable to cancel jobs")
+            return False
+
 
 def init_spark_context():
     appConfig = conf.Config()

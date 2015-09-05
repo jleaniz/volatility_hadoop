@@ -78,7 +78,7 @@ def serve_file(filename):
 def index():
     return render_template('index.html')
 
-@main.route('/clearcache')
+@main.route('/spark/clearcache')
 def clearCache():
     if analytics_engine.clearcache():
         flash('Spark: Cache cleared', 'info')
@@ -86,6 +86,16 @@ def clearCache():
     else:
         flash('Spark: Unable to clear cache', 'error')
         return render_template('index.html')
+
+@main.route('/spark/canceljobs')
+def cancelJobs():
+    if analytics_engine.canceljobs():
+        flash('Spark: Jobs cancelled', 'info')
+        return render_template('index.html')
+    else:
+        flash('Spark: Unable to cancel jobs', 'error')
+        return render_template('index.html')
+
 
 if __name__ == "__main__":
     # Init spark context and load libraries

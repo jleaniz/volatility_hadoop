@@ -62,7 +62,9 @@ nav.register_element('frontend_top', Navbar(
         Link('Custom query', '/search'),
     ),
     Subgroup(
-        'Spark Cache',
-        Link('Clear cache', '/clearcache'),
+        'Spark',
+        Link('Clear cache', '/spark/clearcache'),
+        Link('Cancel jobs', '/spark/canceljobs'),
+
     ),
 ))
