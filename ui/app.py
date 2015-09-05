@@ -81,10 +81,11 @@ def index():
 @main.route('/clearcache')
 def clearCache():
     if analytics_engine.clearcache():
-        flash('Spark: Cache cleared')
+        flash('Spark: Cache cleared', 'info')
         return render_template('index.html')
-
-    return render_template('index.html')
+    else:
+        flash('Spark: Unable to clear cache', 'error')
+        return render_template('index.html')
 
 if __name__ == "__main__":
     # Init spark context and load libraries
