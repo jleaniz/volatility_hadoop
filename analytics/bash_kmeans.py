@@ -17,7 +17,7 @@ w2v = Word2Vec()
 model = w2v.fit(commandsRDD)
 
 commandsListRDD = commandsDF.rdd.flatMap(lambda row: row.command.split("\n"))
-commandsList = sc.parallelize(commandsListRDD.take(100000)).collect()
+commandsList = sc.parallelize(commandsListRDD.take(10000)).collect()
 vectorsList = []
 
 for command in commandsList:
@@ -27,20 +27,19 @@ for command in commandsList:
         pass
 
 kmdata = sc.parallelize(vectorsList, 1024)
-# kmdata = sc.parallelize( (numpy.array(model.transform(command[0])) for command in commandsList), 1024)
 
-k = sqrt(len(vectorsList)/2)
+k = int(sqrt(len(vectorsList)/2))
 
 # Build the model (cluster the data using KMeans)
 clusters = KMeans.train(kmdata, k, maxIterations=10, runs=10, initializationMode="random")
 
 d = dict()
 for command in commandsList:
-        try:
-            vector = model.transform(command)
-            cluster = clusters.predict(numpy.array(vector))
-            #print "Cmd: %s Cluster: %d" % (command, cluster)
-            d.setdefault(cluster, [])
-            d[cluster].append(command)
-        except:
-            pass
+    try:
+        vector = model.transform(command)
+        cluster = clusters.predict(numpy.array(vector))
+        print "Cmd: %s Cluster: %d" % (command, cluster)
+        d.setdefault(cluster, [])
+        d[cluster].append(command)
+    except:
+        pass
