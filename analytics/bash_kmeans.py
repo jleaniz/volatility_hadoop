@@ -38,8 +38,6 @@ for command in commandsList:
     try:
         vector = model.transform(command)
         cluster = clusters.predict(numpy.array(vector))
-        print "Cmd: %s Cluster: %d" % (command, cluster)
-        d.setdefault(cluster, [])
-        d[cluster].append(command)
+        d.setdefault(cluster, []).append(command)
     except:
         pass
