@@ -2,6 +2,7 @@ from pyspark.mllib.clustering import KMeans
 from pyspark.mllib.feature import Word2Vec
 from pyspark.sql import SQLContext
 import numpy
+from math import sqrt
 
 sqlctx = SQLContext(sc)
 bashlogsDF = sqlctx.parquetFile('/user/cloudera/bashlog')
@@ -16,7 +17,7 @@ w2v = Word2Vec()
 model = w2v.fit(commandsRDD)
 
 commandsListRDD = commandsDF.rdd.flatMap(lambda row: row.command.split("\n"))
-commandsList = commandsListRDD.collect()
+commandsList = sc.parallelize(commandsListRDD.take(100000)).collect()
 vectorsList = []
 
 for command in commandsList:
@@ -28,26 +29,18 @@ for command in commandsList:
 kmdata = sc.parallelize(vectorsList, 1024)
 # kmdata = sc.parallelize( (numpy.array(model.transform(command[0])) for command in commandsList), 1024)
 
+k = sqrt(len(vectorsList)/2)
+
 # Build the model (cluster the data using KMeans)
-clusters = KMeans.train(kmdata, 100, maxIterations=10, runs=10, initializationMode="random")
+clusters = KMeans.train(kmdata, k, maxIterations=10, runs=10, initializationMode="random")
 
-'''
-# Find synonyms for ssh
-model.findSynonyms("ssh", 2)
-# [(u'ping', 0.70947927236557007), (u'exit', 0.67307734489440918)]
-
-# Find cluster for a synonym of ssh
-testVector = model.transform("ping")
-clusters.predict(numpy.array(testVector))
-
-
+d = dict()
 for command in commandsList:
-    try:
-        vector = model.transform(command[0])
-        print "Cmd: %s Cluster: %d" % (command[0], clusters.predict(numpy.array(vector)))
-    except:
-        pass
-
-# syms = model.findSynonyms("pwd", 5)
-# print [s[0] for s in syms]
-'''
+        try:
+            vector = model.transform(command)
+            cluster = clusters.predict(numpy.array(vector))
+            #print "Cmd: %s Cluster: %d" % (command, cluster)
+            d.setdefault(cluster, [])
+            d[cluster].append(command)
+        except:
+            pass
