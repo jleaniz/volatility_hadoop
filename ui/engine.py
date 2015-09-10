@@ -55,25 +55,25 @@ class AnalyticsEngine:
             "/user/cloudera/ciscovpn"
         )
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
-        '''
+
         logger.info("Loading Firewall data")
         self.firewallDF = self.sqlctx.load(
-            "/user/cloudera/firewall/off"
+            "/user/cloudera/firewall/off/year=2015/month=07"
         )
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
         logger.info("Loading Proxy data")
-        # self.proxyDF = self.sqlctx.load(
-        #    "/user/cloudera/proxysg"
-        # )
-        # self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+        self.proxyDF = self.sqlctx.load(
+           "/user/cloudera/proxysg/year=2015/month=07"
+        )
+        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
         logger.info("Loading Bash data")
         self.bashDF = self.sqlctx.load(
             "/user/cloudera/bashlog"
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
-        '''
+
         '''
         Caching will make queries faster but for some reason
         it won't let you read certain partitions on a cached DF.
@@ -280,20 +280,38 @@ class AnalyticsEngine:
         return _parquetPaths
 
     def getSearchResults(self, table, sdate, edate, query, num):
-        # _parquetPaths = self.buildParquetFileList(table, sdate, edate)
-
         self.sqlctx.setConf("spark.sql.parquet.useDataSourceApi", "false")
         self.sqlctx.setConf("spark.sql.planner.externalSort", "true")
         self.sqlctx.setConf('spark.sql.parquet.mergeSchema', 'false')
-
         days = self.buildDateList(sdate, edate)
 
-        if table == 'proxysg':
-            tempDF = self.proxyDF
-        elif table == 'ciscovpn':
-            tempDF = self.vpnLogsDF
-        elif table == 'firewall':
-            tempDF = self.firewallDF
+        try:
+            if table == 'proxysg':
+                _parquetPaths = self.buildParquetFileList(table, sdate, edate)
+                self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
+                self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+                tempDF = self.proxyDF
+
+            elif table == 'ciscovpn':
+                _parquetPaths = self.buildParquetFileList(table, sdate, edate)
+                self.vpnLogsDF = self.sqlctx.parquetFile(*_parquetPaths)
+                self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'ciscovpn')
+                tempDF = self.vpnLogsDF
+
+            elif table == 'firewall':
+                _parquetPaths = self.buildParquetFileList(table, sdate, edate)
+                self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
+                self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+                tempDF = self.firewallDF
+
+            elif table == 'bashlog':
+                _parquetPaths = self.buildParquetFileList(table, sdate, edate)
+                self.bashDF = self.sqlctx.parquetFile(*_parquetPaths)
+                self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
+                tempDF = self.bashDF
+
+        except AttributeError:
+            pass
 
         for day in days:
             try:
@@ -495,6 +513,26 @@ class AnalyticsEngine:
         # proxy_top_transfers = self.getTopTransfersProxy(str_start, str_today)
 
         return (fw_port_stats, fw_dstip_stats, fw_srcip_stats)
+
+
+    def clearcache(self):
+        try:
+            self.firewallDF.unpersist()
+            self.proxyDF.unpersist()
+            logger.info("Cache cleared")
+            return True
+        except:
+            logger.info("Cache not cleared")
+            return False
+
+    def canceljobs(self):
+        try:
+            self.sc.cancelAllJobs()
+            logger.info("Jobs cancelled")
+            return True
+        except:
+            logger.info("Unable to cancel jobs")
+            return False
 
 
 def init_spark_context():

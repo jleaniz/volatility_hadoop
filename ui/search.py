@@ -84,7 +84,7 @@ def search_view():
 
     if Lookupform.validate_on_submit() and Lookupform.lookup.data:
         return redirect(
-            url_for('mod_search.search', table=Lookupform.table.data, tables=Lookupform.tables,
+            url_for('.search', table=Lookupform.table.data, tables=Lookupform.tables,
                     fromdate=Lookupform.fromdate.data.strftime('%Y-%m-%d'),
                     todate=Lookupform.todate.data.strftime('%Y-%m-%d'), query=Lookupform.query.data,
                     num=Lookupform.num.data))
@@ -104,7 +104,7 @@ def custom_search_view():
     Search = CustomSearchForm(csrf_enabled=False)
 
     if Search.validate_on_submit() and Search.lookup.data:
-        return redirect(url_for('mod_search.CustomSearch', query=Search.query.data))
+        return redirect(url_for('.CustomSearch', query=Search.query.data))
 
     if Search.validate_on_submit() and Search.download.data:
         data = CustomSearch(Search.query.data)

@@ -37,4 +37,4 @@ def DisplayPortStats():
                                                           form.todate.data.strftime('%Y-%m-%d'))
         return render_template('DisplayTableAndCharts.html', jsonTable=jsonChart, jsonChart=jsonChart)
 
-    return render_template("proxy.html", form=form)
+    return render_template("dateForm.html", form=form)

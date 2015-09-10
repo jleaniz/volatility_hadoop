@@ -54,8 +54,17 @@ nav.register_element('frontend_top', Navbar(
         Link('Timeline analysis', '/search'),
     ),
     Subgroup(
+        'ML Predictions',
+        Link('Bashlog KMeans clusters', '/search'),
+    ),
+    Subgroup(
         'Search',
         Link('Custom query', '/search'),
     ),
+    Subgroup(
+        'Spark',
+        Link('Clear cache', '/spark/clearcache'),
+        Link('Cancel jobs', '/spark/canceljobs'),
 
+    ),
 ))

@@ -18,7 +18,7 @@ import logging
 import cherrypy
 from paste.translogger import TransLogger
 from flask_bootstrap import Bootstrap
-from flask import Flask, render_template, Blueprint, send_from_directory
+from flask import Flask, render_template, Blueprint, send_from_directory, flash, redirect, url_for
 from nav import nav
 from search import mod_search
 from firewall import mod_firewall
@@ -26,6 +26,7 @@ from vpn import mod_vpn
 from bash import mod_bash
 from proxy import mod_proxy
 from dashboard import mod_dashboard
+from engine import analytics_engine
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -76,6 +77,24 @@ def serve_file(filename):
 @main.route('/')
 def index():
     return render_template('index.html')
+
+@main.route('/spark/clearcache')
+def clearCache():
+    if analytics_engine.clearcache():
+        flash('Spark: Cache cleared', 'info')
+        return render_template('index.html')
+    else:
+        flash('Spark: Unable to clear cache', 'error')
+        return render_template('index.html')
+
+@main.route('/spark/canceljobs')
+def cancelJobs():
+    if analytics_engine.canceljobs():
+        flash('Spark: Jobs cancelled', 'info')
+        return render_template('index.html')
+    else:
+        flash('Spark: Unable to cancel jobs', 'error')
+        return render_template('index.html')
 
 
 if __name__ == "__main__":

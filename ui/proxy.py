@@ -32,7 +32,7 @@ def proxy_user():
                                                         form.todate.data.strftime('%Y-%m-%d'))
         return render_template('DisplayTable.html', json=json)
 
-    return render_template("proxy.html", form=form)
+    return render_template("dateForm.html", form=form)
 
 
 @mod_proxy.route("/proxy/top/transfers", methods=('GET', 'POST'))
@@ -43,7 +43,7 @@ def proxyTopTransfers():
                                                                        form.todate.data.strftime('%Y-%m-%d'))
         return render_template('DisplayTableAndCharts.html', jsonTable=jsonTable, jsonChart=jsonChart)
 
-    return render_template("proxy.html", form=form)
+    return render_template("dateForm.html", form=form)
 
 
 @mod_proxy.route('/')

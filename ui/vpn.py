@@ -61,7 +61,7 @@ def vpn_user():
     form = UserForm(csrf_enabled=False)
     if form.validate_on_submit():
         json = analytics_engine.getVPNLoginsByUserGoogle(form.name.data)
-        return render_template('vpnGC.html', json=json)
+        return render_template('DisplayTableAndCharts.html', jsonChart=json, jsonTable=json)
 
     return render_template("vpn.html", form=form)
 
