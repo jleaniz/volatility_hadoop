@@ -23,8 +23,6 @@ from pyspark import SparkContext, SparkConf
 from config import config as conf
 
 from py4j.java_gateway import Py4JJavaError
-from collections import Counter
-
 import gviz_api
 import os
 
@@ -567,17 +565,11 @@ class AnalyticsEngine:
         self.sqlctx.registerDataFrameAsTable(df, 'tl')
         # Cache the table in memory for faster lookups
         self.sqlctx.cacheTable('tl')
-        # Create a DF that contains deleted files
+        # Create a df that contains deleted files
         deletedFilesDF = self.sqlctx.sql("SELECT `date`, short FROM tl WHERE short LIKE '%DELETED%'")
-        deletedFilesRowList = deletedFilesDF.collect()
-
-        deletedFileListDate = []
-        deletedFileList = []
-
-        for deletedFile in deletedFilesRowList:
-            deletedFileListDate.append(deletedFile.date)
-            deletedFileList.append(deletedFile.short)
-        datesCtr = Counter(deletedFileListDate)
+        self.sqlctx.registerDataFrameAsTable(deletedFilesDF, 'deleted')
+        # Create a list with dates and number of deleted files per day
+        deletedFilesDateList = self.sqlctx.sql("SELECT `date`, count(*) as hits FROM deleted group by `date` order by hits").collect()
 
         dataChart = []
         descriptionChart = {
@@ -585,8 +577,8 @@ class AnalyticsEngine:
             "hits": ("number", "Deleted files")
         }
 
-        for k,v in datesCtr.iteritems():
-            dataChart.append({"date": k, "hits": v})
+        for row in deletedFilesDateList:
+            dataChart.append({"date": row.date, "hits": row.hits})
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
