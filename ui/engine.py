@@ -52,7 +52,7 @@ class AnalyticsEngine:
         # Load ratings data for later use
         logger.info("Creating Spark SQL context:")
         self.sqlctx = SQLContext(self.sc)
-        '''
+
         # pre-laod some data
         logger.info("Loading Cisco VPN data")
         self.vpnLogsDF = self.sqlctx.load(
@@ -77,7 +77,7 @@ class AnalyticsEngine:
             "/user/cloudera/bashlog"
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
-        '''
+
         logger.info("Constructing models..")
         #(self.w2vmodel, self.vectorsList, self.commandsList) = self.getW2Vmodel()
         #self.kmmodel = self.getKMeansModel()
