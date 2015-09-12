@@ -611,8 +611,8 @@ class AnalyticsEngine:
         # Convect commands in commandsRDD to vectors.
         w2v = Word2Vec()
         print "Fitting w2v model"
-        model = w2v.setVectorSize(2).fit(commandsRDD)
-
+        #model = w2v.fit(commandsRDD)
+        model = []
         commandsListRDD = commandsDF.rdd.flatMap(lambda row: row.command.split("\n"))
         commandsList = sc.parallelize(commandsListRDD.take(10000)).collect()
         vectorsList = []
