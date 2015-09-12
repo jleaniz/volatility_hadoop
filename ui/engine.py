@@ -569,7 +569,7 @@ class AnalyticsEngine:
         deletedFilesDF = self.sqlctx.sql("SELECT `date`, short FROM tl WHERE short LIKE '%DELETED%'")
         self.sqlctx.registerDataFrameAsTable(deletedFilesDF, 'deleted')
         # Create a list with dates and number of deleted files per day
-        deletedFilesDateList = self.sqlctx.sql("SELECT `date`, count(*) as hits FROM deleted group by `date` order by hits").collect()
+        deletedFilesDateList = self.sqlctx.sql("SELECT `date`, count(*) as hits FROM deleted group by `date` order by hits limit 10").collect()
 
         dataChart = []
         descriptionChart = {
