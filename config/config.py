@@ -31,7 +31,7 @@ class Config(object):
         self.master = 'spark://mtl-ah374.ubisoft.org:7077'
         self.appName = 'BDSA 0.1 alpha'
         self.spark_driver_cores = '8'
-        self.spark_driver_maxResultSize = '1g'
+        self.spark_driver_maxResultSize = '4g'
         self.spark_driver_memory = '8g'
         self.spark_worker_memory = '1g'
         self.spark_executor_memory = '8g'

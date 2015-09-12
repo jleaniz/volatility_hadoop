@@ -609,6 +609,7 @@ class AnalyticsEngine:
 
         # Convect commands in commandsRDD to vectors.
         w2v = Word2Vec()
+        print "Fitting w2v model"
         model = w2v.setVectorSize(2).fit(commandsRDD)
 
         commandsListRDD = commandsDF.rdd.flatMap(lambda row: row.command.split("\n"))
