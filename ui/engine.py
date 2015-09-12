@@ -382,7 +382,8 @@ class AnalyticsEngine:
             if self.firewallDF:
                 logger.info("Already loaded this DataFrame")
                 pass
-        except AttributeError:
+        except:
+            logger.info("Loading new DataFrame")
             _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
             self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
             self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
@@ -418,7 +419,7 @@ class AnalyticsEngine:
             if self.firewallDF:
                 logger.info("Already loaded this DataFrame")
                 pass
-        except AttributeError:
+        except:
             _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
             self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
             self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
