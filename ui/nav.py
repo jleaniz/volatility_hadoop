@@ -51,7 +51,7 @@ nav.register_element('frontend_top', Navbar(
     ),
     Subgroup(
         'Forensics',
-        Link('Timeline analysis', '/search'),
+        Link('Timeline analysis', '/forensics/timeline'),
     ),
     Subgroup(
         'ML Predictions',

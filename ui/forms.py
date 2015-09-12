@@ -65,3 +65,8 @@ class CustomSearchForm(Form):
     query = TextAreaField(u'Query', validators=[DataRequired(message="Field required")])
     lookup = SubmitField(u'Lookup')
     download = SubmitField(u'Download')
+
+
+class PathForm(Form):
+    name = StringField(u'Path', validators=[DataRequired(message="Field required")])
+    submit = SubmitField(u'Lookup')

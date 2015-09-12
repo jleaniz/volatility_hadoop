@@ -23,6 +23,8 @@ from pyspark import SparkContext, SparkConf
 from config import config as conf
 
 from py4j.java_gateway import Py4JJavaError
+from collections import Counter
+
 import gviz_api
 import os
 
@@ -534,6 +536,67 @@ class AnalyticsEngine:
             logger.info("Unable to cancel jobs")
             return False
 
+
+    def FSTimelineStats(self, csv_path):
+        '''
+        CSV Schema from log2timeline
+        root
+         |-- date: string (nullable = true)
+         |-- time: string (nullable = true)
+         |-- timezone: string (nullable = true)
+         |-- MACB: string (nullable = true)
+         |-- source: string (nullable = true)
+         |-- sourcetype: string (nullable = true)
+         |-- type: string (nullable = true)
+         |-- user: string (nullable = true)
+         |-- host: string (nullable = true)
+         |-- short: string (nullable = true)
+         |-- desc: string (nullable = true)
+         |-- version: string (nullable = true)
+         |-- filename: string (nullable = true)
+         |-- inode: string (nullable = true)
+         |-- notes: string (nullable = true)
+         |-- format: string (nullable = true)
+         |-- extra: string (nullable = true)
+        :param csv_path:
+        :return:
+        '''
+        # Load CSV files into a Spark DataFrame
+        df = self.sqlctx.load(source="com.databricks.spark.csv", header="true", path = csv_path)
+        # Register the DataFrame as a Spark SQL table called 'tl' so we can run queries using SQL syntax
+        self.sqlctx.registerDataFrameAsTable(df, 'tl')
+        # Cache the table in memory for faster lookups
+        self.sqlctx.cacheTable('tl')
+        # Create a DF that contains deleted files
+        deletedFilesDF = self.sqlctx.sql("SELECT `date`, short FROM tl WHERE short LIKE '%DELETED%'")
+        deletedFilesRowList = deletedFilesDF.collect()
+
+        deletedFileListDate = []
+        deletedFileList = []
+
+        for deletedFile in deletedFilesRowList:
+            deletedFileListDate.append(deletedFile.date)
+            deletedFileList.append(deletedFile.short)
+        datesCtr = Counter(deletedFileListDate)
+
+        dataChart = []
+        descriptionChart = {
+            "date": ("string", "Date"),
+            "hits": ("number", "Deleted files")
+        }
+
+        for k,v in datesCtr.iteritems():
+            dataChart.append({"date": k, "hits": v})
+
+        data_tableChart = gviz_api.DataTable(descriptionChart)
+        data_tableChart.LoadData(dataChart)
+        # Creating a JSon string
+        deleted_files_byDate = data_tableChart.ToJSon(
+            columns_order=("date", "hits"),
+            order_by="hits"
+        )
+        #webhist = self.sqlctx.sql("select `date`, short from tl where source='WEBHIST' limit 100 ").collect()
+        return deleted_files_byDate
 
 def init_spark_context():
     appConfig = conf.Config()
