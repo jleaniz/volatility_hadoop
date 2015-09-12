@@ -31,7 +31,7 @@ def index():
 
 @mod_for.route("/forensics/timeline", methods=('GET', 'POST'))
 def TimelineStats():
-    form = UserForm(csrf_enabled=False)
+    form = PathForm(csrf_enabled=False)
     if form.validate_on_submit():
         jsonChart = analytics_engine.FSTimelineStats(form.name.data)
         return render_template('DisplayTableAndCharts.html', jsonTable=jsonChart, jsonChart=jsonChart)
