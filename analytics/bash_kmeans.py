@@ -14,7 +14,7 @@ commandsRDD = commandsDF.rdd.map(lambda row: row.command.split("\n"))
 
 # Convect commands in commandsRDD to vectors.
 w2v = Word2Vec()
-model = w2v.fit(commandsRDD)
+model = w2v.setVectorSize(2).fit(commandsRDD)
 
 commandsListRDD = commandsDF.rdd.flatMap(lambda row: row.command.split("\n"))
 commandsList = sc.parallelize(commandsListRDD.take(10000)).collect()

@@ -20,6 +20,10 @@ from datetime import date, timedelta as td
 from pyspark.sql import SQLContext
 from pyspark import StorageLevel
 from pyspark import SparkContext, SparkConf
+from pyspark.mllib.clustering import KMeans
+from pyspark.mllib.feature import Word2Vec
+import numpy
+from math import sqrt
 from config import config as conf
 
 from py4j.java_gateway import Py4JJavaError
@@ -74,6 +78,10 @@ class AnalyticsEngine:
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
         '''
+        (self.w2vmodel, self.vectorsList, self.commandsList) = self.getW2Vmodel()
+        self.kmmodel = self.getKMeansModel(self.vectorsList)
+        self.clustersDict = self.getClusterDict(self.w2vmodel,self.kmmodel,self.commandsList)
+
         '''
         Caching will make queries faster but for some reason
         it won't let you read certain partitions on a cached DF.
@@ -589,6 +597,74 @@ class AnalyticsEngine:
         )
         #webhist = self.sqlctx.sql("select `date`, short from tl where source='WEBHIST' limit 100 ").collect()
         return deleted_files_byDate
+
+
+    def getW2Vmodel(self):
+        bashlogsDF = self.sqlctx.parquetFile('/user/cloudera/bashlog')
+        commandsDF = bashlogsDF.select(bashlogsDF.command)
+
+        # RDD of list of words in each command
+        # Review: each command should be considered a "word" instead of each command + arg being an individual word
+        commandsRDD = commandsDF.rdd.map(lambda row: row.command.split("\n"))
+
+        # Convect commands in commandsRDD to vectors.
+        w2v = Word2Vec()
+        model = w2v.setVectorSize(2).fit(commandsRDD)
+
+        commandsListRDD = commandsDF.rdd.flatMap(lambda row: row.command.split("\n"))
+        commandsList = sc.parallelize(commandsListRDD.take(10000)).collect()
+        vectorsList = []
+
+        for command in commandsList:
+            try:
+                vectorsList.append(numpy.array(model.transform(command)))
+            except ValueError:
+                pass
+
+        return model, vectorsList, commandsList
+
+
+    def getKMeansModel(self, vectorsList):
+        kmdata = sc.parallelize(vectorsList, 1024)
+
+        k = int(sqrt(len(vectorsList)/2))
+
+        # Build the model (cluster the data using KMeans)
+        kmmodel = KMeans.train(kmdata, k, maxIterations=10, runs=10, initializationMode="random")
+
+        return kmmodel
+
+
+    def getClusterDict(self, w2vmodel, kmmodel, commandsList):
+        d = dict()
+
+        for command in commandsList:
+            try:
+                vector = w2vmodel.transform(command)
+                cluster = kmmodel.predict(numpy.array(vector))
+                d.setdefault(cluster, []).append(command)
+            except:
+                pass
+
+        return d
+
+
+    def getCmdPrediction(self, command):
+        try:
+            vector = self.w2vmodel.transform(command)
+            cluster = self.kmmodel.predict(numpy.array(vector))
+            syms = self.w2vmodel.findSynonyms(command, 10)
+            if len(self.clustersDict[cluster]) < 100:
+                uncommon = True
+            else:
+                uncommon = False
+
+            result = [command, vector, cluster, syms, uncommon]
+            return result
+
+        except:
+            pass
+
 
 def init_spark_context():
     appConfig = conf.Config()

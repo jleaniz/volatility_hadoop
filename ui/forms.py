@@ -70,3 +70,8 @@ class CustomSearchForm(Form):
 class PathForm(Form):
     name = StringField(u'Path', validators=[DataRequired(message="Field required")])
     submit = SubmitField(u'Lookup')
+
+
+class KeywordForm(Form):
+    keyword = StringField(u'Keyword', validators=[DataRequired(message="Field required")])
+    submit = SubmitField(u'Lookup')
