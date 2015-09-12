@@ -79,9 +79,9 @@ class AnalyticsEngine:
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
         '''
         logger.info("Constructing models..")
-        (self.w2vmodel, self.vectorsList, self.commandsList) = self.getW2Vmodel()
-        self.kmmodel = self.getKMeansModel()
-        self.clustersDict = self.getClusterDict()
+        #(self.w2vmodel, self.vectorsList, self.commandsList) = self.getW2Vmodel()
+        #self.kmmodel = self.getKMeansModel()
+       # self.clustersDict = self.getClusterDict()
 
         '''
         Caching will make queries faster but for some reason
@@ -611,8 +611,7 @@ class AnalyticsEngine:
         # Convect commands in commandsRDD to vectors.
         w2v = Word2Vec()
         print "Fitting w2v model"
-        #model = w2v.fit(commandsRDD)
-        model = []
+        model = w2v.fit(commandsRDD)
         commandsListRDD = commandsDF.rdd.flatMap(lambda row: row.command.split("\n"))
         commandsList = sc.parallelize(commandsListRDD.take(10000)).collect()
         vectorsList = []
