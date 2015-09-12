@@ -18,7 +18,7 @@
 from flask import (
     render_template, Blueprint
 )
-from forms import UserForm
+from forms import PathForm
 from engine import analytics_engine
 
 mod_for = Blueprint('forensics', __name__)
