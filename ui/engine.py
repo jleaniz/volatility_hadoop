@@ -78,9 +78,10 @@ class AnalyticsEngine:
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
         '''
+        logger.info("Constructing models..")
         (self.w2vmodel, self.vectorsList, self.commandsList) = self.getW2Vmodel()
-        self.kmmodel = self.getKMeansModel(self.vectorsList)
-        self.clustersDict = self.getClusterDict(self.w2vmodel,self.kmmodel,self.commandsList)
+        self.kmmodel = self.getKMeansModel()
+        self.clustersDict = self.getClusterDict()
 
         '''
         Caching will make queries faster but for some reason
@@ -600,7 +601,7 @@ class AnalyticsEngine:
 
 
     def getW2Vmodel(self):
-        bashlogsDF = self.sqlctx.parquetFile('/user/cloudera/bashlog')
+        bashlogsDF = self.sqlctx.parquetFile('/user/cloudera/bashlog/year=2015/month=06')
         commandsDF = bashlogsDF.select(bashlogsDF.command)
 
         # RDD of list of words in each command
@@ -625,10 +626,10 @@ class AnalyticsEngine:
         return model, vectorsList, commandsList
 
 
-    def getKMeansModel(self, vectorsList):
-        kmdata = sc.parallelize(vectorsList, 1024)
+    def getKMeansModel(self):
+        kmdata = sc.parallelize(self.vectorsList, 1024)
 
-        k = int(sqrt(len(vectorsList)/2))
+        k = int(sqrt(len(self.vectorsList)/2))
 
         # Build the model (cluster the data using KMeans)
         kmmodel = KMeans.train(kmdata, k, maxIterations=10, runs=10, initializationMode="random")
@@ -636,13 +637,13 @@ class AnalyticsEngine:
         return kmmodel
 
 
-    def getClusterDict(self, w2vmodel, kmmodel, commandsList):
+    def getClusterDict(self):
         d = dict()
 
-        for command in commandsList:
+        for command in self.commandsList:
             try:
-                vector = w2vmodel.transform(command)
-                cluster = kmmodel.predict(numpy.array(vector))
+                vector = self.w2vmodel.transform(command)
+                cluster = self.kmmodel.predict(numpy.array(vector))
                 d.setdefault(cluster, []).append(command)
             except:
                 pass
