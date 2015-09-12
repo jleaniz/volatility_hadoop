@@ -79,11 +79,11 @@ class AnalyticsEngine:
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
         '''
-        logger.info("Constructing models..")
+        '''
         (self.w2vmodel, self.vectorsList, self.commandsList) = self.getW2Vmodel()
         self.kmmodel = self.getKMeansModel()
         self.clustersDict = self.getClusterDict()
-
+        '''
         '''
         Caching will make queries faster but for some reason
         it won't let you read certain partitions on a cached DF.
