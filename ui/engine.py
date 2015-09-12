@@ -389,8 +389,7 @@ class AnalyticsEngine:
             self.firewallDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         PortStats = self.sqlctx.sql(
-            'select dstport, proto, count(*) as hits from firewall where action="DENY" '
-            'group by dstport, proto order by hits desc limit 10'
+            'select dstport, proto, count(*) as hits from firewall where action="DENY" group by dstport, proto order by hits desc limit 10'
         )
         entries = PortStats.collect()
 
@@ -426,8 +425,7 @@ class AnalyticsEngine:
             self.firewallDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         dstIPStats = self.sqlctx.sql(
-            'select dstip, dstport, proto, count(*) as hits from firewall where action="DENY" '
-            'group by dstip, dstport, proto order by hits desc limit 10'
+            'select dstip, dstport, proto, count(*) as hits from firewall where action="DENY" group by dstip, dstport, proto order by hits desc limit 10'
         )
         entries = dstIPStats.collect()
 
