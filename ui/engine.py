@@ -597,12 +597,11 @@ class AnalyticsEngine:
     def initializeModels(self):
         #bashlogsDF = self.sqlctx.parquetFile('/user/cloudera/bashlog')
         commandsDF = self.bashDF.select(self.bashDF.command)
+        commandsDF.cache()
 
         # RDD of list of words in each command
         # Review: each command should be considered a "word" instead of each command + arg being an individual word
         commandsRDD = commandsDF.rdd.map(lambda row: row.command.split("\n"))
-        commandsDF.cache()
-        commandsRDD.cache()
         # Convect commands in commandsRDD to vectors.
         self.w2v = Word2Vec()
         self.model = self.w2v.fit(commandsRDD)
@@ -618,6 +617,7 @@ class AnalyticsEngine:
                 pass
 
         kmdata = self.sc.parallelize(vectorsList, 1024)
+        kmdata.cache()
 
         k = int(sqrt(len(vectorsList)/2))
 
