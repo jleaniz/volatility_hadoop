@@ -53,7 +53,6 @@ class AnalyticsEngine:
         logger.info("Creating Spark SQL context:")
         self.sqlctx = SQLContext(self.sc)
 
-        '''
         # pre-laod some data
         logger.info("Loading Cisco VPN data")
         self.vpnLogsDF = self.sqlctx.load(
@@ -78,12 +77,9 @@ class AnalyticsEngine:
             "/user/cloudera/bashlog"
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
-        '''
-        '''
-        (self.w2vmodel, self.vectorsList, self.commandsList) = self.getW2Vmodel()
-        self.kmmodel = self.getKMeansModel()
-        self.clustersDict = self.getClusterDict()
-        '''
+
+        self.initializeModels()
+
         '''
         Caching will make queries faster but for some reason
         it won't let you read certain partitions on a cached DF.
@@ -600,54 +596,43 @@ class AnalyticsEngine:
         return deleted_files_byDate
 
 
-    def getW2Vmodel(self):
-        bashlogsDF = self.sqlctx.parquetFile('/user/cloudera/bashlog/year=2015/month=06')
-        commandsDF = bashlogsDF.select(bashlogsDF.command)
+    def initializeModels(self):
+        #bashlogsDF = self.sqlctx.parquetFile('/user/cloudera/bashlog')
+        commandsDF = self.bashDF.select(self.bashDF.command)
 
         # RDD of list of words in each command
         # Review: each command should be considered a "word" instead of each command + arg being an individual word
         commandsRDD = commandsDF.rdd.map(lambda row: row.command.split("\n"))
 
         # Convect commands in commandsRDD to vectors.
-        w2v = Word2Vec()
-        print "Fitting w2v model"
-        model = w2v.fit(commandsRDD)
+        self.w2v = Word2Vec()
+        self.model = self.w2v.setVectorSize(2).fit(commandsRDD)
+
         commandsListRDD = commandsDF.rdd.flatMap(lambda row: row.command.split("\n"))
-        commandsList = sc.parallelize(commandsListRDD.take(10000)).collect()
+        commandsList = self.sc.parallelize(commandsListRDD.take(10000)).collect()
         vectorsList = []
 
         for command in commandsList:
             try:
-                vectorsList.append(numpy.array(model.transform(command)))
+                vectorsList.append(numpy.array(self.model.transform(command)))
             except ValueError:
                 pass
 
-        return model, vectorsList, commandsList
+        kmdata = self.sc.parallelize(vectorsList, 1024)
 
-
-    def getKMeansModel(self):
-        kmdata = sc.parallelize(self.vectorsList, 1024)
-
-        k = int(sqrt(len(self.vectorsList)/2))
+        k = int(sqrt(len(vectorsList)/2))
 
         # Build the model (cluster the data using KMeans)
-        kmmodel = KMeans.train(kmdata, k, maxIterations=10, runs=10, initializationMode="random")
+        self.clusters = KMeans.train(kmdata, k, maxIterations=10, runs=10, initializationMode="random")
 
-        return kmmodel
-
-
-    def getClusterDict(self):
-        d = dict()
-
-        for command in self.commandsList:
+        self.clustersDict = dict()
+        for command in commandsList:
             try:
-                vector = self.w2vmodel.transform(command)
-                cluster = self.kmmodel.predict(numpy.array(vector))
-                d.setdefault(cluster, []).append(command)
+                vector = self.model.transform(command)
+                cluster = self.clusters.predict(numpy.array(vector))
+                self.clustersDict.setdefault(cluster, []).append(command)
             except:
                 pass
-
-        return d
 
 
     def getCmdPrediction(self, command):
