@@ -635,7 +635,7 @@ class AnalyticsEngine:
             except:
                 pass
 
-        logger.info(self.clustersDict)
+        logger.info("clusters: %s" % self.clustersDict.keys())
 
     def getCmdPrediction(self, command):
         try:
@@ -646,7 +646,7 @@ class AnalyticsEngine:
 
         vector = self.w2vmodel.transform(command)
         cluster = self.clusters.predict(numpy.array(vector))
-        logger.info("cluster: %d" %(cluster))
+        logger.info("cluster: %d" % cluster)
         syms = self.w2vmodel.findSynonyms(command, 10)
         if len(self.clustersDict[cluster]) < 100:
             uncommon = True
