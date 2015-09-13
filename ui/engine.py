@@ -78,8 +78,6 @@ class AnalyticsEngine:
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
 
-        self.initializeModels()
-
         '''
         Caching will make queries faster but for some reason
         it won't let you read certain partitions on a cached DF.
@@ -603,7 +601,7 @@ class AnalyticsEngine:
         # RDD of list of words in each command
         # Review: each command should be considered a "word" instead of each command + arg being an individual word
         commandsRDD = commandsDF.rdd.map(lambda row: row.command.split("\n"))
-        commandsRDD.collect()
+
         # Convect commands in commandsRDD to vectors.
         self.w2v = Word2Vec()
         self.model = self.w2v.fit(commandsRDD)
@@ -636,8 +634,11 @@ class AnalyticsEngine:
 
 
     def getCmdPrediction(self, command):
+
+        self.initializeModels()
+
         try:
-            vector = self.w2vmodel.transform(command)
+            vector = self.w2v.transform(command)
             cluster = self.kmmodel.predict(numpy.array(vector))
             syms = self.w2vmodel.findSynonyms(command, 10)
             if len(self.clustersDict[cluster]) < 100:
