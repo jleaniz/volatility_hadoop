@@ -635,23 +635,17 @@ class AnalyticsEngine:
 
 
     def getCmdPrediction(self, command):
-
         self.initializeModels()
+        vector = self.w2v.transform(command)
+        cluster = self.clusters.predict(numpy.array(vector))
+        syms = self.w2v.findSynonyms(command, 10)
+        if len(self.clustersDict[cluster]) < 100:
+            uncommon = True
+        else:
+            uncommon = False
 
-        try:
-            vector = self.w2v.transform(command)
-            cluster = self.clusters.predict(numpy.array(vector))
-            syms = self.w2v.findSynonyms(command, 10)
-            if len(self.clustersDict[cluster]) < 100:
-                uncommon = True
-            else:
-                uncommon = False
-
-            result = [command, vector, cluster, syms, uncommon]
-            return result
-
-        except:
-            pass
+        result = [command, vector, cluster, syms, uncommon]
+        return result
 
 
 def init_spark_context():
