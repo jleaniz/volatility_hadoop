@@ -604,7 +604,7 @@ class AnalyticsEngine:
         commandsRDD = commandsDF.rdd.map(lambda row: row.command.split("\n"))
         # Convect commands in commandsRDD to vectors.
         self.w2v = Word2Vec()
-        self.model = self.w2v.setVectorSize(2).fit(commandsRDD)
+        self.w2vmodel = self.w2v.setVectorSize(2).fit(commandsRDD)
 
         commandsListRDD = commandsDF.rdd.flatMap(lambda row: row.command.split("\n"))
         commandsList = self.sc.parallelize(commandsListRDD.take(10000)).collect()
@@ -612,7 +612,7 @@ class AnalyticsEngine:
 
         for command in commandsList:
             try:
-                vectorsList.append(numpy.array(self.model.transform(command)))
+                vectorsList.append(numpy.array(self.w2vmodel.transform(command)))
             except ValueError:
                 pass
 
@@ -627,7 +627,7 @@ class AnalyticsEngine:
         self.clustersDict = dict()
         for command in commandsList:
             try:
-                vector = self.model.transform(command)
+                vector = self.w2vmodel.transform(command)
                 cluster = self.clusters.predict(numpy.array(vector))
                 self.clustersDict.setdefault(cluster, []).append(command)
             except:
@@ -635,12 +635,12 @@ class AnalyticsEngine:
 
 
     def getCmdPrediction(self, command):
-        if not self.model:
+        if not self.w2vmodel:
             self.initializeModels()
 
-        vector = self.model.transform(command)
+        vector = self.w2vmodel.transform(command)
         cluster = self.clusters.predict(numpy.array(vector))
-        syms = self.w2v.findSynonyms(command, 10)
+        syms = self.w2vmodel.findSynonyms(command, 10)
         if len(self.clustersDict[cluster]) < 100:
             uncommon = True
         else:
