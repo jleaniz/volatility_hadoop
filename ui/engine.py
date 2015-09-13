@@ -635,8 +635,10 @@ class AnalyticsEngine:
 
 
     def getCmdPrediction(self, command):
-        self.initializeModels()
-        vector = self.w2v.transform(command)
+        if not self.model:
+            self.initializeModels()
+
+        vector = self.model.transform(command)
         cluster = self.clusters.predict(numpy.array(vector))
         syms = self.w2v.findSynonyms(command, 10)
         if len(self.clustersDict[cluster]) < 100:
