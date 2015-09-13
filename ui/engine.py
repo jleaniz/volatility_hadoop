@@ -603,10 +603,10 @@ class AnalyticsEngine:
         # RDD of list of words in each command
         # Review: each command should be considered a "word" instead of each command + arg being an individual word
         commandsRDD = commandsDF.rdd.map(lambda row: row.command.split("\n"))
-
+        commandsRDD.collect()
         # Convect commands in commandsRDD to vectors.
         self.w2v = Word2Vec()
-        self.model = self.w2v.setVectorSize(2).fit(commandsRDD)
+        self.model = self.w2v.fit(commandsRDD)
 
         commandsListRDD = commandsDF.rdd.flatMap(lambda row: row.command.split("\n"))
         commandsList = self.sc.parallelize(commandsListRDD.take(10000)).collect()
