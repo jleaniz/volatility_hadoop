@@ -605,10 +605,10 @@ class AnalyticsEngine:
         # Convect commands in commandsRDD to vectors.
         self.w2v = Word2Vec()
         logger.info("Fitting w2v model...")
-        self.w2vmodel = self.w2v.setVectorSize(2).fit(commandsRDD)
+        self.w2vmodel = self.w2v.fit(commandsRDD)
 
         commandsListRDD = commandsDF.rdd.flatMap(lambda row: row.command.split("\n"))
-        commandsList = self.sc.parallelize(commandsListRDD.take(10000)).collect()
+        commandsList = self.sc.parallelize(commandsListRDD.take(100000)).collect()
         vectorsList = []
 
         for command in commandsList:
