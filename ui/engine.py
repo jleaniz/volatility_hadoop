@@ -651,7 +651,7 @@ class AnalyticsEngine:
         else:
             uncommon = False
 
-        result = [command, vector, cluster, syms, uncommon]
+        result = [command, vector, cluster, self.clustersDict, syms, uncommon]
         return result
 
 
