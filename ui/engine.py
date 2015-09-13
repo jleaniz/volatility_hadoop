@@ -635,7 +635,10 @@ class AnalyticsEngine:
 
 
     def getCmdPrediction(self, command):
-        if not self.w2vmodel:
+        try:
+            if self.w2vmodel:
+                pass
+        except AttributeError:
             self.initializeModels()
 
         vector = self.w2vmodel.transform(command)
