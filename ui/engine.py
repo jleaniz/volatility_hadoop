@@ -604,7 +604,7 @@ class AnalyticsEngine:
         commandsRDD = commandsDF.rdd.map(lambda row: row.command.split("\n"))
         # Convect commands in commandsRDD to vectors.
         self.w2v = Word2Vec()
-        self.model = self.w2v.fit(commandsRDD)
+        self.model = self.w2v.setVectorSize(2).fit(commandsRDD)
 
         commandsListRDD = commandsDF.rdd.flatMap(lambda row: row.command.split("\n"))
         commandsList = self.sc.parallelize(commandsListRDD.take(10000)).collect()
@@ -622,7 +622,7 @@ class AnalyticsEngine:
         k = int(sqrt(len(vectorsList)/2))
 
         # Build the model (cluster the data using KMeans)
-        self.clusters = KMeans.train(kmdata, k, maxIterations=10, runs=10, initializationMode="random")
+        self.clusters = KMeans.train(kmdata, k, maxIterations=5, runs=1, initializationMode="random")
 
         self.clustersDict = dict()
         for command in commandsList:
