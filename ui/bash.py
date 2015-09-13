@@ -34,7 +34,7 @@ def bash_kmeans():
     form = KeywordForm(csrf_enabled=False)
     if form.validate_on_submit():
         (command, vector, cluster, clustersDict, syms, uncommon) = analytics_engine.getCmdPrediction(form.keyword.data)
-        return render_template('bash_kmeans.html', command=command, vector=vector, syms=syms, uncommon=uncommon)
+        return render_template('bash_kmeans.html', command=command, vector=vector, clustersDict=clustersDict, syms=syms, uncommon=uncommon)
 
     return render_template("bash.html", form=form)
 
