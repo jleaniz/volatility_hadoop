@@ -639,8 +639,8 @@ class AnalyticsEngine:
 
         try:
             vector = self.w2v.transform(command)
-            cluster = self.kmmodel.predict(numpy.array(vector))
-            syms = self.w2vmodel.findSynonyms(command, 10)
+            cluster = self.clusters.predict(numpy.array(vector))
+            syms = self.w2v.findSynonyms(command, 10)
             if len(self.clustersDict[cluster]) < 100:
                 uncommon = True
             else:
