@@ -193,7 +193,6 @@ class AnalyticsEngine:
         :return:
         '''
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
-        logger.info(_parquetPaths)
 
         self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
@@ -259,7 +258,6 @@ class AnalyticsEngine:
 
         days = []
         for i in range(delta.days + 1):
-            logger.info((_sdate + td(days=i)))
             days.append(_sdate + td(days=i))
 
         return days
@@ -270,7 +268,6 @@ class AnalyticsEngine:
 
         parquetPaths = []
         for day in days:
-            logger.info(day)
             if table == 'firewall':
                 parquetPaths.append(
                     '/user/cloudera/%s/off/year=%s/month=%s/day=%s' % (
