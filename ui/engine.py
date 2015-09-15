@@ -193,6 +193,7 @@ class AnalyticsEngine:
         :return:
         '''
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
+        logger.info(_parquetPaths)
 
         self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
