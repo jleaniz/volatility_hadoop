@@ -576,9 +576,9 @@ class AnalyticsEngine(object):
         # Create a list with dates and number of deleted files per day
         deletedFilesDateList = self.sqlctx.sql("SELECT `date`, count(*) as hits FROM deleted group by `date` order by hits desc limit 15").collect()
 
-        zipFiles = int(self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%zip'" ).collect()[0].c1)
-        pdfFiles = int(self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%pdf'" ).collect()[0].c1)
-        exeFiles = int(self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%exe'" ).collect()[0].c1)
+        zipFiles = int(self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%zip'" ).collect()[0].hits)
+        pdfFiles = int(self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%pdf'" ).collect()[0].hits)
+        exeFiles = int(self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%exe'" ).collect()[0].hits)
 
         dataChart = []
         descriptionChart = {
