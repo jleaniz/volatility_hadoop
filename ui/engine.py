@@ -36,7 +36,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class AnalyticsEngine:
+class AnalyticsEngine(object):
     '''
     Security analytics engine class
     Contains all the analytics functions
@@ -562,17 +562,24 @@ class AnalyticsEngine:
         :param csv_path:
         :return:
         '''
+        fileTypes = ['zip', 'exe', 'pdf']
         # Load CSV files into a Spark DataFrame
         df = self.sqlctx.load(source="com.databricks.spark.csv", header="true", path = csv_path)
         # Register the DataFrame as a Spark SQL table called 'tl' so we can run queries using SQL syntax
         self.sqlctx.registerDataFrameAsTable(df, 'tl')
         # Cache the table in memory for faster lookups
         self.sqlctx.cacheTable('tl')
+
         # Create a df that contains deleted files
         deletedFilesDF = self.sqlctx.sql("SELECT `date`, short FROM tl WHERE short LIKE '%DELETED%'")
         self.sqlctx.registerDataFrameAsTable(deletedFilesDF, 'deleted')
         # Create a list with dates and number of deleted files per day
         deletedFilesDateList = self.sqlctx.sql("SELECT `date`, count(*) as hits FROM deleted group by `date` order by hits desc limit 15").collect()
+
+        zipFilesDF = self.sqlctx.sql("SELECT short, count(*) as hits FROM tl WHERE short LIKE '%zip' GROUP BY short ORDER BY hits" )
+        pdfFilesDF = self.sqlctx.sql("SELECT short, count(*) as hits FROM tl WHERE short LIKE '%zip' GROUP BY short ORDER BY hits" )
+        exeFilesDF = self.sqlctx.sql("SELECT short, count(*) as hits FROM tl WHERE short LIKE '%zip' GROUP BY short ORDER BY hits" )
+        fileCounts = zipFilesDF.unionAll(pdfFilesDF).unionAll(exeFilesDF).collect()
 
         dataChart = []
         descriptionChart = {
