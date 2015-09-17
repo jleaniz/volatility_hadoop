@@ -576,10 +576,9 @@ class AnalyticsEngine(object):
         # Create a list with dates and number of deleted files per day
         deletedFilesDateList = self.sqlctx.sql("SELECT `date`, count(*) as hits FROM deleted group by `date` order by hits desc limit 15").collect()
 
-        zipFilesDF = self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%zip'" ).withColumn('filetype', Row(filetype=u'zip'))
-        pdfFilesDF = self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%pdf'" ).withColumn('filetype', Row(filetype=u'pdf'))
-        exeFilesDF = self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%exe'" ).withColumn('filetype', Row(filetype=u'exe'))
-        fileCounts = zipFilesDF.unionAll(pdfFilesDF).unionAll(exeFilesDF).collect()
+        zipFiles = self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%zip'" ).collect()
+        pdfFiles = self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%pdf'" ).collect()
+        exeFiles = self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%exe'" ).collect()
 
         dataChart = []
         descriptionChart = {
@@ -605,8 +604,9 @@ class AnalyticsEngine(object):
             "hits": ("number", "Entries")
         }
 
-        for row in fileCounts:
-            dataChart.append({"filetype": row.filetype, "hits": row.hits})
+        dataChart.append({"filetype": 'zip', "hits": zipFiles })
+        dataChart.append({"filetype": 'pdf', "hits": pdfFiles })
+        dataChart.append({"filetype": 'exe', "hits": exeFiles })
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
