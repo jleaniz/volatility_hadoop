@@ -562,7 +562,6 @@ class AnalyticsEngine(object):
         :param csv_path:
         :return:
         '''
-        fileTypes = ['zip', 'exe', 'pdf']
         # Load CSV files into a Spark DataFrame
         df = self.sqlctx.load(source="com.databricks.spark.csv", header="true", path = csv_path)
         # Register the DataFrame as a Spark SQL table called 'tl' so we can run queries using SQL syntax
@@ -576,9 +575,9 @@ class AnalyticsEngine(object):
         # Create a list with dates and number of deleted files per day
         deletedFilesDateList = self.sqlctx.sql("SELECT `date`, count(*) as hits FROM deleted group by `date` order by hits desc limit 15").collect()
 
-        zipFilesDF = self.sqlctx.sql("SELECT short, count(*) as hits FROM tl WHERE short LIKE '%zip' GROUP BY short ORDER BY hits" )
-        pdfFilesDF = self.sqlctx.sql("SELECT short, count(*) as hits FROM tl WHERE short LIKE '%zip' GROUP BY short ORDER BY hits" )
-        exeFilesDF = self.sqlctx.sql("SELECT short, count(*) as hits FROM tl WHERE short LIKE '%zip' GROUP BY short ORDER BY hits" )
+        zipFilesDF = self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%zip' GROUP BY short ORDER BY hits" ).withColumn('filetype', 'zip')
+        pdfFilesDF = self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%pdf' GROUP BY short ORDER BY hits" ).withColumn('filetype', 'pdf')
+        exeFilesDF = self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%exe' GROUP BY short ORDER BY hits" ).withColumn('filetype', 'exe')
         fileCounts = zipFilesDF.unionAll(pdfFilesDF).unionAll(exeFilesDF).collect()
 
         dataChart = []
@@ -606,7 +605,7 @@ class AnalyticsEngine(object):
         }
 
         for row in fileCounts:
-            dataChart.append({"filetype": row.short, "hits": row.hits})
+            dataChart.append({"filetype": row.filetype, "hits": row.hits})
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
