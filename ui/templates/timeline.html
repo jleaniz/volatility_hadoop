@@ -17,7 +17,9 @@
             // Initialize Chart editor handle
             chartEd = new google.visualization.ChartEditor();
             google.visualization.events.addListener(chartEd, 'ok', saveChart);
-            chartEditorDiv = document.getElementById('chartEditorDiv');
+            chartEditorDivDF = document.getElementById('chartEditorDivDF');
+            chartEditorDivFT = document.getElementById('chartEditorDivFT');
+
 
             // Add the chart to the page
             wrapDF = new google.visualization.ChartWrapper({
@@ -33,8 +35,8 @@
                'options': {'title':'', 'legend':'none'}
             });
 
-            wrapDF.draw(chartEditorDiv);
-            wrapFT.draw(chartEditorDiv);
+            wrapDF.draw(chartEditorDivDF);
+            wrapFT.draw(chartEditorDivFT);
 
 
             var tableDataDF = new google.visualization.DataTable({{ jsonChartDF|safe }});
@@ -71,8 +73,10 @@
                 <div class="panel panel-default">
                     <div class="panel-heading"></div>
                     <div class="panel-body">
-                        <div id="chartEditorDiv" style="width: 100%; height: 380px;"></div>
-                        <input class="btn btn-default" type="submit" name="loadcharteditor" id="loadcharteditor" value="Edit" onClick="loadEditor()"></p>
+                        <div id="chartEditorDivDF" style="width: 100%; height: 380px;"></div>
+                        <input class="btn btn-default" type="submit" name="loadcharteditor" id="loadcharteditor" value="Edit" onClick="loadEditor()">
+                        <div id="chartEditorDivFT" style="width: 100%; height: 380px;"></div>
+                        <input class="btn btn-default" type="submit" name="loadcharteditor2" id="loadcharteditor" value="Edit" onClick="loadEditor()">
                     </div>
                 </div>
             </div>
