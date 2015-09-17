@@ -16,7 +16,11 @@
         function drawChartEditor(){
             // Initialize Chart editor handle
             chartEd = new google.visualization.ChartEditor();
-            google.visualization.events.addListener(chartEd, 'ok', saveChart);
+            chartEd2 = new google.visualization.ChartEditor();
+
+            google.visualization.events.addListener(chartEd, 'ok', saveChartDF);
+            google.visualization.events.addListener(chartEd2, 'ok', saveChartFT);
+
             chartEditorDivDF = document.getElementById('chartEditorDivDF');
             chartEditorDivFT = document.getElementById('chartEditorDivFT');
 
@@ -52,17 +56,18 @@
         }
 
         // User clicked 'ok' to save chart
-        function saveChart(){
+        function saveChartDF(){
             chartEd.getChartWrapper().draw(chartEditorDivDF);
-            chartEd.getChartWrapper().draw(chartEditorDivFT);
         }
-
+        function saveChartFT(){
+            chartEd2.getChartWrapper().draw(chartEditorDivFT);
+        }
         // Onclick handler, opens the editor
         function loadEditorDF() {
             chartEd.openDialog(wrapDF, {});
         }
         function loadEditorFT() {
-            chartEd.openDialog(wrapFT, {});
+            chartEd2.openDialog(wrapFT, {});
         }
         google.setOnLoadCallback(drawChartEditor);
 
