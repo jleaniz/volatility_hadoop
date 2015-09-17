@@ -18,6 +18,7 @@
 from datetime import date, timedelta as td
 
 from pyspark.sql import SQLContext
+from pyspark.sql.types import Row
 from pyspark import StorageLevel
 from pyspark import SparkContext, SparkConf
 from pyspark.mllib.clustering import KMeans
@@ -575,9 +576,9 @@ class AnalyticsEngine(object):
         # Create a list with dates and number of deleted files per day
         deletedFilesDateList = self.sqlctx.sql("SELECT `date`, count(*) as hits FROM deleted group by `date` order by hits desc limit 15").collect()
 
-        zipFilesDF = self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%zip'" ).withColumn('filetype', 'zip')
-        pdfFilesDF = self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%pdf'" ).withColumn('filetype', 'pdf')
-        exeFilesDF = self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%exe'" ).withColumn('filetype', 'exe')
+        zipFilesDF = self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%zip'" ).withColumn('filetype', Row(filetype=u'zip'))
+        pdfFilesDF = self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%pdf'" ).withColumn('filetype', Row(filetype=u'pdf'))
+        exeFilesDF = self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%exe'" ).withColumn('filetype', Row(filetype=u'exe'))
         fileCounts = zipFilesDF.unionAll(pdfFilesDF).unionAll(exeFilesDF).collect()
 
         dataChart = []
