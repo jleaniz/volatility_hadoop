@@ -598,7 +598,25 @@ class AnalyticsEngine(object):
             order_by="hits"
         )
         #webhist = self.sqlctx.sql("select `date`, short from tl where source='WEBHIST' limit 100 ").collect()
-        return deleted_files_byDate
+
+        dataChart = []
+        descriptionChart = {
+            "filetype": ("string", "File Type"),
+            "hits": ("number", "Entries")
+        }
+
+        for row in fileCounts:
+            dataChart.append({"filetype": row.short, "hits": row.hits})
+
+        data_tableChart = gviz_api.DataTable(descriptionChart)
+        data_tableChart.LoadData(dataChart)
+        # Creating a JSon string
+        filetype_count = data_tableChart.ToJSon(
+            columns_order=("filetype", "hits"),
+            order_by="hits"
+        )
+
+        return deleted_files_byDate, filetype_count
 
 
     def initializeModels(self):

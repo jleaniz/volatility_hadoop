@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
+{% block content %}
+{{ util.flashed_messages(dismissible=True) }}
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+        google.load("visualization", "1", {packages: ["corechart", "charteditor", "controls", "table"]});
+        var chartEd = null;
+        var wrap = null;
+        var chartEditorDiv = null;
+        // Populates the chart div on startup and initiates global vars. Called on page load.
+        function drawChartEditor(){
+            // Initialize Chart editor handle
+            chartEd = new google.visualization.ChartEditor();
+            google.visualization.events.addListener(chartEd, 'ok', saveChart);
+            chartEditorDiv = document.getElementById('chartEditorDiv');
+
+            // Add the chart to the page
+            wrapDF = new google.visualization.ChartWrapper({
+               'chartType':'BarChart',
+               'dataTable': {{ jsonChartDF|safe }},
+               'options': {'title':'', 'legend':'none'}
+            });
+
+            // Add the chart to the page
+            wrapFT = new google.visualization.ChartWrapper({
+               'chartType':'BarChart',
+               'dataTable': {{ jsonChartFT|safe }},
+               'options': {'title':'', 'legend':'none'}
+            });
+
+            wrapDF.draw(chartEditorDiv);
+            wrapFT.draw(chartEditorDiv);
+
+
+            var tableDataDF = new google.visualization.DataTable({{ jsonChartDF|safe }});
+            var tableDF = new google.visualization.Table(document.getElementById('tableDF'));
+            var tableDataFT = new google.visualization.DataTable({{ jsonChartFT|safe }});
+            var tableFT = new google.visualization.Table(document.getElementById('tableFT'));
+
+            var tableOptions = {showRowNumber: false, width: '100%', height: '100%'};
+
+            tableDF.draw(tableDataDF, tableOptions);
+            tableFT.draw(tableDataFT, tableOptions);
+
+        }
+
+        // User clicked 'ok' to save chart
+        function saveChart(){
+            chartEd.getChartWrapper().draw(chartEditorDiv);
+        }
+
+        // Onclick handler, opens the editor
+        function loadEditor() {
+            chartEd.openDialog(wrap, {});
+        }
+
+        google.setOnLoadCallback(drawChartEditor);
+
+
+</script>
+
+<div class="container" style="width: 100%; height: 100%;">
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading"></div>
+                    <div class="panel-body">
+                        <div id="chartEditorDiv" style="width: 100%; height: 380px;"></div>
+                        <input class="btn btn-default" type="submit" name="loadcharteditor" id="loadcharteditor" value="Edit" onClick="loadEditor()"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading"></div>
+                    <div class="panel-body">
+                        <div id="tableFT" style="width: 100%; height: 100%;"></div>
+                        <div id="tableDF" style="width: 100%; height: 100%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+{% endblock %}

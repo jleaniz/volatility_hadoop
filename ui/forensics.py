@@ -33,7 +33,7 @@ def index():
 def TimelineStats():
     form = PathForm(csrf_enabled=False)
     if form.validate_on_submit():
-        jsonChart = analytics_engine.FSTimelineStats(form.name.data)
-        return render_template('DisplayTableAndCharts.html', jsonTable=jsonChart, jsonChart=jsonChart)
+        jsonChartDF, jsonChartFT = analytics_engine.FSTimelineStats(form.name.data)
+        return render_template('timeline.html', jsonChartDF=jsonChartDF, jsonChartFT=jsonChartFT)
 
     return render_template("forensics.html", form=form)
