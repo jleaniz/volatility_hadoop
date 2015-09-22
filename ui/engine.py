@@ -294,7 +294,7 @@ class AnalyticsEngine(object):
             if table == 'proxysg':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
                 print 'is proxysg, loading df'
-                print 'loading' + _parquetPaths
+                print _parquetPaths
                 self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
                 print 'loaded df'
                 self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
