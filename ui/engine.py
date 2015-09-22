@@ -282,7 +282,6 @@ class AnalyticsEngine(object):
 
         # _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
         _parquetPaths = [x for x in parquetPaths if os.path.exists('/mnt/hdfs' + x)]
-        logger.info(_parquetPaths)
         return _parquetPaths
 
     def getSearchResults(self, table, sdate, edate, query, num):
@@ -295,6 +294,7 @@ class AnalyticsEngine(object):
             if table == 'proxysg':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
                 print 'is proxysg, loading df'
+                print 'loading' + _parquetPaths
                 self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
                 print 'loaded df'
                 self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
@@ -330,8 +330,9 @@ class AnalyticsEngine(object):
                 resultsDF = self.sqlctx.sql('%s limit %s' % (query, num))
                 for result in resultsDF.toJSON().collect():
                     yield result
-                    print result
-            except Py4JJavaError:
+                    print 'result' + result
+            except Py4JJavaError as e:
+                print str(e)
                 pass
 
     def getCustomSearchResults(self, query):
