@@ -282,6 +282,7 @@ class AnalyticsEngine(object):
 
         # _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
         _parquetPaths = [x for x in parquetPaths if os.path.exists('/mnt/hdfs' + x)]
+        logger.info(_parquetPaths)
         return _parquetPaths
 
     def getSearchResults(self, table, sdate, edate, query, num):
@@ -317,7 +318,8 @@ class AnalyticsEngine(object):
                 tempDF = self.bashDF
 
         except AttributeError as e:
-            logger.info(e.strerror)
+            logger.info(e)
+            print str(e)
             pass
 
         for day in days:
