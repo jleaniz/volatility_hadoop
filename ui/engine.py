@@ -53,7 +53,7 @@ class AnalyticsEngine(object):
         # Load ratings data for later use
         logger.info("Creating Spark SQL context:")
         self.sqlctx = SQLContext(self.sc)
-        '''
+
         # pre-laod some data
         logger.info("Loading Cisco VPN data")
         self.vpnLogsDF = self.sqlctx.load(
@@ -78,7 +78,7 @@ class AnalyticsEngine(object):
             "/user/cloudera/bashlog"
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
-        '''
+
         '''
         Caching will make queries faster but for some reason
         it won't let you read certain partitions on a cached DF.
@@ -294,8 +294,9 @@ class AnalyticsEngine(object):
         try:
             if table == 'proxysg':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
-                logger.info(*_parquetPaths)
+                print 'is proxysg, loading df'
                 self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
+                print 'loaded df'
                 self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
                 tempDF = self.proxyDF
 
@@ -318,9 +319,7 @@ class AnalyticsEngine(object):
                 tempDF = self.bashDF
 
         except AttributeError as e:
-            logger.info(e)
             print str(e)
-            pass
 
         for day in days:
             try:
@@ -330,6 +329,7 @@ class AnalyticsEngine(object):
                 resultsDF = self.sqlctx.sql('%s limit %s' % (query, num))
                 for result in resultsDF.toJSON().collect():
                     yield result
+                    print result
             except Py4JJavaError:
                 pass
 
