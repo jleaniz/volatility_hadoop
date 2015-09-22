@@ -38,3 +38,14 @@ def DisplayPortStats():
         return render_template('DisplayTableAndCharts.html', jsonTable=jsonChart, jsonChart=jsonChart)
 
     return render_template("dateForm.html", form=form)
+
+
+@mod_firewall.route("/firewall/ip/stats", methods=('GET', 'POST'))
+def DisplayIPStats():
+    form = DateForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        jsonChart = analytics_engine.getFirewallIPStats(form.fromdate.data.strftime('%Y-%m-%d'),
+                                                          form.todate.data.strftime('%Y-%m-%d'))
+        return render_template('DisplayTableAndCharts.html', jsonTable=jsonChart, jsonChart=jsonChart)
+
+    return render_template("dateForm.html", form=form)
