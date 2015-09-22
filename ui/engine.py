@@ -293,10 +293,7 @@ class AnalyticsEngine(object):
         try:
             if table == 'proxysg':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
-                print 'is proxysg, loading df'
-                print _parquetPaths
                 self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
-                print 'loaded df'
                 self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
                 tempDF = self.proxyDF
 
@@ -319,8 +316,8 @@ class AnalyticsEngine(object):
                 tempDF = self.bashDF
 
         except AttributeError as e:
-            print 'error loading df in try'
-            print str(e)
+            logger.info(e)
+            pass
 
         for day in days:
             try:
@@ -332,9 +329,8 @@ class AnalyticsEngine(object):
                 resultsDF = self.sqlctx.sql('%s limit %s' % (query, num))
                 for result in resultsDF.toJSON().collect():
                     yield result
-                    print 'result' + result
             except Py4JJavaError as e:
-                print str(e)
+                logger.info(e)
                 pass
 
     def getCustomSearchResults(self, query):
