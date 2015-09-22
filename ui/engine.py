@@ -319,6 +319,7 @@ class AnalyticsEngine(object):
                 tempDF = self.bashDF
 
         except AttributeError as e:
+            print 'error loading df in try'
             print str(e)
 
         for day in days:
