@@ -293,6 +293,7 @@ class AnalyticsEngine(object):
         try:
             if table == 'proxysg':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
+                logger.info(*_parquetPaths)
                 self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
                 self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
                 tempDF = self.proxyDF
@@ -315,7 +316,8 @@ class AnalyticsEngine(object):
                 self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
                 tempDF = self.bashDF
 
-        except AttributeError:
+        except AttributeError as e:
+            logger.info(e.strerror)
             pass
 
         for day in days:
