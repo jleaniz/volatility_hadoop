@@ -324,7 +324,8 @@ class AnalyticsEngine(object):
 
         for day in days:
             try:
-                if table is not 'proxysg':
+                print table
+                if table != 'proxysg':
                     filteredDF = tempDF.filter(
                         'year=%s and month=%s and day=%s' % (day.year, str(day).split('-')[1], str(day).split('-')[2]))
                     self.sqlctx.registerDataFrameAsTable(filteredDF, table)
