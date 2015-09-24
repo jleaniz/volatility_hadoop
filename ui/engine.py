@@ -63,7 +63,7 @@ class AnalyticsEngine(object):
 
         logger.info("Loading Firewall data")
         self.firewallDF = self.sqlctx.load(
-            "/user/cloudera/firewall/year=2015/month=06"
+            "/user/cloudera/firewall/off/year=2015/month=06"
         )
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
