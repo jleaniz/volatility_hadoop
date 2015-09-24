@@ -331,14 +331,14 @@ class AnalyticsEngine(object):
         try:
             if table == 'proxysg':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
-                self.proxyDF = self.sqlctx.load(*_parquetPaths)
+                self.proxyDF = self.sqlctx.load(*_parquetPaths, source='parquet')
                 self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
                 tempDF = self.proxyDF
                 logger.info(tempDF.printSchema())
 
             elif table == 'ciscovpn':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
-                self.vpnLogsDF = self.sqlctx.load(*_parquetPaths)
+                self.vpnLogsDF = self.sqlctx.load(*_parquetPaths, source='parquet')
                 self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'ciscovpn')
                 tempDF = self.vpnLogsDF
                 logger.info(tempDF.printSchema())
@@ -346,7 +346,7 @@ class AnalyticsEngine(object):
 
             elif table == 'firewall':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
-                self.firewallDF = self.sqlctx.load(*_parquetPaths)
+                self.firewallDF = self.sqlctx.load(*_parquetPaths, source='parquet')
                 self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
                 tempDF = self.firewallDF
                 logger.info(tempDF.printSchema())
@@ -354,7 +354,7 @@ class AnalyticsEngine(object):
 
             elif table == 'bashlog':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
-                self.bashDF = self.sqlctx.load(_parquetPaths)
+                self.bashDF = self.sqlctx.load(*_parquetPaths, source='parquet')
                 self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
                 tempDF = self.bashDF
                 logger.info(tempDF.printSchema())
