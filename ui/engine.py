@@ -354,7 +354,7 @@ class AnalyticsEngine(object):
 
             elif table == 'bashlog':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
-                self.bashDF = self.sqlctx.load(*_parquetPaths)
+                self.bashDF = self.sqlctx.load(_parquetPaths)
                 self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
                 tempDF = self.bashDF
                 logger.info(tempDF.printSchema())
