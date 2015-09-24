@@ -72,13 +72,13 @@ class AnalyticsEngine(object):
            "/user/cloudera/proxysg"
         )
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
-        '''
+
         logger.info("Loading Bash data")
         self.bashDF = self.sqlctx.load(
             "/user/cloudera/bashlog"
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
-        '''
+
         '''
         Caching will make queries faster but for some reason
         it won't let you read certain partitions on a cached DF.
