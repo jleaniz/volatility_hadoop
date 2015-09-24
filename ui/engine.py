@@ -262,7 +262,7 @@ class AnalyticsEngine(object):
         self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
         topTransfers = self.sqlctx.sql(
-            'select agent, count(*) as bytes from proxysg '
+            'select agent, count(*) as hits from proxysg '
             'group by agent, hits order by hits asc limit 20'
         )
         entries = topTransfers.collect()
