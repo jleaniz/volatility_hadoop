@@ -44,7 +44,7 @@ class DateForm(Form):
 
 
 class SearchForm(Form):
-    table = SelectField(choices=[('proxysg', 'proxysg'), ('firewall', 'firewall'), ('ciscovpn', 'ciscovpn')],
+    table = SelectField(choices=[('proxysg', 'proxysg'), ('firewall', 'firewall'), ('ciscovpn', 'ciscovpn'), ('bashlog', 'bashlog')],
                         validators=[DataRequired(message='Required field')])
     tables = ['vpn', 'firewall', 'proxysg', 'bashlog']
     fromdate = DateField(u'From', format='%Y-%m-%d',
