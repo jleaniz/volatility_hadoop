@@ -57,25 +57,25 @@ class AnalyticsEngine(object):
         # pre-laod some data
         logger.info("Loading Cisco VPN data")
         self.vpnLogsDF = self.sqlctx.load(
-            "/user/cloudera/ciscovpn/year=2015/month=05"
+            "/user/cloudera/ciscovpn/year=2015/month=06"
         )
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
 
         logger.info("Loading Firewall data")
         self.firewallDF = self.sqlctx.load(
-            "/user/cloudera/firewall/year=2015/month=05"
+            "/user/cloudera/firewall/year=2015/month=06"
         )
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
         logger.info("Loading Proxy data")
         self.proxyDF = self.sqlctx.load(
-           "/user/cloudera/proxysg/year=2015/month=05"
+           "/user/cloudera/proxysg/year=2015/month=06"
         )
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
         logger.info("Loading Bash data")
         self.bashDF = self.sqlctx.load(
-            "/user/cloudera/bashlog/year=2015/month=05"
+            "/user/cloudera/bashlog/year=2015/month=06"
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
 
