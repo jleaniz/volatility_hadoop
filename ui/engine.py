@@ -360,7 +360,7 @@ class AnalyticsEngine(object):
                 logger.info(tempDF.printSchema())
 
         except AttributeError as e:
-            logger.info(e)
+            logger.info('AttributeError' + str(e))
             pass
 
         for day in days:
@@ -373,7 +373,7 @@ class AnalyticsEngine(object):
                 for result in resultsDF.toJSON().collect():
                     yield result
             except Py4JJavaError as e:
-                logger.info(e)
+                logger.info('Py4JavaError: ' + str(e))
                 pass
 
     def getCustomSearchResults(self, query):
