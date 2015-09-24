@@ -263,7 +263,7 @@ class AnalyticsEngine(object):
 
         topTransfers = self.sqlctx.sql(
             'select agent, count(*) as hits from proxysg '
-            'group by agent, hits order by hits asc limit 20'
+            'group by agent order by hits asc limit 20'
         )
         entries = topTransfers.collect()
 
