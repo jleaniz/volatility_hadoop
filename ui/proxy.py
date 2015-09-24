@@ -24,7 +24,7 @@ from engine import analytics_engine
 mod_proxy = Blueprint('proxy', __name__)
 
 
-@mod_proxy.route("/proxy/malware/user", methods=('GET', 'POST'))
+@mod_proxy.route("/proxy/endpoint", methods=('GET', 'POST'))
 def proxy_user():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -45,6 +45,16 @@ def proxyTopTransfers():
 
     return render_template("dateForm.html", form=form)
 
+
+@mod_proxy.route("/proxy/uncommon/useragent", methods=('GET', 'POST'))
+def proxyUncommonUserAgents():
+    form = DateForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        (jsonTable, jsonChart) = analytics_engine.getLeastCommonUserAgents(form.fromdate.data.strftime('%Y-%m-%d'),
+                                                                       form.todate.data.strftime('%Y-%m-%d'))
+        return render_template('DisplayTableAndCharts.html', jsonTable=jsonTable, jsonChart=jsonTable)
+
+    return render_template("dateForm.html", form=form)
 
 @mod_proxy.route('/')
 def index():
