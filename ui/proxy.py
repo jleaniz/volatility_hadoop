@@ -52,7 +52,7 @@ def proxyUncommonUserAgents():
     if form.validate_on_submit():
         json = analytics_engine.getLeastCommonUserAgents(form.fromdate.data.strftime('%Y-%m-%d'),
                                                                        form.todate.data.strftime('%Y-%m-%d'))
-        return render_template('DisplayTable.html', json=json)
+        return render_template('DisplayTable.html', json=json.decode('utf-8'))
 
     return render_template("dateForm.html", form=form)
 
