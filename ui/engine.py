@@ -57,26 +57,25 @@ class AnalyticsEngine(object):
         # pre-laod some data
         logger.info("Loading Cisco VPN data")
         self.vpnLogsDF = self.sqlctx.load(
-            "/user/cloudera/ciscovpn/year=2015/month=06"
+            "/user/cloudera/ciscovpn"
         )
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
 
         logger.info("Loading Firewall data")
         self.firewallDF = self.sqlctx.load(
-            "/user/cloudera/firewall/off/year=2015/month=06"
+            "/user/cloudera/firewall"
         )
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
-        logger.info(self.firewallDF.printSchema())
 
         logger.info("Loading Proxy data")
         self.proxyDF = self.sqlctx.load(
-           "/user/cloudera/proxysg/year=2015/month=06"
+           "/user/cloudera/proxysg"
         )
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
         logger.info("Loading Bash data")
         self.bashDF = self.sqlctx.load(
-            "/user/cloudera/bashlog/year=2015/month=06"
+            "/user/cloudera/bashlog"
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
 
@@ -335,24 +334,30 @@ class AnalyticsEngine(object):
                 self.proxyDF = self.sqlctx.load(*_parquetPaths)
                 self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
                 tempDF = self.proxyDF
+                logger.info(tempDF.printSchema())
 
             elif table == 'ciscovpn':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
                 self.vpnLogsDF = self.sqlctx.load(*_parquetPaths)
                 self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'ciscovpn')
                 tempDF = self.vpnLogsDF
+                logger.info(tempDF.printSchema())
+
 
             elif table == 'firewall':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
                 self.firewallDF = self.sqlctx.load(*_parquetPaths)
                 self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
                 tempDF = self.firewallDF
+                logger.info(tempDF.printSchema())
+
 
             elif table == 'bashlog':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
                 self.bashDF = self.sqlctx.load(*_parquetPaths)
                 self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
                 tempDF = self.bashDF
+                logger.info(tempDF.printSchema())
 
         except AttributeError as e:
             logger.info(e)
