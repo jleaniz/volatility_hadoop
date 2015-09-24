@@ -328,7 +328,7 @@ class AnalyticsEngine(object):
     def getSearchResults(self, table, sdate, edate, query, num):
         self.sqlctx.setConf("spark.sql.parquet.useDataSourceApi", "false")
         self.sqlctx.setConf("spark.sql.planner.externalSort", "true")
-        self.sqlctx.setConf('spark.sql.parquet.mergeSchema', 'false')
+        self.sqlctx.setConf('spark.sql.parquet.mergeSchema', 'true')
         days = self.buildDateList(sdate, edate)
 
         try:
