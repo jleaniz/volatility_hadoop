@@ -50,7 +50,7 @@ def proxyTopTransfers():
 def proxyUncommonUserAgents():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
-        (jsonTable, jsonChart) = analytics_engine.getLeastCommonUserAgents(form.fromdate.data.strftime('%Y-%m-%d'),
+        jsonTable = analytics_engine.getLeastCommonUserAgents(form.fromdate.data.strftime('%Y-%m-%d'),
                                                                        form.todate.data.strftime('%Y-%m-%d'))
         return render_template('DisplayTableAndCharts.html', jsonTable=jsonTable, jsonChart=jsonTable)
 
