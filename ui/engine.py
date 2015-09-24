@@ -331,31 +331,27 @@ class AnalyticsEngine(object):
 
         try:
             if table == 'proxysg':
-                if not self.proxyDF:
-                    _parquetPaths = self.buildParquetFileList(table, sdate, edate)
-                    self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
-                    self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+                _parquetPaths = self.buildParquetFileList(table, sdate, edate)
+                self.proxyDF = self.sqlctx.load(*_parquetPaths)
+                self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
                 tempDF = self.proxyDF
 
             elif table == 'ciscovpn':
-                if not self.vpnLogsDF:
-                    _parquetPaths = self.buildParquetFileList(table, sdate, edate)
-                    self.vpnLogsDF = self.sqlctx.parquetFile(*_parquetPaths)
-                    self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'ciscovpn')
+                _parquetPaths = self.buildParquetFileList(table, sdate, edate)
+                self.vpnLogsDF = self.sqlctx.load(*_parquetPaths)
+                self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'ciscovpn')
                 tempDF = self.vpnLogsDF
 
             elif table == 'firewall':
-                if not self.firewallDF:
-                    _parquetPaths = self.buildParquetFileList(table, sdate, edate)
-                    self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
-                    self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+                _parquetPaths = self.buildParquetFileList(table, sdate, edate)
+                self.firewallDF = self.sqlctx.load(*_parquetPaths)
+                self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
                 tempDF = self.firewallDF
 
             elif table == 'bashlog':
-                if not self.bashDF:
-                    _parquetPaths = self.buildParquetFileList(table, sdate, edate)
-                    self.bashDF = self.sqlctx.parquetFile(*_parquetPaths)
-                    self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
+                _parquetPaths = self.buildParquetFileList(table, sdate, edate)
+                self.bashDF = self.sqlctx.load(*_parquetPaths)
+                self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
                 tempDF = self.bashDF
 
         except AttributeError as e:
