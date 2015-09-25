@@ -28,6 +28,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 @mod_proxy.route("/proxy/endpoint", methods=('GET', 'POST'))
 def proxy_user():
     form = UserDateForm(csrf_enabled=False)
@@ -55,7 +56,7 @@ def proxyUncommonUserAgents():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
         json = analytics_engine.getLeastCommonUserAgents(form.fromdate.data.strftime('%Y-%m-%d'),
-                                                                       form.todate.data.strftime('%Y-%m-%d'))
+                                                         form.todate.data.strftime('%Y-%m-%d'))
         return render_template('DisplayTable.html', json=json.decode('utf-8'))
 
     return render_template("dateForm.html", form=form)
@@ -66,7 +67,7 @@ def proxyMostVisitedDomains():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
         json = analytics_engine.getMostVisitedDomains(form.fromdate.data.strftime('%Y-%m-%d'),
-                                                                       form.todate.data.strftime('%Y-%m-%d'))
+                                                      form.todate.data.strftime('%Y-%m-%d'))
         logger.info(json)
         return render_template('DisplayTableAndCharts.html', jsonTable=json, jsonChart=json)
 

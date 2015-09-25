@@ -69,7 +69,7 @@ class AnalyticsEngine(object):
 
         logger.info("Loading Proxy data")
         self.proxyDF = self.sqlctx.load(
-           "/user/cloudera/proxysg"
+            "/user/cloudera/proxysg"
         )
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
@@ -249,7 +249,6 @@ class AnalyticsEngine(object):
 
         return (jsonTable, jsonChart)
 
-
     def getLeastCommonUserAgents(self, fromdate, todate):
         '''
         :return:
@@ -275,15 +274,14 @@ class AnalyticsEngine(object):
         }
 
         for entry in entries:
-            data.append( {"agent": entry.agent, "hits": entry.hits} )
+            data.append({"agent": entry.agent, "hits": entry.hits})
 
         data_table = gviz_api.DataTable(descriptionTable)
         data_table.LoadData(data)
         # Creating a JSon string
-        jsonTable = data_table.ToJSon( columns_order=("agent", "hits"), order_by="hits")
+        jsonTable = data_table.ToJSon(columns_order=("agent", "hits"), order_by="hits")
 
         return jsonTable
-
 
     def getMostVisitedDomains(self, fromdate, todate):
         '''
@@ -310,16 +308,14 @@ class AnalyticsEngine(object):
         }
 
         for entry in entries:
-            data.append( {"host": entry.host, "hits": entry.hits} )
+            data.append({"host": entry.host, "hits": entry.hits})
 
         data_table = gviz_api.DataTable(descriptionTable)
         data_table.LoadData(data)
         # Creating a JSon string
-        jsonTable = data_table.ToJSon( columns_order=("host", "hits"), order_by="hits")
+        jsonTable = data_table.ToJSon(columns_order=("host", "hits"), order_by="hits")
 
         return jsonTable
-
-
 
     def buildDateList(self, sdate, edate):
 
@@ -596,7 +592,6 @@ class AnalyticsEngine(object):
 
         return (fw_port_stats, fw_dstip_stats, fw_srcip_stats)
 
-
     def clearcache(self):
         try:
             self.firewallDF.unpersist()
@@ -615,7 +610,6 @@ class AnalyticsEngine(object):
         except:
             logger.info("Unable to cancel jobs")
             return False
-
 
     def FSTimelineStats(self, csv_path):
         '''
@@ -642,7 +636,7 @@ class AnalyticsEngine(object):
         :return:
         '''
         # Load CSV files into a Spark DataFrame
-        df = self.sqlctx.load(source="com.databricks.spark.csv", header="true", path = csv_path)
+        df = self.sqlctx.load(source="com.databricks.spark.csv", header="true", path=csv_path)
         # Register the DataFrame as a Spark SQL table called 'tl' so we can run queries using SQL syntax
         self.sqlctx.registerDataFrameAsTable(df, 'tl')
         # Cache the table in memory for faster lookups
@@ -652,11 +646,12 @@ class AnalyticsEngine(object):
         deletedFilesDF = self.sqlctx.sql("SELECT `date`, short FROM tl WHERE short LIKE '%DELETED%'")
         self.sqlctx.registerDataFrameAsTable(deletedFilesDF, 'deleted')
         # Create a list with dates and number of deleted files per day
-        deletedFilesDateList = self.sqlctx.sql("SELECT `date`, count(*) as hits FROM deleted group by `date` order by hits desc limit 15").collect()
+        deletedFilesDateList = self.sqlctx.sql(
+            "SELECT `date`, count(*) as hits FROM deleted group by `date` order by hits desc limit 15").collect()
 
-        zipFiles = int(self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%zip'" ).collect()[0].hits)
-        pdfFiles = int(self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%pdf'" ).collect()[0].hits)
-        exeFiles = int(self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%exe'" ).collect()[0].hits)
+        zipFiles = int(self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%zip'").collect()[0].hits)
+        pdfFiles = int(self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%pdf'").collect()[0].hits)
+        exeFiles = int(self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%exe'").collect()[0].hits)
 
         dataChart = []
         descriptionChart = {
@@ -674,7 +669,7 @@ class AnalyticsEngine(object):
             columns_order=("date", "hits"),
             order_by="hits"
         )
-        #webhist = self.sqlctx.sql("select `date`, short from tl where source='WEBHIST' limit 100 ").collect()
+        # webhist = self.sqlctx.sql("select `date`, short from tl where source='WEBHIST' limit 100 ").collect()
 
         dataChart = []
         descriptionChart = {
@@ -682,9 +677,9 @@ class AnalyticsEngine(object):
             "hits": ("number", "Entries")
         }
 
-        dataChart.append({"filetype": 'zip', "hits": zipFiles })
-        dataChart.append({"filetype": 'pdf', "hits": pdfFiles })
-        dataChart.append({"filetype": 'exe', "hits": exeFiles })
+        dataChart.append({"filetype": 'zip', "hits": zipFiles})
+        dataChart.append({"filetype": 'pdf', "hits": pdfFiles})
+        dataChart.append({"filetype": 'exe', "hits": exeFiles})
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
@@ -696,9 +691,8 @@ class AnalyticsEngine(object):
 
         return deleted_files_byDate, filetype_count
 
-
     def initializeModels(self):
-        #bashlogsDF = self.sqlctx.parquetFile('/user/cloudera/bashlog')
+        # bashlogsDF = self.sqlctx.parquetFile('/user/cloudera/bashlog')
         commandsDF = self.bashDF.select(self.bashDF.command)
         commandsDF.cache()
 
@@ -723,7 +717,7 @@ class AnalyticsEngine(object):
         kmdata = self.sc.parallelize(vectorsList, 1024)
         kmdata.cache()
 
-        k = int(sqrt(len(vectorsList)/2))
+        k = int(sqrt(len(vectorsList) / 2))
 
         # Build the model (cluster the data using KMeans)
         logger.info("Training KMeans model...")

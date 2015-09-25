@@ -28,7 +28,7 @@ for command in commandsList:
 
 kmdata = sc.parallelize(vectorsList, 1024)
 
-k = int(sqrt(len(vectorsList)/2))
+k = int(sqrt(len(vectorsList) / 2))
 
 # Build the model (cluster the data using KMeans)
 clusters = KMeans.train(kmdata, k, maxIterations=10, runs=10, initializationMode="random")

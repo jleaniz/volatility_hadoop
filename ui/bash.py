@@ -34,9 +34,11 @@ def bash_kmeans():
     form = KeywordForm(csrf_enabled=False)
     if form.validate_on_submit():
         (command, vector, cluster, clustersDict, syms, uncommon) = analytics_engine.getCmdPrediction(form.keyword.data)
-        return render_template('bash_kmeans.html', command=command, vector=vector, cluster=cluster, clustersDict=clustersDict, syms=syms, uncommon=uncommon)
+        return render_template('bash_kmeans.html', command=command, vector=vector, cluster=cluster,
+                               clustersDict=clustersDict, syms=syms, uncommon=uncommon)
 
     return render_template("bash.html", form=form)
+
 
 @mod_bash.route("/bash/keyword", methods=('GET', 'POST'))
 def bash_keyword():
@@ -46,4 +48,3 @@ def bash_keyword():
         return render_template('DisplayTable.html', json=json.decode('utf-8'))
 
     return render_template("bash.html", form=form)
-

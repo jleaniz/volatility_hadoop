@@ -79,6 +79,7 @@ def serve_file(filename):
 def index():
     return render_template('index.html')
 
+
 @main.route('/spark/clearcache')
 def clearCache():
     if analytics_engine.clearcache():
@@ -87,6 +88,7 @@ def clearCache():
     else:
         flash('Spark: Unable to clear cache', 'error')
         return render_template('index.html')
+
 
 @main.route('/spark/canceljobs')
 def cancelJobs():

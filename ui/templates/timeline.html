@@ -72,31 +72,35 @@
         google.setOnLoadCallback(drawChartEditor);
 
 
+
 </script>
 
 <div class="container" style="width: 100%; height: 100%;">
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading"></div>
-                    <div class="panel-body">
-                        <div id="chartEditorDivDF" style="width: 100%; height: 380px;"></div>
-                        <input class="btn btn-default" type="submit" name="loadcharteditor" id="loadcharteditor" value="Edit" onClick="loadEditorDF()">
-                        <div id="chartEditorDivFT" style="width: 100%; height: 380px;"></div>
-                        <input class="btn btn-default" type="submit" name="loadcharteditor2" id="loadcharteditor2" value="Edit" onClick="loadEditorFT()">
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-5">
-                <div class="panel panel-default">
-                    <div class="panel-heading"></div>
-                    <div class="panel-body">
-                        <div id="tableFT" style="width: 100%; height: 100%;"></div>
-                        <div id="tableDF" style="width: 100%; height: 100%;"></div>
-                    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading"></div>
+                <div class="panel-body">
+                    <div id="chartEditorDivDF" style="width: 100%; height: 380px;"></div>
+                    <input class="btn btn-default" type="submit" name="loadcharteditor" id="loadcharteditor"
+                           value="Edit" onClick="loadEditorDF()">
+
+                    <div id="chartEditorDivFT" style="width: 100%; height: 380px;"></div>
+                    <input class="btn btn-default" type="submit" name="loadcharteditor2" id="loadcharteditor2"
+                           value="Edit" onClick="loadEditorFT()">
                 </div>
             </div>
         </div>
+        <div class="col-md-5">
+            <div class="panel panel-default">
+                <div class="panel-heading"></div>
+                <div class="panel-body">
+                    <div id="tableFT" style="width: 100%; height: 100%;"></div>
+                    <div id="tableDF" style="width: 100%; height: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

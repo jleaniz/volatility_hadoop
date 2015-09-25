@@ -308,13 +308,13 @@ class Parser(object):
             reason='OpenPhish'
         )
 
-
     '''
     netflow v9 is hard to parse
     Easiest way to do this is to have a box collecting netflows with
     nfcapd and then use Spark to execute nfdump to convert nfcapd files to CSV
     to ingest as parquet files
     '''
+
     def parseNetflow(self, file):
         pass
 
