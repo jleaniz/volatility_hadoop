@@ -23,6 +23,10 @@ from engine import analytics_engine
 
 mod_proxy = Blueprint('proxy', __name__)
 
+import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @mod_proxy.route("/proxy/endpoint", methods=('GET', 'POST'))
 def proxy_user():
@@ -63,7 +67,8 @@ def proxyMostVisitedDomains():
     if form.validate_on_submit():
         json = analytics_engine.getMostVisitedDomains(form.fromdate.data.strftime('%Y-%m-%d'),
                                                                        form.todate.data.strftime('%Y-%m-%d'))
-        return render_template('DisplayTableAndCharts.html', jsonData=json.decode('utf-8'), jsonTable=json.decode('utf-8'))
+        logger.info(json)
+        return render_template('DisplayTableAndCharts.html', jsonTable=json, jsonChart=json)
 
     return render_template("dateForm.html", form=form)
 
