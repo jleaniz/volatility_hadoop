@@ -275,19 +275,50 @@ class AnalyticsEngine(object):
         }
 
         for entry in entries:
-            data.append(
-                {"agent": entry.agent, "hits": entry.hits}
-            )
+            data.append( {"agent": entry.agent, "hits": entry.hits} )
 
         data_table = gviz_api.DataTable(descriptionTable)
         data_table.LoadData(data)
         # Creating a JSon string
-        jsonTable = data_table.ToJSon(
-            columns_order=("agent", "hits"),
-            order_by="hits"
-        )
+        jsonTable = data_table.ToJSon( columns_order=("agent", "hits"), order_by="hits")
 
         return jsonTable
+
+
+    def getMostVisitedDomains(self, fromdate, todate):
+        '''
+        :return:
+        '''
+        _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
+
+        self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
+        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+
+        self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+
+        topTransfers = self.sqlctx.sql(
+            'select host, count(*) as hits from proxysg '
+            'group by host order by hits desc limit 15'
+        )
+        entries = topTransfers.collect()
+
+        # Build json object for the table
+        data = []
+        descriptionTable = {
+            "host": ("string", "Domain"),
+            "hits": ("number", "Hits")
+        }
+
+        for entry in entries:
+            data.append( {"host": entry.host, "hits": entry.hits} )
+
+        data_table = gviz_api.DataTable(descriptionTable)
+        data_table.LoadData(data)
+        # Creating a JSon string
+        jsonTable = data_table.ToJSon( columns_order=("host", "hits"), order_by="hits")
+
+        return jsonTable
+
 
 
     def buildDateList(self, sdate, edate):
