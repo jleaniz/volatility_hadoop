@@ -63,7 +63,7 @@ def proxyMostVisitedDomains():
     if form.validate_on_submit():
         json = analytics_engine.getMostVisitedDomains(form.fromdate.data.strftime('%Y-%m-%d'),
                                                                        form.todate.data.strftime('%Y-%m-%d'))
-        return render_template('DisplayTable.html', json=json.decode('utf-8'))
+        return render_template('DisplayTableAndCharts.html', jsonData=json.decode('utf-8'), jsonTable=json.decode('utf-8'))
 
     return render_template("dateForm.html", form=form)
 
