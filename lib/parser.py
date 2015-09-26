@@ -288,7 +288,7 @@ class Parser(object):
         Parse c2 reputation database
         :return: pyspark.sql.Row
         '''
-        VALID_DATA = '(\d+.\d+.\d+.\d+|(\S+\.\S+)|(\S+\.\S+\.\S+)'
+        VALID_DATA = '(\d+.\d+.\d+.\d+|(\S+\.\S+)|(\S+\.\S+\.\S+))'
         m = re.search(VALID_DATA, data)
         if m:
             return Row(
