@@ -402,7 +402,7 @@ class AnalyticsEngine(object):
         sgall = sgotx.unionAll(sgc2)
 
         # This breaks the Kryo serializer - unknown class
-        entries = sgall.groupBy(sgall.host).count().orderBy(desc('count')).collect()
+        entries = sgall.groupBy(sgall.host).count().orderBy(desc('count')).limit(20).collect()
 
         # Build json object for the table
         data = []
