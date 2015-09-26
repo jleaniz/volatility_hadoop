@@ -289,7 +289,7 @@ class Parser(object):
         :return: pyspark.sql.Row
         '''
         VALID_DATA = '(\d+.\d+.\d+.\d+|(\S+\.\S+))'
-        if 'google' not in data or 'amazon' not in data or 'doubleclick' not in data:
+        if 'www.google-analytics.com' not in data or 'amazon' not in data or 'doubleclick' not in data:
             m = re.search(VALID_DATA, data)
             if m:
                 return Row(
