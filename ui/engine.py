@@ -79,6 +79,12 @@ class AnalyticsEngine(object):
         )
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
         '''
+        logger.info("Loading AlienVault OTX data")
+        self.bashDF = self.sqlctx.load(
+            "/user/reputation/otx"
+        )
+        self.sqlctx.registerDataFrameAsTable(self.otx, 'otx')
+
         '''
         Caching will make queries faster but for some reason
         it won't let you read certain partitions on a cached DF.
@@ -365,6 +371,40 @@ class AnalyticsEngine(object):
 
         topTransfers = self.sqlctx.sql(
             'select clientip, agent from proxysg where agent like "%NT 5.1%" or agent like "%NT\\ 5.1%" group by clientip, agent'
+        )
+        entries = topTransfers.collect()
+
+        # Build json object for the table
+        data = []
+        descriptionTable = {
+            "clientip": ("string", "Client"),
+            "agent": ("string", "User-Agent")
+        }
+
+        for entry in entries:
+            data.append({"clientip": entry.clientip, "agent": entry.agent})
+
+        data_table = gviz_api.DataTable(descriptionTable)
+        data_table.LoadData(data)
+        # Creating a JSon string
+        jsonTable = data_table.ToJSon(columns_order=("clientip", "agent"))
+
+        return jsonTable
+
+
+    def getProxyOTXMatches(self, fromdate, todate):
+        '''
+        :return:
+        '''
+        _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
+
+        self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
+        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+
+        self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+
+        topTransfers = self.sqlctx.sql(
+            'select clientip, host from proxysg where '
         )
         entries = topTransfers.collect()
 

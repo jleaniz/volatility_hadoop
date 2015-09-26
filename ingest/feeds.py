@@ -15,6 +15,7 @@
 # along with BDSA.  If not, see <http://www.gnu.org/licenses/>.
 #
 import urllib2
+import urllib
 import re
 
 import lib.parser as parser
@@ -96,7 +97,7 @@ def getC2Feeds():
 
         if 'malwarepatrol.net' in url:
             print 'Updating db from malwarepatrol.net'
-            params = urllib2.urlencode({'receipt': 'f1434725867', 'product': 8, 'list': 'dansguardian'})
+            params = urllib.urlencode({'receipt': 'f1434725867', 'product': 8, 'list': 'dansguardian'})
             f = urllib2.urlopen(url, params)
             data = f.read().split()
             for line in data:
