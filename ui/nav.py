@@ -41,6 +41,7 @@ nav.register_element('frontend_top', Navbar(
         Link('High data transfers', '/proxy/top/transfers'),
         Link('Most visited domains', '/proxy/top/visited'),
         Link('Most visited malware domains', '/proxy/top/malware'),
+        Link('Most visited malware domains (OTX/C2)', '/proxy/top/malware/feeds'),
         Link('Uncommon User-Agents', '/proxy/uncommon/useragent'),
         Link('Outdated clients', '/proxy/endpoint/outdated'),
         Separator(),

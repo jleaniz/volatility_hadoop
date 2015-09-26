@@ -85,6 +85,12 @@ class AnalyticsEngine(object):
         )
         self.sqlctx.registerDataFrameAsTable(self.otx, 'otx')
 
+        logger.info("Loading Open Source C2 data")
+        self.bashDF = self.sqlctx.load(
+            "/user/reputation/c2"
+        )
+        self.sqlctx.registerDataFrameAsTable(self.c2, 'c2')
+
         '''
         Caching will make queries faster but for some reason
         it won't let you read certain partitions on a cached DF.
@@ -266,11 +272,11 @@ class AnalyticsEngine(object):
 
         self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-        topTransfers = self.sqlctx.sql(
+        uncommonAgents = self.sqlctx.sql(
             'select agent, count(*) as hits from proxysg '
             'group by agent order by hits asc limit 500'
         )
-        entries = topTransfers.collect()
+        entries = uncommonAgents.collect()
 
         # Build json object for the table
         data = []
@@ -300,11 +306,11 @@ class AnalyticsEngine(object):
 
         self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-        topTransfers = self.sqlctx.sql(
+        visitedDomains = self.sqlctx.sql(
             'select host, count(*) as hits from proxysg '
             'group by host order by hits desc limit 15'
         )
-        entries = topTransfers.collect()
+        entries = visitedDomains.collect()
 
         # Build json object for the table
         data = []
@@ -335,11 +341,11 @@ class AnalyticsEngine(object):
 
         self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-        topTransfers = self.sqlctx.sql(
+        malwareDomains = self.sqlctx.sql(
             'select host, count(*) as hits from proxysg where categories like "%Mal%" '
             'group by host order by hits desc limit 15'
         )
-        entries = topTransfers.collect()
+        entries = malwareDomains.collect()
 
         # Build json object for the table
         data = []
@@ -369,10 +375,10 @@ class AnalyticsEngine(object):
 
         self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-        topTransfers = self.sqlctx.sql(
+        ooutdatesClients = self.sqlctx.sql(
             'select clientip, agent from proxysg where agent like "%NT 5.1%" or agent like "%NT\\ 5.1%" group by clientip, agent'
         )
-        entries = topTransfers.collect()
+        entries = ooutdatesClients.collect()
 
         # Build json object for the table
         data = []
@@ -392,7 +398,7 @@ class AnalyticsEngine(object):
         return jsonTable
 
 
-    def getProxyOTXMatches(self, fromdate, todate):
+    def getProxyIntelHits(self, fromdate, todate):
         '''
         :return:
         '''
@@ -403,25 +409,29 @@ class AnalyticsEngine(object):
 
         self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-        topTransfers = self.sqlctx.sql(
-            'select clientip, host from proxysg where '
-        )
-        entries = topTransfers.collect()
+        self.sgotx = self.sqlctx.sql('select proxysg.host from proxysg join otx on otx.ip=proxysg.host')
+        self.sgc2 = self.sqlctx.sql('select proxysg.host from proxysg join c2 on c2.host=proxysg.host')
+        self.sgall = self.sgotx.unionAll(self.sgc2)
+        self.sgall.cache()
+
+        groupcnt = self.sgall.groupBy(self.sgall.host).count().orderBy(desc('count'))
+
+        entries = groupcnt.collect()
 
         # Build json object for the table
         data = []
         descriptionTable = {
-            "clientip": ("string", "Client"),
-            "agent": ("string", "User-Agent")
+            "host": ("string", "Malware host"),
+            "count": ("string", "Hits")
         }
 
         for entry in entries:
-            data.append({"clientip": entry.clientip, "agent": entry.agent})
+            data.append({"host": entry.host, "count": entry.count})
 
         data_table = gviz_api.DataTable(descriptionTable)
         data_table.LoadData(data)
         # Creating a JSon string
-        jsonTable = data_table.ToJSon(columns_order=("clientip", "agent"))
+        jsonTable = data_table.ToJSon(columns_order=("host", "count"))
 
         return jsonTable
 
