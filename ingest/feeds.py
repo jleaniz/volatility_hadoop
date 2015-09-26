@@ -42,7 +42,6 @@ def updateAlienvaultOtx(sContext):
 def getC2Feeds():
     results = []
     urls = ['http://osint.bambenekconsulting.com/feeds/c2-masterlist.txt',
-            'http://rules.emergingthreats.net/fwrules/emerging-IPF-ALL.rules',
             'https://lists.malwarepatrol.net/cgi/getfile?'
             'http://mirror1.malwaredomains.com/files/domains.txt',
             'http://www.montanamenagerie.org/hostsfile/hosts.txt'
