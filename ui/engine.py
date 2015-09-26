@@ -18,7 +18,7 @@
 from datetime import date, timedelta as td
 
 from pyspark.sql import SQLContext
-from pyspark.sql.types import Row
+from pyspark.sql.functions import asc, desc
 from pyspark import StorageLevel
 from pyspark import SparkContext, SparkConf
 from pyspark.mllib.clustering import KMeans
@@ -81,13 +81,13 @@ class AnalyticsEngine(object):
         '''
         logger.info("Loading AlienVault OTX data")
         self.bashDF = self.sqlctx.load(
-            "/user/reputation/otx"
+            "/user/cloudera/reputation/otx"
         )
         self.sqlctx.registerDataFrameAsTable(self.otx, 'otx')
 
         logger.info("Loading Open Source C2 data")
         self.bashDF = self.sqlctx.load(
-            "/user/reputation/c2"
+            "/user/cloudera/reputation/c2"
         )
         self.sqlctx.registerDataFrameAsTable(self.c2, 'c2')
 
@@ -409,12 +409,12 @@ class AnalyticsEngine(object):
 
         self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-        self.sgotx = self.sqlctx.sql('select proxysg.host from proxysg join otx on otx.ip=proxysg.host')
-        self.sgc2 = self.sqlctx.sql('select proxysg.host from proxysg join c2 on c2.host=proxysg.host')
-        self.sgall = self.sgotx.unionAll(self.sgc2)
-        self.sgall.cache()
+        sgotx = self.sqlctx.sql('select proxysg.host from proxysg join otx on otx.ip=proxysg.host')
+        sgc2 = self.sqlctx.sql('select proxysg.host from proxysg join c2 on c2.host=proxysg.host')
+        sgall = sgotx.unionAll(sgc2)
+        sgall.cache()
 
-        groupcnt = self.sgall.groupBy(self.sgall.host).count().orderBy(desc('count'))
+        groupcnt = sgall.groupBy(sgall.host).count().orderBy(desc('count'))
 
         entries = groupcnt.collect()
 
