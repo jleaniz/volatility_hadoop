@@ -518,6 +518,43 @@ class AnalyticsEngine(object):
 
     def bashKeywordSearch(self, keyword):
 
+        query = ("select * from bashlog where command like '%s'" % (keyword))
+        logger.info(query)
+
+        # Query using Spark SQL
+        keywordDF = self.sqlctx.sql(query)
+
+        entries = keywordDF.collect()
+        data = []
+        description = {
+            "logsrc": ("string", "Server"),
+            "username": ("string", "Username"),
+            "exec_as": ("string", "Sudo user"),
+            "srcip": ("string", "Client IP"),
+            "command": ("string", "Command")
+        }
+
+        for entry in entries:
+            data.append(
+                {
+                    "logsrc": entry.logsrc,
+                    "username": entry.username,
+                    "exec_as": entry.exec_as,
+                    "srcip": entry.srcip,
+                    "command": entry.command,
+                }
+            )
+
+        data_table = gviz_api.DataTable(description)
+        data_table.LoadData(data)
+        # Creating a JSon string
+        json = data_table.ToJSon(columns_order=("logsrc", "username", "exec_as", "srcip", "command"))
+
+        return json
+
+
+    def bashUserActivity(self, keyword):
+
         query = ("select * from bashlog where username like '%s'" % (keyword))
         logger.info(query)
 

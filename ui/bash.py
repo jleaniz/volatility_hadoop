@@ -48,3 +48,13 @@ def bash_keyword():
         return render_template('DisplayTable.html', json=json.decode('utf-8'))
 
     return render_template("bash.html", form=form)
+
+
+@mod_bash.route("/bash/user", methods=('GET', 'POST'))
+def bash_keyword():
+    form = UserDateForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        json = analytics_engine.bashUserActivity(form.name.data)
+        return render_template('DisplayTable.html', json=json.decode('utf-8'))
+
+    return render_template("bash.html", form=form)

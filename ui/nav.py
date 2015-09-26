@@ -58,6 +58,7 @@ nav.register_element('frontend_top', Navbar(
         Text('Bash'),
         Separator(),
         Link('Keyword search', '/bash/keyword'),
+        Link('User activity', '/bash/user'),
     ),
     Subgroup(
         'Forensics',
