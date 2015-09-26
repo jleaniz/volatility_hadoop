@@ -74,6 +74,17 @@ def proxyMostVisitedDomains():
     return render_template("dateForm.html", form=form)
 
 
+@mod_proxy.route("/proxy/top/malware", methods=('GET', 'POST'))
+def proxyMostVisitedMalwareDomains():
+    form = DateForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        json = analytics_engine.getMostVisitedMalwareDomains(form.fromdate.data.strftime('%Y-%m-%d'),
+                                                      form.todate.data.strftime('%Y-%m-%d'))
+        logger.info(json)
+        return render_template('DisplayTableAndCharts.html', jsonTable=json, jsonChart=json)
+
+    return render_template("dateForm.html", form=form)
+
 @mod_proxy.route('/')
 def index():
     return render_template('index.html')
