@@ -400,11 +400,7 @@ class AnalyticsEngine(object):
         sgotx = self.sqlctx.sql('select proxysg.host from proxysg join otx on otx.ip=proxysg.host')
         sgc2 = self.sqlctx.sql('select proxysg.host from proxysg join c2 on c2.host=proxysg.host')
         sgall = sgotx.unionAll(sgc2)
-        sgall.cache()
-
-        groupcnt = sgall.groupBy(sgall.host).count().orderBy(desc('count'))
-
-        entries = groupcnt.collect()
+        entries = sgall.groupBy(sgall.host).count().orderBy(desc('count')).collect()
 
         # Build json object for the table
         data = []
