@@ -400,7 +400,12 @@ class AnalyticsEngine(object):
         sgotx = self.sqlctx.sql('select proxysg.host from proxysg join otx on otx.ip=proxysg.host')
         sgc2 = self.sqlctx.sql('select proxysg.host from proxysg join c2 on c2.host=proxysg.host')
         sgall = sgotx.unionAll(sgc2)
-        entries = sgall.groupBy(sgall.host).count().orderBy(desc('count')).collect()
+
+        self.sqlctx.registerDataFrameAsTable(sgall, 'sgall')
+        entries = self.sqlctx.sql('select host, count(*) as count from sgall group by host order by count desc').collect()
+
+        # This breaks the Kryo serializer - unknown class
+        # entries = sgall.groupBy(sgall.host).count().orderBy(desc('count')).collect()
 
         # Build json object for the table
         data = []
