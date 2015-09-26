@@ -80,13 +80,13 @@ class AnalyticsEngine(object):
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
         '''
         logger.info("Loading AlienVault OTX data")
-        self.bashDF = self.sqlctx.load(
+        self.otx = self.sqlctx.load(
             "/user/cloudera/reputation/otx"
         )
         self.sqlctx.registerDataFrameAsTable(self.otx, 'otx')
 
         logger.info("Loading Open Source C2 data")
-        self.bashDF = self.sqlctx.load(
+        self.c2 = self.sqlctx.load(
             "/user/cloudera/reputation/c2"
         )
         self.sqlctx.registerDataFrameAsTable(self.c2, 'c2')
