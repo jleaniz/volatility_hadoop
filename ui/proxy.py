@@ -62,6 +62,17 @@ def proxyUncommonUserAgents():
     return render_template("dateForm.html", form=form)
 
 
+@mod_proxy.route("/proxy/endpoint/outdated", methods=('GET', 'POST'))
+def proxyOutdatedEndpoints():
+    form = DateForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        json = analytics_engine.getOutdatedClients(form.fromdate.data.strftime('%Y-%m-%d'),
+                                                         form.todate.data.strftime('%Y-%m-%d'))
+        return render_template('DisplayTable.html', json=json.decode('utf-8'))
+
+    return render_template("dateForm.html", form=form)
+
+
 @mod_proxy.route("/proxy/top/visited", methods=('GET', 'POST'))
 def proxyMostVisitedDomains():
     form = DateForm(csrf_enabled=False)
