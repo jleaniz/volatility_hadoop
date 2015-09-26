@@ -408,7 +408,7 @@ class AnalyticsEngine(object):
         data = []
         descriptionTable = {
             "host": ("string", "Malware host"),
-            "count": ("string", "Hits")
+            "count": ("number", "Hits")
         }
 
         for entry in entries:
@@ -417,7 +417,7 @@ class AnalyticsEngine(object):
         data_table = gviz_api.DataTable(descriptionTable)
         data_table.LoadData(data)
         # Creating a JSon string
-        jsonTable = data_table.ToJSon(columns_order=("host", "count"))
+        jsonTable = data_table.ToJSon(columns_order=("host", "count"), order_by="count")
 
         return jsonTable
 
