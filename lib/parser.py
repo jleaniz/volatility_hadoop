@@ -288,16 +288,15 @@ class Parser(object):
         Parse c2 reputation database
         :return: pyspark.sql.Row
         '''
-        VALID_DATA = '(\d+.\d+.\d+.\d+|(\S+\.\S+))'
-        if 'www.google-analytics.com' not in data or 'amazon' not in data or 'doubleclick' not in data:
-            m = re.search(VALID_DATA, data)
-            if m:
-                return Row(
-                    host=data,
-                    reason='C2'
-                )
-            else:
-                return Row(host='', reason='')
+        VALID_DATA = '(\d+.\d+.\d+.\d+|(\S+\.\S+)|(\S+\.\S+\.\S+)'
+        m = re.search(VALID_DATA, data)
+        if m:
+            return Row(
+                host=data,
+                reason='C2'
+            )
+        else:
+            return Row(host='', reason='')
 
     def parseOpenPhish(self, data):
         '''
