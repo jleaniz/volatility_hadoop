@@ -112,7 +112,8 @@ def updateC2Feeds(sContext):
     sqlCtx = SQLContext(sContext)
     data = getC2Feeds()
     rdd = sContext.parallelize(data)
-    parsed_rdd = rdd.map(parser.Parser.parsec2)
+    myParser = parser.Parser()
+    parsed_rdd = rdd.map(myParser.parsec2)
     parsed_rdd.collect()
     df = parsed_rdd.toDF()
     df.save('reputation/c2', 'parquet', 'overwrite')
@@ -125,8 +126,10 @@ def updateOpenphish(sContext):
     for line in data:
         results.append(line)
 
+    myParser = parser.Parser()
+
     rdd = sContext.parallelize(results)
-    parsed_rdd = rdd.map(parser.Parser.parseOpenPhish)
+    parsed_rdd = rdd.map(myParser.parseOpenPhish)
     parsed_rdd.collect()
     df = parsed_rdd.toDF()
     df.save('reputation/openphish', 'parquet', 'overwrite')
