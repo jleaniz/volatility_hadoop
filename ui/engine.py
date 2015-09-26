@@ -402,7 +402,7 @@ class AnalyticsEngine(object):
         sgall = sgotx.unionAll(sgc2)
 
         self.sqlctx.registerDataFrameAsTable(sgall, 'sgall')
-        entries = self.sqlctx.sql('select host, count(*) as count from sgall group by host order by count desc').collect()
+        entries = self.sqlctx.sql('select host, count(*) as `count` from sgall group by host order by `count` desc').collect()
 
         # This breaks the Kryo serializer - unknown class
         # entries = sgall.groupBy(sgall.host).count().orderBy(desc('count')).collect()
