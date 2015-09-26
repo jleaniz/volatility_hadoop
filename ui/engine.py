@@ -56,39 +56,27 @@ class AnalyticsEngine(object):
         '''
         # pre-laod some data
         logger.info("Loading Cisco VPN data")
-        self.vpnLogsDF = self.sqlctx.load(
-            "/user/cloudera/ciscovpn"
-        )
+        self.vpnLogsDF = self.sqlctx.load("/user/cloudera/ciscovpn")
         self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
 
         logger.info("Loading Firewall data")
-        self.firewallDF = self.sqlctx.load(
-            "/user/cloudera/firewall"
-        )
+        self.firewallDF = self.sqlctx.load("/user/cloudera/firewall")
         self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
         logger.info("Loading Proxy data")
-        self.proxyDF = self.sqlctx.load(
-            "/user/cloudera/proxysg"
-        )
+        self.proxyDF = self.sqlctx.load("/user/cloudera/proxysg")
         self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
         logger.info("Loading Bash data")
-        self.bashDF = self.sqlctx.load(
-            "/user/cloudera/bashlog"
-        )
+        self.bashDF = self.sqlctx.load("/user/cloudera/bashlog")
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
         '''
         logger.info("Loading AlienVault OTX data")
-        self.otx = self.sqlctx.load(
-            "/user/cloudera/reputation/otx"
-        )
+        self.otx = self.sqlctx.load("/user/cloudera/reputation/otx")
         self.sqlctx.registerDataFrameAsTable(self.otx, 'otx')
 
         logger.info("Loading Open Source C2 data")
-        self.c2 = self.sqlctx.load(
-            "/user/cloudera/reputation/c2"
-        )
+        self.c2 = self.sqlctx.load("/user/cloudera/reputation/c2")
         self.sqlctx.registerDataFrameAsTable(self.c2, 'c2')
 
         '''
