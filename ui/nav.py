@@ -42,6 +42,7 @@ nav.register_element('frontend_top', Navbar(
         Link('Most visited domains', '/proxy/top/visited'),
         Link('Most visited malware domains', '/proxy/top/malware'),
         Link('Uncommon User-Agents', '/proxy/uncommon/useragent'),
+        Link('Outdated clients', '/proxy/endpoint/outdated'),
         Separator(),
         Text('Firewall'),
         Separator(),
