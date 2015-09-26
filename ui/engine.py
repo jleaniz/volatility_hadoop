@@ -330,7 +330,7 @@ class AnalyticsEngine(object):
         self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
         topTransfers = self.sqlctx.sql(
-            'select host, count(*) as hits from proxysg where category like "%Mal%" '
+            'select host, count(*) as hits from proxysg where categories like "%Mal%" '
             'group by host order by hits desc limit 15'
         )
         entries = topTransfers.collect()
