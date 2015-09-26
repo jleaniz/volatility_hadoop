@@ -289,14 +289,15 @@ class Parser(object):
         :return: pyspark.sql.Row
         '''
         VALID_DATA = '(\d+.\d+.\d+.\d+|(\S+\.\S+))'
-        m = re.search(VALID_DATA, data)
-        if m:
-            return Row(
-                host=data,
-                reason='C2'
-            )
-        else:
-            return Row(host='', reason='')
+        if 'google-analytics.com' or 'amazon' not in data:
+            m = re.search(VALID_DATA, data)
+            if m:
+                return Row(
+                    host=data,
+                    reason='C2'
+                )
+            else:
+                return Row(host='', reason='')
 
     def parseOpenPhish(self, data):
         '''
