@@ -35,7 +35,7 @@ def main():
                                     'pslist'],
                            required=False, help='Ingest raw logs into HDFS (saves Parquet files)')
     cliparser.add_argument('-p', '--path', action='append',
-                           required=True,
+                           required=False,
                            help='Path to the log data. Subdirs must be structured as /year/month/day')
     args = cliparser.parse_args()
 
