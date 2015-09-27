@@ -7,8 +7,11 @@
 {{ util.flashed_messages(dismissible=True) }}
 <div class="container" style="width: 50%; height: 50%;">
     <h1>500 Internal Server Error</h1>
-    <pre>
+    {% if error %}
     <p class="bg-danger">{{ error }}</p>
-    </pre>
+    {% else %}
+    <p class="bg-danger">Unhandled error.</p>
+    {% endif %}
+
 </div>
 {%- endblock %}
