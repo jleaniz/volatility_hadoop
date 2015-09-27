@@ -763,11 +763,11 @@ class AnalyticsEngine(object):
         descriptionChart = {
             "srcip": ("string", "Source IP"),
             "dstip": ("string", "Destination IP"),
-            "count": ("number", "Hits")
+            "count": ("string", "Hits")
         }
 
         for entry in entries:
-            dataChart.append({"srcip": entry.srcip ,"dstip": entry.dstip, "count": entry.count})
+            dataChart.append({"srcip": entry.srcip ,"dstip": entry.dstip, "count": str(entry.count)})
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
