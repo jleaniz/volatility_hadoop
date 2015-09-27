@@ -21,6 +21,8 @@ from flask_nav.elements import (
 
 from flask_nav import Nav
 
+from engine import analytics_engine
+
 nav = Nav()
 
 # We're adding a navbar as well through flask-navbar. In our example, the
@@ -72,6 +74,7 @@ nav.register_element('frontend_top', Navbar(
         'Spark',
         Link('Clear cache', '/spark/clearcache'),
         Link('Cancel jobs', '/spark/canceljobs'),
+        Link('Spark Master', analytics_engine.get_sc().SparkConf().get('spark.master'))
 
     ),
 ))

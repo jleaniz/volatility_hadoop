@@ -90,6 +90,10 @@ class AnalyticsEngine(object):
         # self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER) # not enough capacity for this right now
         # self.bashDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
+
+    def get_sc(self):
+        return self.sc
+
     def getVPNLoginsByUserJSON(self, username):
         '''
         This function queries a DataFrame for logon/logoff data
@@ -953,10 +957,7 @@ class AnalyticsEngine(object):
 def init_spark_context():
     appConfig = conf.Config()
     sc = SparkContext(conf=appConfig.setSparkConf())
-    print appConfig.getConf()
-
     return sc
-
 
 sc = init_spark_context()
 analytics_engine = AnalyticsEngine(sc)
