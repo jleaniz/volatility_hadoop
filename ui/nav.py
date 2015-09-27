@@ -66,7 +66,7 @@ nav.register_element('frontend_top', Navbar(
     ),
     Subgroup(
         'ML Predictions',
-        Link('Bashlog KMeans clusters', '/bash/kmeans'),
+        Link('Bash commands clusters', '/bash/kmeans'),
     ),
     Subgroup(
         'Search',
