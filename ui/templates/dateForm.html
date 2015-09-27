@@ -12,12 +12,13 @@
             {%- if form.__contains__('name') %}
             <pre>Enter a username in the format 'jdoe' to look for malware hits on the proxy for this user.)</pre>
             {%- endif %}
-            <form action="" method="post" class="form" role="form" sty>
+            <form action="" method="post" class="form" role="form">
                 <div class="form-inline required">
                     {{ form.fromdate.label }}: {{ form.fromdate(class="form-control", required="") }}
                     {{ form.todate.label }}: {{ form.todate(class="form-control", required="") }}
                     {%- if form.__contains__('name') %}
                     {{ form.name.label }}: {{ form.name(class="form-control", required="") }}
+                    {%- endif %}
                     {{ form.lookup(class="btn btn-primary") }}
                 </div>
             </form>
