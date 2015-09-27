@@ -16,6 +16,7 @@
 #
 
 from datetime import date, timedelta as td
+from flask import render_template
 
 from pyspark.sql import SQLContext
 from pyspark.sql.functions import asc, desc
@@ -35,6 +36,13 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+class NotInVocabulary(Exception):
+
+    def __init__(self, e):
+        self.error = e
+        render_template('500.html', error=e.message), 500
 
 
 class AnalyticsEngine(object):
@@ -949,7 +957,11 @@ class AnalyticsEngine(object):
         except AttributeError:
             self.initializeModels()
 
-        vector = self.w2vmodel.transform(command)
+        try:
+            vector = self.w2vmodel.transform(command)
+        except ValueError:
+            raise NotInVocabulary()
+
         cluster = self.clusters.predict(numpy.array(vector))
         logger.info("cluster: %d" % cluster)
         syms = self.w2vmodel.findSynonyms(command, 10)

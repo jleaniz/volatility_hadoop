@@ -1,4 +1,10 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
 {% block content %}
+{{ util.flashed_messages(dismissible=True) }}
 <h1>500 Internal Server Error</h1>
 <pre>
 <p class="bg-danger">{{ error }}</p>
