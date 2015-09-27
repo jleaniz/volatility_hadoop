@@ -146,7 +146,7 @@ class AnalyticsEngine(object):
         data = []
         description = {"remoteip": ("string", "Remote IP"),
                        "hits": ("number", "Hits"),
-                       "role": "annotation",}
+                       "role": ("string", "annotation"),}
 
         for entry in entries:
             if entry.hits < 10:
