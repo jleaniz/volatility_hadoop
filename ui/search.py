@@ -17,7 +17,7 @@
 
 import gzip
 from flask import (
-    render_template, redirect, url_for, Response, make_response, Blueprint
+    render_template, redirect, url_for, Response, make_response, Blueprint, jsonify
 )
 from forms import SearchForm, CustomSearchForm
 from engine import analytics_engine, buildJSON
@@ -55,7 +55,7 @@ def download(content):
 @mod_search.route('/search/<table>/<fromdate>/<todate>/<query>/<num>')
 def search(table, fromdate, todate, query, num):
     jsonResult = analytics_engine.getSearchResults(table, fromdate, todate, query, num)
-
+    '''
     def generate():
         yield '{"%s": [\n' % (table)
         for doc in jsonResult:
@@ -63,7 +63,8 @@ def search(table, fromdate, todate, query, num):
         yield "{}\n]}"
 
     return Response(generate(), mimetype='application/json')
-
+    '''
+    return jsonify(jsonResult)
 
 @mod_search.route('/search/custom/<query>')
 def CustomSearch(query):
