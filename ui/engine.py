@@ -150,17 +150,17 @@ class AnalyticsEngine(object):
 
         for entry in entries:
             if entry.hits < 10:
-                unusual = 'True'
+                activity = 'Unusual'
             else:
-                unusual = 'False'
+                activity = 'Normal'
             data.append(
-                {"remoteip": entry.remoteip, "hits": entry.hits, "unusual": unusual}
+                {"remoteip": entry.remoteip, "hits": entry.hits, "activity": unusual}
             )
 
         data_table = gviz_api.DataTable(description)
         data_table.LoadData(data)
         # Creating a JSon string
-        json = data_table.ToJSon(columns_order=("remoteip", "hits", "unusual"),
+        json = data_table.ToJSon(columns_order=("remoteip", "hits", "activity"),
                                  order_by="hits")
 
         return json
