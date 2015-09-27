@@ -37,14 +37,6 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
-class NotInVocabulary(Exception):
-
-    def __init__(self, e):
-        self.error = e
-        render_template('500.html', error=e.message), 500
-
-
 class AnalyticsEngine(object):
     '''
     Security analytics engine class
@@ -959,8 +951,8 @@ class AnalyticsEngine(object):
 
         try:
             vector = self.w2vmodel.transform(command)
-        except ValueError as e:
-            raise NotInVocabulary(e)
+        except ValueError:
+            render_template('500.html', error=command+' Not in Word2Vec vocabulary'), 500
 
         cluster = self.clusters.predict(numpy.array(vector))
         logger.info("cluster: %d" % cluster)
