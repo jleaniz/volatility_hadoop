@@ -58,7 +58,7 @@ def search(table, fromdate, todate, query, num):
 
     def generate():
         for doc in jsonResult:
-            jsonify({'results': doc})
+            yield jsonify({'results': doc})
 
     return Response(generate(), mimetype='application/json')
 
