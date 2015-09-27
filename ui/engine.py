@@ -951,19 +951,21 @@ class AnalyticsEngine(object):
 
         try:
             vector = self.w2vmodel.transform(command)
+            cluster = self.clusters.predict(numpy.array(vector))
+            logger.info("cluster: %d" % cluster)
+            syms = self.w2vmodel.findSynonyms(command, 10)
+            if len(self.clustersDict[cluster]) < 100:
+                uncommon = True
+            else:
+                uncommon = False
+
+            result = [command, vector, cluster, self.clustersDict, syms, uncommon]
+            return result
+
         except ValueError:
             render_template('500.html', error=command+' Not in Word2Vec vocabulary'), 500
 
-        cluster = self.clusters.predict(numpy.array(vector))
-        logger.info("cluster: %d" % cluster)
-        syms = self.w2vmodel.findSynonyms(command, 10)
-        if len(self.clustersDict[cluster]) < 100:
-            uncommon = True
-        else:
-            uncommon = False
 
-        result = [command, vector, cluster, self.clustersDict, syms, uncommon]
-        return result
 
 
 def init_spark_context():
