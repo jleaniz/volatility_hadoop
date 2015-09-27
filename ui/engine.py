@@ -892,7 +892,15 @@ class AnalyticsEngine(object):
         return deleted_files_byDate, filetype_count
 
     def initializeModels(self):
-        # bashlogsDF = self.sqlctx.parquetFile('/user/cloudera/bashlog')
+        try:
+            if self.bashDF:
+                logger.info("Already loaded this DataFrame")
+                pass
+        except AttributeError:
+            self.bashDF = self.sqlctx.load("/user/cloudera/bashlog")
+            self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
+            self.bashDF.persist(StorageLevel.MEMORY_ONLY_SER)
+
         commandsDF = self.bashDF.select(self.bashDF.command)
         commandsDF.cache()
 
