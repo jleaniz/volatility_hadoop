@@ -68,12 +68,8 @@ def vpn_user():
 
 @mod_vpn.route("/vpn/activity", methods=('GET', 'POST'))
 def vpn_activity():
-    form = UserForm(csrf_enabled=False)
-    if form.validate_on_submit():
-        json = analytics_engine.getVPNUnusualActivity()
-        return render_template('DisplayTableAndCharts.html', jsonChart=json, jsonTable=json)
-
-    return render_template("vpn.html", form=form)
+    json = analytics_engine.getVPNUnusualActivity()
+    return render_template('DisplayTableAndCharts.html', jsonChart=json, jsonTable=json)
 
 
 @mod_vpn.route('/')
