@@ -65,7 +65,7 @@ def search(table, fromdate, todate, query, num):
     return Response(generate(), mimetype='application/json')
     '''
     for doc in jsonResult:
-        return make_response(jsonify(doc))
+        return make_response(jsonify({'results': doc}))
 
 @mod_search.route('/search/custom/<query>')
 def CustomSearch(query):
