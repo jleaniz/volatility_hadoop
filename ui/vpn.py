@@ -69,7 +69,7 @@ def vpn_user():
 @mod_vpn.route("/vpn/activity", methods=('GET', 'POST'))
 def vpn_activity():
     json = analytics_engine.getVPNUnusualActivity()
-    return render_template('DisplayTableAndCharts.html', jsonChart=json, jsonTable=json)
+    return render_template('DisplayTable.html', json=json)
 
 
 @mod_vpn.route('/')

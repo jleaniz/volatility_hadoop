@@ -179,14 +179,13 @@ class AnalyticsEngine(object):
             self.vpnLogsDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         loginsByUser = self.sqlctx.sql(
-            "select user, remoteip, count(*) as hits from vpn"
+            "select user, remoteip, count(*) as hits from vpn group by user, remoteip order by hits"
         )
-        entries = loginsByUser.groupBy(loginsByUser.user).count().orderBy(desc('count')).limit(20).collect()
-
+        entries = loginsByUser.collect()
         data = []
 
         description = [("remoteip",'string', "Remote IP"),
-                       ("user","string", "Username",{'role':'tooltip'}),
+                       ("user","string", "Username"),
                         ("hits","number", "Hits")]
 
         for entry in entries:
