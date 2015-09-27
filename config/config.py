@@ -81,3 +81,6 @@ class Config(object):
         # .set("spark.io.compression.codec", self.spark_io_compression_codec))
 
         return conf
+
+    def getConf(self):
+        return SparkConf().getAll()

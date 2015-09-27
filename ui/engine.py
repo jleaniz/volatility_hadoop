@@ -953,6 +953,8 @@ class AnalyticsEngine(object):
 def init_spark_context():
     appConfig = conf.Config()
     sc = SparkContext(conf=appConfig.setSparkConf())
+    print appConfig.getConf()
+
     return sc
 
 
