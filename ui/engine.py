@@ -146,7 +146,7 @@ class AnalyticsEngine(object):
         data = []
 
         description = [("remoteip",'string', "Remote IP"),
-               ("activity","string", "activity",{'role':'tooltip'}),
+               ("activity","string", "Activity",{'role':'annotation'}),
                ("hits","number", "Hits")]
 
         for entry in entries:
