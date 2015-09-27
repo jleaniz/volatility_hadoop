@@ -8,7 +8,7 @@
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
-        google.load("visualization", "1", {packages: ["corechart", "charteditor", "controls", "table"]});
+        google.load("visualization", "1", {packages: ["sankey", "corechart", "charteditor", "controls", "table"]});
         var chartEd = null;
         var wrap = null;
         var chartEditorDiv = null;
@@ -22,7 +22,7 @@
             // Add the chart to the page
             wrap = new google.visualization.ChartWrapper(
             {
-               'chartType':'BarChart',
+               'chartType':'Sankey',
                'dataTable': {{ jsonChart|safe }},
                'options': {'title':'', 'legend':'none'}
             });
