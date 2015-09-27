@@ -144,11 +144,11 @@ class AnalyticsEngine(object):
         )
         entries = loginsByUser.collect()
         data = []
-        '''
-        description = {"remoteip": ("string", "Remote IP"),
-                       "hits": ("number", "Hits"),
-                       "activity": ("string", "role: tooltip"),}
-        '''
+
+        description = [("remoteip",'string', "Remote IP"),
+               ("activity","string", "activity",{'role':'tooltip'}),
+               ("hits","number", "Hits")]
+
         for entry in entries:
             if entry.hits < 10:
                 activity = 'Unusual'
@@ -158,7 +158,7 @@ class AnalyticsEngine(object):
                 {"remoteip": entry.remoteip, "hits": entry.hits, "activity": activity}
             )
 
-        data_table = gviz_api.DataTable([("remoteip", "string"), ("activity", "string", "activity", {"role": "tooltip", "html": False}), ("hits", "number")])        #data_table = gviz_api.DataTable(description)
+        data_table = gviz_api.DataTable(description)
         data_table.LoadData(data)
         # Creating a JSon string
         json = data_table.ToJSon(columns_order=("remoteip", "activity", "hits"),
