@@ -754,7 +754,7 @@ class AnalyticsEngine(object):
 
         srcdstips = self.sqlctx.sql('select srcip,dstip from firewall')
 
-        groupcnt = srcdstips.groupBy(srcdstips.host).count().orderBy(desc('count'))
+        groupcnt = srcdstips.groupBy(srcdstips.dstip,srcdstips.srcip).count().orderBy(desc('count'))
 
         entries = groupcnt.collect()
 
@@ -772,12 +772,12 @@ class AnalyticsEngine(object):
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
         # Creating a JSon string
-        fw_mal_conns = data_tableChart.ToJSon(
+        fw_top_talkers = data_tableChart.ToJSon(
             columns_order=("srcip", "dstip", "count"),
             order_by="count"
         )
 
-        return fw_mal_conns
+        return fw_top_talkers
 
 
     def getFirewallStats(self, fromdate, todate):
