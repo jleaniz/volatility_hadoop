@@ -36,7 +36,7 @@ nav.register_element('frontend_top', Navbar(
         Text('VPN'),
         Separator(),
         Link('User stats', '/vpn/user'),
-        Link('Unusual activity' '/vpn/activity'),
+        Link('Unusual activity', '/vpn/activity'),
         Separator(),
         Text('Proxy'),
         Separator(),
