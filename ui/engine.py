@@ -752,7 +752,7 @@ class AnalyticsEngine(object):
             self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
             self.firewallDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
-        srcdstips = self.sqlctx.sql('select srcip,dstip from firewall')
+        srcdstips = self.sqlctx.sql('select srcip,dstip from firewall where action="DENY"')
 
         groupcnt = srcdstips.groupBy(srcdstips.dstip,srcdstips.srcip).count().orderBy(desc('count')).limit(50)
 

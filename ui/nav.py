@@ -52,7 +52,7 @@ nav.register_element('frontend_top', Navbar(
         Link('Most denied Dst Ports', '/firewall/port/stats'),
         Link('Most denied IP stats', '/firewall/ip/stats'),
         Link('Malicious connections (OTX/C2)', '/firewall/malware/conns'),
-        Link('Top talkers', '/firewall/top/talkers'),
+        Link('Top 50 denied flows', '/firewall/top/talkers'),
         Separator(),
         Text('Bash'),
         Separator(),
