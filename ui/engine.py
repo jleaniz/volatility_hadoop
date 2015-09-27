@@ -155,7 +155,7 @@ class AnalyticsEngine(object):
             else:
                 activity = 'Normal'
             data.append(
-                {"remoteip": entry.remoteip, "hits": entry.hits, "activity": activity}
+                [entry.remoteip, activity, entry.hits ]
             )
 
         data_table = gviz_api.DataTable(description)
