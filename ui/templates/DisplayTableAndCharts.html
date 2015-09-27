@@ -23,7 +23,7 @@
             wrap = new google.visualization.ChartWrapper({
                'chartType':'BarChart',
                'dataTable': {{ jsonChart|safe }},
-               'options': {'title':'', 'legend':'none'}
+               'options': {'title':'', 'legend':'none', 'isStacked': true}
             });
 
             wrap.draw(chartEditorDiv);
@@ -46,10 +46,6 @@
         }
 
         google.setOnLoadCallback(drawChartEditor);
-
-
-
-
 </script>
 
 <div class="container" style="width: 100%; height: 100%;">
@@ -60,8 +56,7 @@
                 <div class="panel-heading"></div>
                 <div class="panel-body">
                     <div id="chartEditorDiv" style="width: 100%; height: 380px;"></div>
-                    <input class="btn btn-default" type="submit" name="loadcharteditor" id="loadcharteditor"
-                           value="Edit" onClick="loadEditor()"></p>
+                    <input class="btn btn-default" type="submit" name="loadcharteditor" id="loadcharteditor" value="Edit" onClick="loadEditor()">
                 </div>
             </div>
         </div>
