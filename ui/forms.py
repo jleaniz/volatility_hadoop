@@ -23,7 +23,7 @@ from wtforms.validators import DataRequired, Email
 
 class UserForm(Form):
     name = StringField(u'VPN Username', validators=[Email(message="Invalid input. Ex: srm-ais@email.com")])
-    submit = SubmitField(u'Lookup')
+    lookup = SubmitField(u'Lookup')
 
 
 class UserDateForm(Form):
@@ -32,7 +32,7 @@ class UserDateForm(Form):
     todate = DateField(u'To', format='%Y-%m-%d',
                        validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     name = StringField(u'Search keyword', validators=[DataRequired(message="Invalid input. Ex: jdoe")])
-    submit = SubmitField(u'Lookup')
+    lookup = SubmitField(u'Lookup')
 
 
 class DateForm(Form):
@@ -70,9 +70,9 @@ class CustomSearchForm(Form):
 
 class PathForm(Form):
     name = StringField(u'Path', validators=[DataRequired(message="Field required")])
-    submit = SubmitField(u'Lookup')
+    lookup = SubmitField(u'Lookup')
 
 
 class KeywordForm(Form):
     keyword = StringField(u'Keyword', validators=[DataRequired(message="Field required")])
-    submit = SubmitField(u'Lookup')
+    lookup = SubmitField(u'Lookup')
