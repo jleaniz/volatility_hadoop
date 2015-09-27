@@ -55,17 +55,14 @@ def download(content):
 @mod_search.route('/search/<table>/<fromdate>/<todate>/<query>/<num>')
 def search(table, fromdate, todate, query, num):
     jsonResult = analytics_engine.getSearchResults(table, fromdate, todate, query, num)
-    '''
+
     def generate():
-        yield '{"%s": [\n' % (table)
         for doc in jsonResult:
-            yield doc + ',\n'
-        yield "{}\n]}"
+            jsonify({'results': doc})
 
     return Response(generate(), mimetype='application/json')
-    '''
-    for doc in jsonResult:
-        return make_response(jsonify({'results': doc}))
+
+
 
 @mod_search.route('/search/custom/<query>')
 def CustomSearch(query):
