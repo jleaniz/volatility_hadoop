@@ -20,11 +20,20 @@
             chartEditorDiv = document.getElementById('chartEditorDiv');
 
             // Add the chart to the page
-            wrap = new google.visualization.ChartWrapper({
-               'chartType':'BarChart',
+            wrap = new google.visualization.ChartWrapper(
+            {
+            {% if stacked %}
+               'chartType':'ColumnChart',
                'dataTable': {{ jsonChart|safe }},
                'options': {'title':'', 'legend':'none', 'isStacked': true}
-            });
+            }
+            {% else %}
+               'chartType':'BarChart',
+               'dataTable': {{ jsonChart|safe }},
+               'options': {'title':'', 'legend':'none'}
+            }
+            {% endif %}
+            );
 
             wrap.draw(chartEditorDiv);
 
