@@ -11,3 +11,4 @@ logistic regression model , potentially hostile 0/1
 fix custom search - simplify: show existing schemas and textarea for custom query input
 
 SCCM data - display apps per user, stats on outdated apps, most used apps, least common apps
+UI : add actions through tooltips on charts (drill down analysis)
