@@ -166,6 +166,47 @@ class AnalyticsEngine(object):
 
         return json
 
+
+    def getVPNUnusualActivity(self):
+        try:
+            if self.vpnLogsDF:
+                logger.info("Already loaded this DataFrame")
+                pass
+        except:
+            logger.info("Loading new DataFrame")
+            self.vpnLogsDF = self.sqlctx.load("/user/cloudera/ciscovpn")
+            self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
+            self.vpnLogsDF.persist(StorageLevel.MEMORY_ONLY_SER)
+
+        loginsByUser = self.sqlctx.sql(
+            "select username, remoteip, count(*) as hits from vpn group by username, remoteip order by hits"
+        )
+        entries = loginsByUser.collect()
+        data = []
+
+        description = [("remoteip",'string', "Remote IP"),
+                       ("username",'string', "Username"),
+                       ("activity","string", "Activity",{'role':'annotation'}),
+                        ("hits","number", "Hits")]
+
+        for entry in entries:
+            if entry.hits < 10:
+                activity = 'Unusual'
+            else:
+                activity = 'Normal'
+            data.append(
+                [entry.remoteip, entry.username, activity, entry.hits ]
+            )
+
+        data_table = gviz_api.DataTable(description)
+        data_table.LoadData(data)
+        # Creating a JSon string
+        json = data_table.ToJSon(columns_order=("remoteip", "username", "activity", "hits"),
+                                 order_by="hits")
+
+        return json
+
+
     def getProxyUserMalwareHits(self, username, fromdate, todate):
 
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)

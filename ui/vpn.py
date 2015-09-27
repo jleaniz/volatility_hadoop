@@ -66,6 +66,16 @@ def vpn_user():
     return render_template("vpn.html", form=form)
 
 
+@mod_vpn.route("/vpn/activity", methods=('GET', 'POST'))
+def vpn_activity():
+    form = UserForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        json = analytics_engine.getVPNUnusualActivity()
+        return render_template('DisplayTableAndCharts.html', jsonChart=json, jsonTable=json)
+
+    return render_template("vpn.html", form=form)
+
+
 @mod_vpn.route('/')
 def index():
     return render_template('index.html')
