@@ -5,16 +5,10 @@
 
 {% block content %}
 {{ util.flashed_messages(dismissible=True) }}
-<div class="container" style="width: 50%; height: 50%;">
-    <h1>Welcome to BDSA-alpha</h1>
-    <hr>
-    <h3>Use the Navigation bar or click <a href="/dashboard">here</a> to load some data and generate a dashboard.</h3>
-
-    <p>To get the latest version go to our <a href="https://www.github.com/jleaniz/bdsa">site</a>.</p>
-
-    <p><font color="red"><b>WARNING: This is a very early alpha release. Use at your own risk.
-        Please report bugs!, or don't.. whatever!! :)
-    </b></font></p>
+<div class="jumbotron">
+  <h1>Welcome! Let's get started...</h1>
+  <p></p>
+  <p><a class="btn btn-primary btn-lg" href="/dashboard" role="button">Dashboard</a></p>
 </div>
 <hr>
 <p class="text-center"><img src="/static/logo.png" style="width:96px;height:80px;"></p>
