@@ -5,11 +5,12 @@
 
 {% block content %}
 {{ util.flashed_messages(dismissible=True) }}
-<div class="bs-callout bs-callout-info" id="callout-focus-demo">
-    <h3>Welcome! Let's get started...</h3>
-    <p><a class="btn btn-primary btn-md" href="/dashboard" role="button">Dashboard</a></p>
+<div class="container" style="width: 50%; height: 50%;">
+    <div class="bs-callout bs-callout-info" id="callout-focus-demo">
+        <h3>Welcome! Let's get started...</h3>
+        <p><a class="btn btn-primary btn-md" href="/dashboard" role="button">Dashboard</a></p>
+    </div>
 </div>
 <hr>
 <p class="text-center"><img src="/static/logo.png" style="width:96px;height:80px;"></p>
 {%- endblock %}
-
