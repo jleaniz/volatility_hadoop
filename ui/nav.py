@@ -21,7 +21,7 @@ from flask_nav.elements import (
 
 from flask_nav import Nav
 
-from engine import analytics_engine
+from pyspark import SparkConf
 
 nav = Nav()
 
@@ -74,7 +74,7 @@ nav.register_element('frontend_top', Navbar(
         'Spark',
         Link('Clear cache', '/spark/clearcache'),
         Link('Cancel jobs', '/spark/canceljobs'),
-        Link('Spark Master', analytics_engine.get_sc().SparkConf().get('spark.master'))
+        Link('Spark Master', SparkConf().get('spark.master'))
 
     ),
 ))
