@@ -179,13 +179,13 @@ class AnalyticsEngine(object):
             self.vpnLogsDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         loginsByUser = self.sqlctx.sql(
-            "select username, remoteip, count(*) as hits from vpn group by username, remoteip order by hits"
+            "select user, remoteip, count(*) as hits from vpn group by username, remoteip order by hits"
         )
         entries = loginsByUser.collect()
         data = []
 
         description = [("remoteip",'string', "Remote IP"),
-                       ("username",'string', "Username"),
+                       ("user",'string', "Username"),
                        ("activity","string", "Activity",{'role':'annotation'}),
                         ("hits","number", "Hits")]
 
@@ -193,13 +193,13 @@ class AnalyticsEngine(object):
             if entry.hits < 10:
                 activity = 'Unusual'
                 data.append(
-                    [entry.remoteip, entry.username, activity, entry.hits ]
+                    [entry.remoteip, entry.user, activity, entry.hits ]
                 )
 
         data_table = gviz_api.DataTable(description)
         data_table.LoadData(data)
         # Creating a JSon string
-        json = data_table.ToJSon(columns_order=("remoteip", "username", "activity", "hits"),
+        json = data_table.ToJSon(columns_order=("remoteip", "user", "activity", "hits"),
                                  order_by="hits")
 
         return json
