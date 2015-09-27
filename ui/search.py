@@ -61,13 +61,11 @@ def search(table, fromdate, todate, query, num):
         for doc in jsonResult:
             yield doc + ',\n'
         yield "{}\n]}"
-    '''
-    def generate():
-        for doc in jsonResult:
-            yield jsonify(doc)
 
     return Response(generate(), mimetype='application/json')
-
+    '''
+    for doc in jsonResult:
+        return make_response(jsonify(doc))
 
 @mod_search.route('/search/custom/<query>')
 def CustomSearch(query):
