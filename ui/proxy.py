@@ -67,7 +67,7 @@ def proxyOutdatedEndpoints():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
         json = analytics_engine.getOutdatedClients(form.fromdate.data.strftime('%Y-%m-%d'),
-                                                         form.todate.data.strftime('%Y-%m-%d'))
+                                                   form.todate.data.strftime('%Y-%m-%d'))
         return render_template('DisplayTable.html', json=json.decode('utf-8'))
 
     return render_template("dateForm.html", form=form)
@@ -90,7 +90,7 @@ def proxyMostVisitedMalwareDomains():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
         json = analytics_engine.getMostVisitedMalwareDomains(form.fromdate.data.strftime('%Y-%m-%d'),
-                                                      form.todate.data.strftime('%Y-%m-%d'))
+                                                             form.todate.data.strftime('%Y-%m-%d'))
         logger.info(json)
         return render_template('DisplayTableAndCharts.html', jsonTable=json, jsonChart=json)
 
@@ -102,11 +102,12 @@ def proxyMalwareDomainsIntel():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
         json = analytics_engine.getProxyIntelHits(form.fromdate.data.strftime('%Y-%m-%d'),
-                                                      form.todate.data.strftime('%Y-%m-%d'))
+                                                  form.todate.data.strftime('%Y-%m-%d'))
         logger.info(json)
         return render_template('DisplayTableAndCharts.html', jsonTable=json, jsonChart=json)
 
     return render_template("dateForm.html", form=form)
+
 
 @mod_proxy.route('/')
 def index():

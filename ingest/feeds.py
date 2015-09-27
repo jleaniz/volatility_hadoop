@@ -45,7 +45,7 @@ def getC2Feeds():
             'http://rules.emergingthreats.net/fwrules/emerging-IPF-CC.rules',
             'https://lists.malwarepatrol.net/cgi/getfile?'
             'http://mirror1.malwaredomains.com/files/domains.txt'
-            #'http://www.montanamenagerie.org/hostsfile/hosts.txt'
+            # 'http://www.montanamenagerie.org/hostsfile/hosts.txt'
             ]
 
     for url in urls:

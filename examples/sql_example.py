@@ -18,5 +18,3 @@ sgall = sgotx.unionAll(sgc2)
 sgall.cache()
 
 groupcnt = sgall.groupBy(sgall.host).count().orderBy(desc('count'))
-
-

@@ -51,7 +51,7 @@ def bash_keyword():
 
 
 @mod_bash.route("/bash/user", methods=('GET', 'POST'))
-def bash_keyword():
+def bash_userActivity():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
         json = analytics_engine.bashUserActivity(form.name.data)

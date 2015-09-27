@@ -317,7 +317,6 @@ class AnalyticsEngine(object):
 
         return jsonTable
 
-
     def getMostVisitedMalwareDomains(self, fromdate, todate):
         '''
         :return:
@@ -385,7 +384,6 @@ class AnalyticsEngine(object):
 
         return jsonTable
 
-
     def getProxyIntelHits(self, fromdate, todate):
         '''
         :return:
@@ -420,7 +418,6 @@ class AnalyticsEngine(object):
         jsonTable = data_table.ToJSon(columns_order=("host", "count"), order_by="count")
 
         return jsonTable
-
 
     def buildDateList(self, sdate, edate):
 
@@ -551,7 +548,6 @@ class AnalyticsEngine(object):
         json = data_table.ToJSon(columns_order=("logsrc", "username", "exec_as", "srcip", "command"))
 
         return json
-
 
     def bashUserActivity(self, keyword):
 
@@ -686,7 +682,6 @@ class AnalyticsEngine(object):
 
         return (fw_srcip_stats, fw_dstip_stats)
 
-
     def getFirewallMalwareConns(self, fromdate, todate):
         try:
             if self.firewallDF:
@@ -726,7 +721,6 @@ class AnalyticsEngine(object):
         )
 
         return fw_mal_conns
-
 
     def getFirewallStats(self, fromdate, todate):
         try:
