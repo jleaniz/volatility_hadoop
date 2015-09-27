@@ -18,14 +18,14 @@
             chartEd = new google.visualization.ChartEditor();
             google.visualization.events.addListener(chartEd, 'ok', saveChart);
             chartEditorDiv = document.getElementById('chartEditorDiv');
-
+            var colors = ['#a6cee3', '#b2df8a', '#fb9a99', '#fdbf6f', '#cab2d6', '#ffff99', '#1f78b4', '#33a02c'];
             // Add the chart to the page
             wrap = new google.visualization.ChartWrapper(
             {
             {% if sankey %}
                'chartType':'Sankey',
                'dataTable': {{ jsonChart|safe }},
-               'options': {'title':'', 'legend':'none', sankey: { node: { nodePadding: 30 } } }
+               'options': {'title':'', 'legend':'none', sankey: { node: { colors: colors } }
             }
             {% else %}
                'chartType':'BarChart',
