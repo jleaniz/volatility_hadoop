@@ -913,7 +913,7 @@ class AnalyticsEngine(object):
         self.w2vmodel = self.w2v.fit(commandsRDD)
 
         commandsListRDD = commandsDF.rdd.flatMap(lambda row: row.command.split("\n"))
-        commandsList = self.sc.parallelize(commandsListRDD.take(100000)).collect()
+        commandsList = self.sc.parallelize(commandsListRDD.take(1000)).collect()
         vectorsList = []
 
         for command in commandsList:
