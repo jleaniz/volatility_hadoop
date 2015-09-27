@@ -145,7 +145,7 @@ class AnalyticsEngine(object):
         entries = loginsByUser.collect()
         data = []
         description = {"remoteip": ("string", "Remote IP"),
-                       "hits": ("number", "Hits"),
+                       "hits": ("string", "Hits"),
                        "activity": ("string", "Unusual/Normal activity"),}
 
         for entry in entries:
@@ -154,7 +154,7 @@ class AnalyticsEngine(object):
             else:
                 activity = 'Normal'
             data.append(
-                {"remoteip": entry.remoteip, "hits": entry.hits, "activity": activity}
+                {"remoteip": entry.remoteip, "hits": str(entry.hits), "activity": activity}
             )
 
         data_table = gviz_api.DataTable(description)
