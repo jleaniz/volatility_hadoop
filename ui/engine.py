@@ -125,6 +125,15 @@ class AnalyticsEngine(object):
         :param username:
         :return:
         '''
+        try:
+            if self.vpnLogsDF:
+                logger.info("Already loaded this DataFrame")
+                pass
+        except:
+            logger.info("Loading new DataFrame")
+            self.vpnLogsDF = self.sqlctx.load("/user/cloudera/ciscovpn")
+            self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
+            self.vpnLogsDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         loginsByUser = self.sqlctx.sql(
             "select remoteip, count(*) as hits from vpn where user='%s' group by remoteip" % (username)
