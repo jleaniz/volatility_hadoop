@@ -905,7 +905,7 @@ class AnalyticsEngine(object):
         self.w2vmodel = self.w2v.fit(commandsRDD)
 
         commandsListRDD = commandsDF.rdd.flatMap(lambda row: row.command.split("\n"))
-        commandsList = self.sc.parallelize(commandsListRDD.take(100000)).collect()
+        commandsList = self.sc.parallelize(commandsListRDD.take(100)).collect()
         vectorsList = []
 
         for command in commandsList:
@@ -921,7 +921,7 @@ class AnalyticsEngine(object):
 
         # Build the model (cluster the data using KMeans)
         logger.info("Training KMeans model...")
-        self.clusters = KMeans.train(kmdata, k, maxIterations=5, runs=1, initializationMode="random")
+        self.clusters = KMeans.train(kmdata, k, maxIterations=10, runs=1, initializationMode="random")
 
         self.clustersDict = dict()
         for command in commandsList:

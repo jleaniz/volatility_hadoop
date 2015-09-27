@@ -5,18 +5,41 @@
 
 {% block content %}
 {{ util.flashed_messages(dismissible=True) }}
+
 <div class="container" style="width: 50%; height: 50%;">
-    <div class="panel panel-primary">
-        <div class="panel-heading">Keyword lookup</div>
-        <div class="panel-body">
-            cmd -> {{ command }}
-            vector -> {{ vector }}
-            cluster -> {{ cluster }}
-            syms -> {{ syms }}
-            uncommon -> {{ uncommon }}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="bs-callout bs-callout-default" id="callout-focus-command">
+                <h5>Command: {{ command }}</h5>
+            </div>
+            <div class="bs-callout bs-callout-primary" id="callout-focus-command">
+                <h5>Vector: {{ vector }}</h5>
+            </div>
+            <div class="bs-callout bs-callout-success" id="callout-focus-command">
+                <h5>Cluster: {{ cluster }}</h5>
+            </div>
+            <div class="bs-callout bs-callout-default" id="callout-focus-command">
+                <h5>Synonyms: {{ syms }}</h5>
+            </div>
+            <div class="bs-callout bs-callout-info" id="callout-focus-command">
+                <h5>Uncommon: {{ uncommon }}</h5>
+            </div>
         </div>
-        <div class="panel-body">
-            {{ clustersDict[cluster] }}
+        <div class="col-md-5">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                    </tr>
+                </thead>
+               <tbody>
+               {% for entry in clustersDict[cluster] %}
+                    <tr>
+                    <td>{{ entry }}</td>
+                    </tr>
+               {% endfor %}
+               </tbody>
+            </table>
         </div>
     </div>
 </div>
