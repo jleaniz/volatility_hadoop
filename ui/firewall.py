@@ -68,6 +68,6 @@ def DisplayTopTalkers():
     if form.validate_on_submit():
         jsonChart = analytics_engine.getFirewallTopTalkers(form.fromdate.data.strftime('%Y-%m-%d'),
                                                              form.todate.data.strftime('%Y-%m-%d'))
-        return render_template('DisplayTableAndCharts.html', stacked=True, jsonTable=jsonChart, jsonChart=jsonChart)
+        return render_template('DisplayTableAndCharts.html', jsonTable=jsonChart, jsonChart=jsonChart)
 
     return render_template("dateForm.html", form=form)
