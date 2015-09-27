@@ -16,12 +16,14 @@
                 <div class="form-inline required">
                     {{ form.fromdate.label }}: {{ form.fromdate(class="form-control", required="") }}
                     {{ form.todate.label }}: {{ form.todate(class="form-control", required="") }}
-                    {%- if form.__contains__('name') %}
-                    <div class="form-inline required">
-                    {{ form.name.label }}: {{ form.name(class="form-control", required="") }}
-                    </div>
-                    {%- endif %}
-                    {{ form.lookup(class="btn btn-primary") }}
+                </div>
+                {%- if form.__contains__('name') %}
+                <div class="form-group required">
+                {{ form.name.label }}: {{ form.name(class="form-control", required="") }}
+                </div>
+                {%- endif %}
+                <div class="form-group required">
+                {{ form.lookup(class="btn btn-primary") }}
                 </div>
             </form>
         </div>
