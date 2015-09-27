@@ -74,7 +74,7 @@ nav.register_element('frontend_top', Navbar(
         'Spark',
         Link('Clear cache', '/spark/clearcache'),
         Link('Cancel jobs', '/spark/canceljobs'),
-        Link('Spark Master', SparkConf().get('spark.master'))
+        Link('Spark Master', SparkConf().get('spark.yarn.historyServer.address'))
 
     ),
 ))
