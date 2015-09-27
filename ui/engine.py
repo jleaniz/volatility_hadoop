@@ -485,30 +485,24 @@ class AnalyticsEngine(object):
                 self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
                 self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
                 tempDF = self.proxyDF
-                logger.info(tempDF.printSchema())
 
             elif table == 'ciscovpn':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
                 self.vpnLogsDF = self.sqlctx.parquetFile(*_parquetPaths)
                 self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'ciscovpn')
                 tempDF = self.vpnLogsDF
-                logger.info(tempDF.printSchema())
-
 
             elif table == 'firewall':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
                 self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
                 self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
                 tempDF = self.firewallDF
-                logger.info(tempDF.printSchema())
-
 
             elif table == 'bashlog':
                 _parquetPaths = self.buildParquetFileList(table, sdate, edate)
                 self.bashDF = self.sqlctx.parquetFile(*_parquetPaths)
                 self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
                 tempDF = self.bashDF
-                logger.info(tempDF.printSchema())
 
         except AttributeError as e:
             logger.info('AttributeError' + str(e))
