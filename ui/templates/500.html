@@ -5,8 +5,10 @@
 
 {% block content %}
 {{ util.flashed_messages(dismissible=True) }}
-<h1>500 Internal Server Error</h1>
-<pre>
-<p class="bg-danger">{{ error }}</p>
-</pre>
+<div class="container" style="width: 50%; height: 50%;">
+    <h1>500 Internal Server Error</h1>
+    <pre>
+    <p class="bg-danger">{{ error }}</p>
+    </pre>
+</div>
 {%- endblock %}
