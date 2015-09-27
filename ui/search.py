@@ -57,8 +57,10 @@ def search(table, fromdate, todate, query, num):
     jsonResult = analytics_engine.getSearchResults(table, fromdate, todate, query, num)
 
     def generate():
+        yield '{"%s": [\n' % ('search')
         for doc in jsonResult:
-            yield jsonify({'results': doc})
+            yield doc + ',\n'
+        yield "{}\n]}"
 
     return Response(generate(), mimetype='application/json')
 
