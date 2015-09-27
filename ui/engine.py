@@ -959,8 +959,8 @@ class AnalyticsEngine(object):
 
         try:
             vector = self.w2vmodel.transform(command)
-        except ValueError:
-            raise NotInVocabulary()
+        except ValueError as e:
+            raise NotInVocabulary(e)
 
         cluster = self.clusters.predict(numpy.array(vector))
         logger.info("cluster: %d" % cluster)
