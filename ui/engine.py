@@ -146,7 +146,7 @@ class AnalyticsEngine(object):
         data = []
         description = {"remoteip": ("string", "Remote IP"),
                        "hits": ("number", "Hits"),
-                       "unusual": ("string", "Unusual activity"),}
+                       "activity": ("string", "Unusual/Normal activity"),}
 
         for entry in entries:
             if entry.hits < 10:
