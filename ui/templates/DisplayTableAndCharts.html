@@ -25,7 +25,15 @@
             {% if sankey %}
                'chartType':'Sankey',
                'dataTable': {{ jsonChart|safe }},
-               'options': {'title':'', 'legend':'none', sankey: { node: { colors: colors } }
+               'options': {sankey: {
+                    node: {
+                      colors: colors
+                    },
+                    link: {
+                      colorMode: 'gradient',
+                      colors: colors
+                    }
+                  }}
             }
             {% else %}
                'chartType':'BarChart',
