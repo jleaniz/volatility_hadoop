@@ -686,6 +686,48 @@ class AnalyticsEngine(object):
 
         return (fw_srcip_stats, fw_dstip_stats)
 
+
+    def getFirewallMalwareConns(self, fromdate, todate):
+        try:
+            if self.firewallDF:
+                logger.info("Already loaded this DataFrame")
+                pass
+        except:
+            logger.info("Loading new DataFrame")
+            _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
+            self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
+            self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+            self.firewallDF.persist(StorageLevel.MEMORY_ONLY_SER)
+
+        fwotx = self.sqlctx.sql('select firewall.dstip from firewall join otx on otx.ip=firewall.dstip')
+        fwc2 = self.sqlctx.sql('select firewall.dstip from firewall join c2 on c2.host=firewall.dstip')
+        fwall = fwotx.unionAll(fwc2)
+
+        groupcnt = fwall.groupBy(fwall.host).count().orderBy(desc('count'))
+
+        entries = groupcnt.collect()
+
+        # Build json object for the table
+        dataChart = []
+        descriptionChart = {
+            "dstip": ("string", "Malicious host"),
+            "count": ("number", "Hits")
+        }
+
+        for entry in entries:
+            dataChart.append({"dstip": entry.dstip, "count": entry.count})
+
+        data_tableChart = gviz_api.DataTable(descriptionChart)
+        data_tableChart.LoadData(dataChart)
+        # Creating a JSon string
+        fw_mal_conns = data_tableChart.ToJSon(
+            columns_order=("dstip", "count"),
+            order_by="count"
+        )
+
+        return fw_mal_conns
+
+
     def getFirewallStats(self, fromdate, todate):
         try:
             if self.firewallDF:
