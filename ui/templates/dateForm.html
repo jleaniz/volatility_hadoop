@@ -12,7 +12,14 @@
             {%- if form.__contains__('name') %}
             <pre>Enter a username in the format 'jdoe' to look for malware hits on the proxy for this user.)</pre>
             {%- endif %}
-            {{ wtf.quick_form(form, button_map={'submit_button': 'primary'}) }}
+            <form action="" method="post" class="form" role="form">
+                <div class="form-inline required">
+                    {{ form.fromdate.label }}: {{ form.fromdate(class="form-control", required="") }}
+                    {{ form.todate.label }}: {{ form.todate(class="form-control", required="") }}
+                </div>
+                {{ form.lookup(class="btn btn-default") }}
+                {{ form.download(class="btn btn-primary") }}
+            </form>
         </div>
     </div>
 </div>

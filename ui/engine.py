@@ -698,7 +698,7 @@ class AnalyticsEngine(object):
         fwc2 = self.sqlctx.sql('select firewall.dstip from firewall join c2 on c2.host=firewall.dstip')
         fwall = fwotx.unionAll(fwc2)
 
-        groupcnt = fwall.groupBy(fwall.host).count().orderBy(desc('count'))
+        groupcnt = fwall.groupBy(fwall.dstip).count().orderBy(desc('count'))
 
         entries = groupcnt.collect()
 
