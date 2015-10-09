@@ -797,7 +797,7 @@ class AnalyticsEngine(object):
 
         srcdstips = self.sqlctx.sql('select srcip,dstip from firewall where action="DENY"')
 
-        groupcnt = srcdstips.groupBy(srcdstips.srcip,srcdstips.dstip).count().orderBy(desc('count')).limit(50)
+        groupcnt = srcdstips.groupBy(srcdstips.srcip,srcdstips.dstip).count().orderBy(desc('count')).limit(20)
 
         entries = groupcnt.collect()
 
