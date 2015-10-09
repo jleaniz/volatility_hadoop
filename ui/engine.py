@@ -53,7 +53,7 @@ class AnalyticsEngine(object):
         # Load ratings data for later use
         logger.info("Creating Spark SQL context:")
         self.sqlctx = SQLContext(self.sc)
-
+        '''
         # pre-laod some data
         logger.info("Loading Cisco VPN data")
         self.vpnLogsDF = self.sqlctx.load("/user/cloudera/ciscovpn")
@@ -70,7 +70,7 @@ class AnalyticsEngine(object):
         logger.info("Loading Bash data")
         self.bashDF = self.sqlctx.load("/user/cloudera/bashlog")
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
-
+        '''
         logger.info("Loading AlienVault OTX data")
         self.otx = self.sqlctx.load("/user/cloudera/reputation/otx")
         self.sqlctx.registerDataFrameAsTable(self.otx, 'otx')
