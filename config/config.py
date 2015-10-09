@@ -36,7 +36,7 @@ class Config(object):
         self.spark_worker_memory = '1g'
         self.spark_executor_memory = '8g'
         self.spark_executor_cores = '8'
-        self.spark_cores_max = '24'
+        self.spark_cores_max = '40'
         self.spark_akka_timeout = '3000'
         self.spark_network_timeout = '3000'
         self.spark_core_connection_ack_wait_timeout = '3000'
