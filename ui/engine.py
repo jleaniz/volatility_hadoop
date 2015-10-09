@@ -53,7 +53,7 @@ class AnalyticsEngine(object):
         # Load ratings data for later use
         logger.info("Creating Spark SQL context:")
         self.sqlctx = SQLContext(self.sc)
-        '''
+
         # pre-laod some data
         logger.info("Loading Cisco VPN data")
         self.vpnLogsDF = self.sqlctx.load("/user/cloudera/ciscovpn")
@@ -70,7 +70,7 @@ class AnalyticsEngine(object):
         logger.info("Loading Bash data")
         self.bashDF = self.sqlctx.load("/user/cloudera/bashlog")
         self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
-        '''
+
         logger.info("Loading AlienVault OTX data")
         self.otx = self.sqlctx.load("/user/cloudera/reputation/otx")
         self.sqlctx.registerDataFrameAsTable(self.otx, 'otx')
@@ -79,7 +79,7 @@ class AnalyticsEngine(object):
         self.c2 = self.sqlctx.load("/user/cloudera/reputation/c2")
         self.sqlctx.registerDataFrameAsTable(self.c2, 'c2')
 
-        '''
+
         Caching will make queries faster but for some reason
         it won't let you read certain partitions on a cached DF.
         Seems to read the entire DF every time, even if cached, it would be
