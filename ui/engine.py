@@ -79,7 +79,7 @@ class AnalyticsEngine(object):
         self.c2 = self.sqlctx.load("/user/cloudera/reputation/c2")
         self.sqlctx.registerDataFrameAsTable(self.c2, 'c2')
 
-
+        '''
         Caching will make queries faster but for some reason
         it won't let you read certain partitions on a cached DF.
         Seems to read the entire DF every time, even if cached, it would be
