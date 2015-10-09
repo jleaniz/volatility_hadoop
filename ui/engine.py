@@ -375,7 +375,7 @@ class AnalyticsEngine(object):
         for entry in entries:
             data.append({"host": entry.host, "hits": entry.hits})
 
-        data_table = gviz_api.DataTable(descriptionTable)
+        data_tablyeahe = gviz_api.DataTable(descriptionTable)
         data_table.LoadData(data)
         # Creating a JSon string
         jsonTable = data_table.ToJSon(columns_order=("host", "hits"), order_by="hits")
@@ -797,7 +797,7 @@ class AnalyticsEngine(object):
 
         srcdstips = self.sqlctx.sql('select srcip,dstip from firewall where action="DENY"')
 
-        groupcnt = srcdstips.groupBy(srcdstips.dstip,srcdstips.srcip).count().orderBy(desc('count')).limit(50)
+        groupcnt = srcdstips.groupBy(srcdstips.srcip,srcdstips.dstip).count().orderBy(desc('count')).limit(50)
 
         entries = groupcnt.collect()
 
@@ -1076,3 +1076,4 @@ def buildJSONCustom(query):
 
     results.append('{}\n]}')
     return results
+
