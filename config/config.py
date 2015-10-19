@@ -32,9 +32,9 @@ class Config(object):
         self.appName = 'BDSA 0.1 alpha'
         self.spark_driver_cores = '8'
         self.spark_driver_maxResultSize = '4g'
-        self.spark_driver_memory = '8g'
+        self.spark_driver_memory = '12g'
         self.spark_worker_memory = '1g'
-        self.spark_executor_memory = '8g'
+        self.spark_executor_memory = '16g'
         self.spark_executor_cores = '8'
         self.spark_cores_max = '40'
         self.spark_akka_timeout = '3000'
@@ -45,11 +45,11 @@ class Config(object):
         # self.spark_default_parallelism = '120'
         self.spark_io_compression_codec = 'snappy'
         self.spark_serializer = 'org.apache.spark.serializer.KryoSerializer'
-        self.spark_kryoserializer_buffer_max_mb = '128'
+        self.spark_kryoserializer_buffer_max = '128m'
         # self.spark_rdd_compress = 'true'
         self.spark_sql_shuffle_partitions = '512'
-        # self.spark_sql_codegen = 'true'
-        # self.spark_sql_planner_externalSort = 'true'
+        self.spark_sql_codegen = 'true'
+        self.spark_sql_planner_externalSort = 'true'
 
     def setSparkConf(self):
         '''
@@ -73,7 +73,7 @@ class Config(object):
                 .set("spark.storage.memoryFraction", self.spark_storage_memoryFraction)
                 # .set("spark.default.parallelism", self.spark_default_parallelism)
                 .set("spark.serializer", self.spark_serializer)
-                .set("spark.kryoserializer.buffer.max.mb", self.spark_kryoserializer_buffer_max_mb)
+                .set("spark.kryoserializer.buffer.max", self.spark_kryoserializer_buffer_max)
                 # .set("spark.rdd.compress", self.spark_rdd_compress)
                 .set('spark.sql.shuffle.partitions', self.spark_sql_shuffle_partitions))
         # .set('spark.sql.planner.externalSort', self.spark_sql_planner_externalSort)
