@@ -981,6 +981,11 @@ class AnalyticsEngine(object):
             self.bashDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         commandsDF = self.bashDF.select(self.bashDF.command)
+
+        #cmdsDF = df.select(df.command).map(lambda row: Row(command=row.command.split(" "))).toDF()
+        #model = word2Vec.fit(cmdsDF)
+        #resultDF = model.transform(cmdsDF)
+
         commandsDF.cache()
 
         # RDD of list of words in each command
