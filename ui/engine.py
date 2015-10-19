@@ -981,11 +981,26 @@ class AnalyticsEngine(object):
             self.bashDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         commandsDF = self.bashDF.select(self.bashDF.command)
+        '''
+        from pyspark.ml.feature import Word2Vec
+        from pyspark.ml.clustering import KMeans, KMeansModel
+        from pyspark.sql import SQLContext, Row
 
-        #cmdsDF = df.select(df.command).map(lambda row: Row(command=row.command.split(" "))).toDF()
-        #model = word2Vec.fit(cmdsDF)
-        #resultDF = model.transform(cmdsDF)
+        sqlctx = SQLContext(sc)
+        df = sqlctx.read.load("/user/cloudera/bashlog/year=2015/month=07")
+        cmdsDF = df.select(df.command).map(lambda row: Row(command=row.command.split(" "))).toDF()
+        cmdsDF.cache()
+        word2Vec = Word2Vec(vectorSize=3, minCount=0, inputCol="command", outputCol="features")
+        model = word2Vec.fit(cmdsDF)
+        model.save("/user/cloudera/models/w2v_bash")
+        resultDF = model.transform(cmdsDF)
+        resultDF.cache()
+        kmeans = KMeans(k=10, seed=42)
+        vectors = resultDF.select(resultDF.features)
+        vectors.cache()
+        kmodel = kmeans.fit(vectors)
 
+        '''
         commandsDF.cache()
 
         # RDD of list of words in each command
