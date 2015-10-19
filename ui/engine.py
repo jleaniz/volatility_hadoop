@@ -991,15 +991,17 @@ class AnalyticsEngine(object):
         cmdsDF = df.select(df.command).map(lambda row: Row(command=row.command.split(" "))).toDF()
         cmdsDF.cache()
         word2Vec = Word2Vec(vectorSize=3, minCount=0, inputCol="command", outputCol="features")
-        model = word2Vec.fit(cmdsDF)
-        model.save("/user/cloudera/models/w2v_bash")
-        resultDF = model.transform(cmdsDF)
+        w2model = word2Vec.fit(cmdsDF)
+        w2model.save("/user/cloudera/models/w2v_bash")
+        resultDF = w2model.transform(cmdsDF)
         resultDF.cache()
         kmeans = KMeans(k=10, seed=42)
         vectors = resultDF.select(resultDF.features)
         vectors.cache()
         kmodel = kmeans.fit(vectors)
-
+        centers = kmodel.clusterCenters()
+        transformed = kmodel.transform(vectors).select("features", "prediction")
+        rows = transformed.collect()
         '''
         commandsDF.cache()
 
