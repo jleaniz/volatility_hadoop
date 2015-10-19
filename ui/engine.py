@@ -989,19 +989,22 @@ class AnalyticsEngine(object):
         sqlctx = SQLContext(sc)
         df = sqlctx.read.load("/user/cloudera/bashlog/year=2015/month=07")
         cmdsDF = df.select(df.command).map(lambda row: Row(command=row.command.split(" "))).toDF()
+        try without the split
         cmdsDF.cache()
-        word2Vec = Word2Vec(vectorSize=3, minCount=0, inputCol="command", outputCol="features")
+        word2Vec = Word2Vec(vectorSize=10, minCount=0, inputCol="command", outputCol="features")
         w2model = word2Vec.fit(cmdsDF)
         w2model.save("/user/cloudera/models/w2v_bash")
         resultDF = w2model.transform(cmdsDF)
         resultDF.cache()
-        kmeans = KMeans(k=10, seed=42)
+        kmeans = KMeans(k=20, seed=42)
         vectors = resultDF.select(resultDF.features)
         vectors.cache()
         kmodel = kmeans.fit(vectors)
         centers = kmodel.clusterCenters()
         transformed = kmodel.transform(vectors).select("features", "prediction")
         rows = transformed.collect()
+        >>> transformed.where(transformed.prediction == 2).select(transformed.command).take(50)
+
         '''
         commandsDF.cache()
 
