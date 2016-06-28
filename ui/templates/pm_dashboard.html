@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
+{% block content %}
+{{ util.flashed_messages(dismissible=True) }}
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+        google.charts.load('current', {'packages':['bar']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var json_most_vuln_statsData = new google.visualization.DataTable({{ json_most_vuln|safe }});
+            var json_most_vuln_ncsa_statsData = new google.visualization.DataTable({{ json_most_vuln_ncsa|safe }});
+            var json_most_vuln_emea_statsData = new google.visualization.DataTable({{ json_most_vuln_emea|safe }});
+            var json_most_vuln_apac_statsData = new google.visualization.DataTable({{ json_most_vuln_apac|safe }});
+            var json_most_vuln_onbe_statsData = new google.visualization.DataTable({{ json_most_vuln_onbe|safe }});
+            var json_most_vuln_corp_statsData = new google.visualization.DataTable({{ json_most_vuln_corp|safe }});
+            var json_vuln_func_statsData = new google.visualization.DataTable({{ json_most_vuln_func|safe }});
+
+            var pieChartOptions = {title: '', width: '100%', height: '100%'};
+
+            var json_most_vuln_statsChart = new google.charts.Bar(document.getElementById('json_most_vuln_div'));
+            var json_most_vuln_ncsa_statsChart = new google.charts.Bar(document.getElementById('json_most_vuln_ncsa_div'));
+            var json_most_vuln_emea_statsChart = new google.charts.Bar(document.getElementById('json_most_vuln_emea_div'));
+            var json_most_vuln_apac_statsChart = new google.charts.Bar(document.getElementById('json_most_vuln_apac_div'));
+            var json_most_vuln_onbe_statsChart = new google.charts.Bar(document.getElementById('json_most_vuln_onbe_div'));
+            var json_most_vuln_corp_statsChart = new google.charts.Bar(document.getElementById('json_most_vuln_corp_div'));
+            var json_vuln_func_statsChart = new google.charts.Bar(document.getElementById('json_vuln_func_div'));
+
+            json_most_vuln_statsChart.draw(json_most_vuln_statsData, pieChartOptions);
+            json_most_vuln_ncsa_statsChart.draw(json_most_vuln_ncsa_statsData, pieChartOptions);
+            json_most_vuln_emea_statsChart.draw(json_most_vuln_emea_statsData, pieChartOptions);
+            json_most_vuln_apac_statsChart.draw(json_most_vuln_apac_statsData, pieChartOptions);
+            json_most_vuln_onbe_statsChart.draw(json_most_vuln_onbe_statsData, pieChartOptions);
+            json_most_vuln_corp_statsChart.draw(json_most_vuln_corp_statsData, pieChartOptions);
+            json_vuln_func_statsChart.draw(json_vuln_func_statsData, pieChartOptions);
+
+        }
+</script>
+
+<div class="container" style="width: 100%; height: 100%;">
+    <div class="panel panel-default">
+        <div class="panel-heading"><center><strong>Most Vulnerable Software (3rd party)</strong><font color="red"> - HIGH risk only</font></center></div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Most vulnerable Software (NCSA Corp)</div>
+                    <div class="panel-body">
+                        <div id="json_most_vuln_ncsa_div" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Most vulnerable Software (EMEA Corp)</div>
+                    <div class="panel-body">
+                        <div id="json_most_vuln_emea_div" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Most vulnerable Software (APAC Corp)</div>
+                    <div class="panel-body">
+                        <div id="json_most_vuln_apac_div" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Most vulnerable Software (ONBE and Corp)</div>
+                    <div class="panel-body">
+                        <div id="json_most_vuln_div" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Most vulnerable Software (ONBE only)</div>
+                    <div class="panel-body">
+                        <div id="json_most_vuln_onbe_div" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Most vulnerable Software (Corp only)</div>
+                    <div class="panel-body">
+                        <div id="json_most_vuln_corp_div" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading"><center><strong>Machines missing critical updates</strong><font color="red"> - HIGH risk only</font></center></div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Number of vulnerable machines per function</div>
+                    <div class="panel-body">
+                        <div id="json_vuln_func_div" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

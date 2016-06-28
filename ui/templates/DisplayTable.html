@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
+{% block content %}
+{{ util.flashed_messages(dismissible=True) }}
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+        google.load("visualization", "1", {packages: ["table"]});
+        google.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var tableData = new google.visualization.DataTable({{ json|safe }});
+            var tableOptions = {showRowNumber: false, width: '100%', height: '100%'};
+            var table = new google.visualization.Table(document.getElementById('table'));
+            table.draw(tableData, tableOptions);
+        }
+
+
+
+</script>
+
+<div class="container" style="width: 100%; height: 100%;">
+    <div class="panel panel-default">
+        <div class="panel-heading">Query results</div>
+            <div class="panel-body">
+                <div id="table" style="width: 100%; height: 100%;"></div>
+            </div>
+    </div>
+</div>
+{% endblock %}

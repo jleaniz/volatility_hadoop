@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
+{% block content %}
+{{ util.flashed_messages(dismissible=True) }}
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+        google.load("visualization", "1", {packages: ["geochart"]});
+        google.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var options = {};
+            options['dataMode'] = 'regions';
+            var tableData = new google.visualization.DataTable({{ json|safe }});
+            var container = document.getElementById('regions_div');
+            var geomap = new google.visualization.GeoChart(container);
+            geomap.draw(tableData, options);
+        }
+</script>
+
+<div class="container" style="width: 100%; height: 100%;">
+    <div class="panel panel-default">
+        <div class="panel-heading">Locations where users logged in from</div>
+        <div class="panel panel-default">
+            <div class="panel-heading">This only counts when a user logged in from a location other than his/her home office</div>
+            <div class="panel-body">
+                <div id="regions_div" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
+{% block content %}
+{{ util.flashed_messages(dismissible=True) }}
+<div class="container" style="width: 50%; height: 50%;">
+    <h1>500 Internal Server Error</h1>
+    {% if error %}
+    <p class="bg-danger">{{ error }}</p>
+    {% else %}
+    <p class="bg-danger">Unhandled error.</p>
+    {% endif %}
+
+</div>
+{%- endblock %}

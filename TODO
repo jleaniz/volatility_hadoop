@@ -1,0 +1,14 @@
+todo:
+fw average pkt size - detect deviations
+rekall memory forensics analysis
+vpn average session duration - detect deviations
+gaming gateway - malicious activity
+windows domain activity - unusual logins/activity
+
+extract features : has malicious activity on proxysg, has malicous activity on fw, has unusual vpn logins, has unusual windows domain activity
+logistic regression model , potentially hostile 0/1
+
+fix custom search - simplify: show existing schemas and textarea for custom query input
+
+SCCM data - display apps per user, stats on outdated apps, most used apps, least common apps
+UI : add actions through tooltips on charts (drill down analysis)

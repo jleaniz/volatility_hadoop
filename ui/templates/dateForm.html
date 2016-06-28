@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
+{% block content %}
+{{ util.flashed_messages(dismissible=True) }}
+<div class="container" style="width: 50%; height: 50%;">
+    <div class="panel panel-default">
+        <div class="panel-heading"></div>
+        <div class="panel-body">
+            {%- if form.__contains__('name') %}
+            <pre>Enter a username in the format 'jdoe' to look for malware hits on the proxy for this user.)</pre>
+            {%- endif %}
+            <form action="" method="post" class="form" role="form">
+                <div class="form-inline required">
+                    {{ form.fromdate.label }}: {{ form.fromdate(class="form-control", required="") }}
+                    {{ form.todate.label }}: {{ form.todate(class="form-control", required="") }}
+                </div>
+                <br>
+                {%- if form.__contains__('name') %}
+                <div class="form-group required">
+                {{ form.name.label }}: {{ form.name(class="form-control", required="") }}
+                </div>
+                {%- endif %}
+                <div class="form-group required">
+                {{ form.lookup(class="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

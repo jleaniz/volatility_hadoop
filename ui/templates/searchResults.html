@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
+{% block content %}
+{{ util.flashed_messages(dismissible=True) }}
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+        google.load("visualization", "1", {packages: ["table", "corechart"]});
+        google.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var tableData = new google.visualization.DataTable({{ jsonTable|safe }});
+            var barData = new google.visualization.DataTable({{ jsonChart|safe }});
+            var tableOptions = {showRowNumber: false, width: '100%', height: '100%'};
+            var baroptions = {
+                title: "Column chart"
+            };
+
+            var table = new google.visualization.Table(document.getElementById('table'));
+            var barChart = new google.visualization.ColumnChart(document.getElementById('barchart'));
+
+            barChart.draw(barData, baroptions);
+            table.draw(tableData, tableOptions);
+        }
+
+
+
+
+
+
+
+
+</script>
+
+<div class="container" style="width: 100%; height: 100%;">
+    <div class="panel panel-default">
+        <div class="panel-heading">User history</div>
+        <div class="panel panel-default">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Bar Chart</div>
+                    <div class="panel-body">
+                        <div id="barchart" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-heading">Table</div>
+            <div class="panel-body">
+                <div id="table" style="width: 100%; height: 100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

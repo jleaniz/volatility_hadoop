@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
+{% block content %}
+{{ util.flashed_messages(dismissible=True) }}
+
+<div class="container" style="width: 50%; height: 50%;">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Unusual commands</th>
+            </tr>
+        </thead>
+       <tbody>
+       {% for command in commands %}
+            <tr>
+            <td>{{ (command) }}</td>
+            </tr>
+       {% endfor %}
+       </tbody>
+    </table>
+</div>
+{% endblock %}

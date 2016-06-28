@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
+{% block content %}
+{{ util.flashed_messages(dismissible=True) }}
+<div class="container" style="width: 50%; height: 50%;">
+    <div class="bs-callout bs-callout-primary" id="callout-focus-demo">
+        <h3>Welcome! Let's get started...</h3>
+        <p><a class="btn btn-primary btn-md" href="/dashboard" role="button">Dashboard</a></p>
+        <div class="alert alert-danger">
+          <strong>WARNING:</strong> This is an early development version. Things may not work as expected.
+        </div>
+    </div>
+</div>
+<p class="text-center"><img src="/static/logo.png" style="width:96px;height:80px;"></p>
+{%- endblock %}
