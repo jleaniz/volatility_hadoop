@@ -16,7 +16,7 @@
 #
 
 from datetime import date, timedelta as td
-from pyspark.sql import SQLContext, Row
+from pyspark.sql import SparkSession, Row
 from pyspark.sql.functions import asc, desc, concat, lit, col
 from pyspark import StorageLevel
 from pyspark import SparkContext, SparkConf
@@ -47,9 +47,13 @@ class AnalyticsEngine(object):
         logger.info("Starting up the Analytics Engine: ")
         self.sc = sc
 
-        # Load ratings data for later use
+        # Create a SparkSession
         logger.info("Creating Spark SQL context:")
-        self.sqlctx = SQLContext(self.sc)
+        self.session = SparkSession \
+            .builder \
+            .appName("BDSA v0.1") \
+            .config("spark.sql.warehouse.dir", "/user/jleaniz/spark-warehouse") \
+            .getOrCreate()
 
         # default resource pool
         self.sc.setLocalProperty("spark.scheduler.pool", "default")
@@ -57,55 +61,56 @@ class AnalyticsEngine(object):
         try:
             # pre-laod some data
             logger.info("Loading Cisco VPN data")
-            self.vpnLogsDF = self.sqlctx.read.parquet("/user/jleaniz/ciscovpn")
+            self.vpnLogsDF = self.session.read.parquet("/user/jleaniz/ciscovpn")
             self.vpnLogsDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
-            self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
+            self.vpnLogsDF.createOrReplaceTempView('vpn')
+            #self.session.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
         except Exception as e:
             logger.info(e)
 
         try:
             logger.info("Loading Firewall data")
-            self.firewallDF = self.sqlctx.read.parquet("/user/jleaniz/fw")
+            self.firewallDF = self.session.read.parquet("/user/jleaniz/fw")
             self.firewallDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
-            self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+            self.session.registerDataFrameAsTable(self.firewallDF, 'firewall')
         except Exception as e:
             logger.info(e)
 
         try:
             logger.info("Loading Proxy data")
-            self.proxyDF = self.sqlctx.read.parquet("/user/jleaniz/proxysg")
+            self.proxyDF = self.session.read.parquet("/user/jleaniz/proxysg")
             self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER) # not enough capacity for this right now
-            self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+            self.session.registerDataFrameAsTable(self.proxyDF, 'proxysg')
         except Exception as e:
             logger.info(e)
 
         try:
             logger.info("Loading Bash data")
-            self.bashDF = self.sqlctx.read.parquet("/user/jleaniz/bashlog")
+            self.bashDF = self.session.read.parquet("/user/jleaniz/bashlog")
             self.bashDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
-            self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
+            self.session.registerDataFrameAsTable(self.bashDF, 'bashlog')
         except Exception as e:
             logger.info(e)
 
         try:
             logger.info("Loading SCCM data")
-            self.sccmDF = self.sqlctx.read.parquet("/user/jleaniz/sccm/df_sys_dsA1")
+            self.sccmDF = self.session.read.parquet("/user/jleaniz/sccm/df_sys_dsA1")
             self.sccmDF.cache()
-            self.sqlctx.registerDataFrameAsTable(self.sccmDF, 'sccm_vuln')
+            self.session.registerDataFrameAsTable(self.sccmDF, 'sccm_vuln')
         except Exception as e:
             logger.info(e)
 
         try:
             logger.info("Loading AlienVault OTX data")
-            self.otx = self.sqlctx.read.parquet("/user/jleaniz/reputation/otx")
-            self.sqlctx.registerDataFrameAsTable(self.otx, 'otx')
+            self.otx = self.session.read.parquet("/user/jleaniz/reputation/otx")
+            self.session.registerDataFrameAsTable(self.otx, 'otx')
         except Exception as e:
             logger.info(e)
 
         try:
             logger.info("Loading Open Source C2 data")
-            self.c2 = self.sqlctx.read.parquet("/user/jleaniz/reputation/c2")
-            self.sqlctx.registerDataFrameAsTable(self.c2, 'c2')
+            self.c2 = self.session.read.parquet("/user/jleaniz/reputation/c2")
+            self.session.registerDataFrameAsTable(self.c2, 'c2')
         except Exception as e:
             logger.info(e)
 
@@ -126,11 +131,11 @@ class AnalyticsEngine(object):
                 pass
         except:
             logger.info("Loading new DataFrame")
-            self.vpnLogsDF = self.sqlctx.load("/user/jleaniz/ciscovpn")
-            self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
+            self.vpnLogsDF = self.session.load("/user/jleaniz/ciscovpn")
+            self.session.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
             #self.vpnLogsDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
-        loginsByUser = self.sqlctx.sql(
+        loginsByUser = self.session.sql(
             "select `date`, time, remoteip, reason from vpn where user='%s' group by `date`, time, "
             "remoteip, reason" % (username)
         )
@@ -156,11 +161,11 @@ class AnalyticsEngine(object):
                 pass
         except:
             logger.info("Loading new DataFrame")
-            self.vpnLogsDF = self.sqlctx.load("/user/jleaniz/ciscovpn")
-            self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
+            self.vpnLogsDF = self.session.load("/user/jleaniz/ciscovpn")
+            self.session.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
             #self.vpnLogsDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
-        loginsByUser = self.sqlctx.sql(
+        loginsByUser = self.session.sql(
             "select remoteip, count(*) as hits from vpn where user='%s' group by remoteip" % (username)
         )
         entries = loginsByUser.collect()
@@ -196,15 +201,15 @@ class AnalyticsEngine(object):
                 pass
         except:
             logger.info("Loading new DataFrame")
-            self.vpnLogsDF = self.sqlctx.load("/user/jleaniz/ciscovpn")
-            self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
+            self.vpnLogsDF = self.session.load("/user/jleaniz/ciscovpn")
+            self.session.registerDataFrameAsTable(self.vpnLogsDF, 'vpn')
             #self.vpnLogsDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
-        adlocation = self.sqlctx.read.format('com.databricks.spark.csv')\
+        adlocation = self.session.read.format('com.databricks.spark.csv')\
         .options(header='true',inferschema='true').load('ad.csv').filter('c not like ""')
         adlocation.cache()
 
-        vpn = self.sqlctx.read.parquet('/user/jleaniz/ciscovpn')
+        vpn = self.session.read.parquet('/user/jleaniz/ciscovpn')
         vpn.cache()
 
         def func(x):
@@ -256,9 +261,9 @@ class AnalyticsEngine(object):
 
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
+        self.proxyDF = self.session.parquetFile(*_parquetPaths)
         # Register DataFrame as a Spark SQL Table
-        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+        self.session.registerDataFrameAsTable(self.proxyDF, 'proxysg')
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER) # not enough capacity for this right now
 
         query = ("select clientip, username, host, port, path, query, count(*) as hits from proxysg"
@@ -269,7 +274,7 @@ class AnalyticsEngine(object):
         logger.info(query)
 
         # Query using Spark SQL
-        userHistory = self.sqlctx.sql(query)
+        userHistory = self.session.sql(query)
 
         entries = userHistory.collect()
         data = []
@@ -310,12 +315,12 @@ class AnalyticsEngine(object):
         '''
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+        self.proxyDF = self.session.parquetFile(*_parquetPaths)
+        self.session.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-        topTransfers = self.sqlctx.sql(
+        topTransfers = self.session.sql(
             'select clientip, host, cast(csbytes as Double) as bytes from proxysg group by clientip, host, cast(csbytes as Double) order by bytes desc limit 10'
         )
         entries = topTransfers.collect()
@@ -369,12 +374,12 @@ class AnalyticsEngine(object):
         '''
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+        self.proxyDF = self.session.parquetFile(*_parquetPaths)
+        self.session.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-        uncommonAgents = self.sqlctx.sql(
+        uncommonAgents = self.session.sql(
             'select agent, count(*) as hits from proxysg '
             'group by agent order by hits asc limit 500'
         )
@@ -403,12 +408,12 @@ class AnalyticsEngine(object):
         '''
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+        self.proxyDF = self.session.parquetFile(*_parquetPaths)
+        self.session.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-        visitedDomains = self.sqlctx.sql(
+        visitedDomains = self.session.sql(
             'select host, count(*) as hits from proxysg '
             'group by host order by hits desc limit 15'
         )
@@ -437,12 +442,12 @@ class AnalyticsEngine(object):
         '''
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+        self.proxyDF = self.session.parquetFile(*_parquetPaths)
+        self.session.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-        malwareDomains = self.sqlctx.sql(
+        malwareDomains = self.session.sql(
             'select host, count(*) as hits from proxysg where categories like "%Mal%" '
             'group by host order by hits desc limit 15'
         )
@@ -471,12 +476,12 @@ class AnalyticsEngine(object):
         '''
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+        self.proxyDF = self.session.parquetFile(*_parquetPaths)
+        self.session.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-        ooutdatesClients = self.sqlctx.sql(
+        ooutdatesClients = self.session.sql(
             'select clientip, agent from proxysg where agent like "%NT 5.1%" or agent like "%NT\\ 5.1%" group by clientip, agent'
         )
         entries = ooutdatesClients.collect()
@@ -504,13 +509,13 @@ class AnalyticsEngine(object):
         '''
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+        self.proxyDF = self.session.parquetFile(*_parquetPaths)
+        self.session.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-        sgotx = self.sqlctx.sql('select proxysg.host from proxysg join otx on otx.ip=proxysg.host')
-        sgc2 = self.sqlctx.sql('select proxysg.host from proxysg join c2 on c2.host=proxysg.host')
+        sgotx = self.session.sql('select proxysg.host from proxysg join otx on otx.ip=proxysg.host')
+        sgc2 = self.session.sql('select proxysg.host from proxysg join c2 on c2.host=proxysg.host')
         sgall = sgotx.unionAll(sgc2)
 
         # This breaks the Kryo serializer - unknown class
@@ -573,29 +578,29 @@ class AnalyticsEngine(object):
         try:
             if 'proxysg' in tables:
                 _parquetPaths = self.buildParquetFileList('proxysg', sdate, edate)
-                self.proxyDF = self.sqlctx.read.parquet(*_parquetPaths)
-                self.sqlctx.registerDataFrameAsTable(self.proxyDF, 'proxysg')
+                self.proxyDF = self.session.read.parquet(*_parquetPaths)
+                self.session.registerDataFrameAsTable(self.proxyDF, 'proxysg')
 
             if 'ciscovpn' in tables:
                 _parquetPaths = self.buildParquetFileList('ciscovpn', sdate, edate)
-                self.vpnLogsDF = self.sqlctx.read.parquet(*_parquetPaths)
-                self.sqlctx.registerDataFrameAsTable(self.vpnLogsDF, 'ciscovpn')
+                self.vpnLogsDF = self.session.read.parquet(*_parquetPaths)
+                self.session.registerDataFrameAsTable(self.vpnLogsDF, 'ciscovpn')
 
             if 'firewall' in tables:
                 logger.info('Re-loading dataframe fw')
                 _parquetPaths = self.buildParquetFileList('firewall', sdate, edate)
-                self.firewallDF = self.sqlctx.read.parquet(*_parquetPaths)
-                self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+                self.firewallDF = self.session.read.parquet(*_parquetPaths)
+                self.session.registerDataFrameAsTable(self.firewallDF, 'firewall')
 
             if 'bashlog' in tables:
                 logger.info('Re-loading dataframe bashlog')
                 _parquetPaths = self.buildParquetFileList('bashlog', sdate, edate)
-                self.bashDF = self.sqlctx.read.parquet(*_parquetPaths)
-                self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
+                self.bashDF = self.session.read.parquet(*_parquetPaths)
+                self.session.registerDataFrameAsTable(self.bashDF, 'bashlog')
 
             if 'sccm_vuln' in tables:
                 if not self.sccmDF:
-                    self.sqlctx.read.parquet('/user/jleaniz/sccm/df_sys_dsA1')
+                    self.session.read.parquet('/user/jleaniz/sccm/df_sys_dsA1')
 
         except AttributeError as e:
             logger.info('AttributeError' + str(e))
@@ -604,7 +609,7 @@ class AnalyticsEngine(object):
         try:
             self.sc.setLocalProperty("spark.scheduler.pool", "search")
 
-            resultsDF = self.sqlctx.sql('%s limit %s' % (query, num))
+            resultsDF = self.session.sql('%s limit %s' % (query, num))
             for result in resultsDF.toJSON().collect():
                 yield result
         except Exception as e:
@@ -613,7 +618,7 @@ class AnalyticsEngine(object):
 
     def getCustomSearchResults(self, query):
         try:
-            resultsDF = self.sqlctx.sql('%s' % (query))
+            resultsDF = self.session.sql('%s' % (query))
             for result in resultsDF.toJSON().collect():
                 yield result
         except:
@@ -622,14 +627,14 @@ class AnalyticsEngine(object):
     def bashKeywordSearch(self, keyword, fromdate, todate):
         _parquetPaths = self.buildParquetFileList('bashlog', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.bashDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
+        self.bashDF = self.session.parquetFile(*_parquetPaths)
+        self.session.registerDataFrameAsTable(self.bashDF, 'bashlog')
 
         query = ("select * from bashlog where command like '%s'" % (keyword))
         logger.info(query)
 
         # Query using Spark SQL
-        keywordDF = self.sqlctx.sql(query)
+        keywordDF = self.session.sql(query)
 
         entries = keywordDF.collect()
         data = []
@@ -662,14 +667,14 @@ class AnalyticsEngine(object):
     def bashUserActivity(self, keyword, fromdate, todate):
         _parquetPaths = self.buildParquetFileList('bashlog', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.bashDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.bashDF, 'bashlog')
+        self.bashDF = self.session.parquetFile(*_parquetPaths)
+        self.session.registerDataFrameAsTable(self.bashDF, 'bashlog')
 
         query = ( "select * from bashlog where username like  ' %s' " % (keyword) )
         logger.info(query)
 
         # Query using Spark SQL
-        keywordDF = self.sqlctx.sql(query)
+        keywordDF = self.session.sql(query)
 
         entries = keywordDF.collect()
         data = []
@@ -707,12 +712,12 @@ class AnalyticsEngine(object):
         except:
             logger.info("Loading new DataFrame")
             _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
-            self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
-            self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+            self.firewallDF = self.session.parquetFile(*_parquetPaths)
+            self.session.registerDataFrameAsTable(self.firewallDF, 'firewall')
             #self.firewallDF.persist(StorageLevel.MEMORY_ONLY_SER)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
-        PortStats = self.sqlctx.sql(
+        PortStats = self.session.sql(
             'select dstport, proto, count(*) as hits from firewall where action="DENY" group by dstport, proto order by hits desc limit 10'
         )
         entries = PortStats.collect()
@@ -740,13 +745,13 @@ class AnalyticsEngine(object):
     def getFirewallIPStats(self, fromdate, todate):
 
         _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
-        self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+        self.firewallDF = self.session.parquetFile(*_parquetPaths)
+        self.session.registerDataFrameAsTable(self.firewallDF, 'firewall')
         #self.firewallDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
-        dstIPStats = self.sqlctx.sql(
+        dstIPStats = self.session.sql(
             'select dstip, dstport, proto, count(*) as hits from firewall where action="DENY" group by dstip, dstport, proto order by hits desc limit 10'
         )
         entries = dstIPStats.collect()
@@ -769,7 +774,7 @@ class AnalyticsEngine(object):
             order_by="hits"
         )
 
-        srcIPStats = self.sqlctx.sql(
+        srcIPStats = self.session.sql(
             'select srcip, dstport, proto, count(*) as hits from firewall where action="DENY" '
             'group by srcip, dstport, proto order by hits desc limit 10'
         )
@@ -799,13 +804,13 @@ class AnalyticsEngine(object):
     def getFirewallMalwareConns(self, fromdate, todate):
 
         _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
-        self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+        self.firewallDF = self.session.parquetFile(*_parquetPaths)
+        self.session.registerDataFrameAsTable(self.firewallDF, 'firewall')
         #self.firewallDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        fwotx = self.sqlctx.sql('select firewall.dstip from firewall join otx on otx.ip=firewall.dstip')
-        fwc2 = self.sqlctx.sql('select firewall.dstip from firewall join c2 on c2.host=firewall.dstip')
+        fwotx = self.session.sql('select firewall.dstip from firewall join otx on otx.ip=firewall.dstip')
+        fwc2 = self.session.sql('select firewall.dstip from firewall join c2 on c2.host=firewall.dstip')
         fwall = fwotx.unionAll(fwc2)
 
         groupcnt = fwall.groupBy(fwall.dstip).count().orderBy(desc('count'))
@@ -836,12 +841,12 @@ class AnalyticsEngine(object):
     def getFirewallTopTalkers(self, fromdate, todate):
 
         _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
-        self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+        self.firewallDF = self.session.parquetFile(*_parquetPaths)
+        self.session.registerDataFrameAsTable(self.firewallDF, 'firewall')
         #self.firewallDF.persist(StorageLevel.MEMORY_ONLY_SER)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
-        srcdstips = self.sqlctx.sql('select srcip,dstip from firewall where action="DENY"')
+        srcdstips = self.session.sql('select srcip,dstip from firewall where action="DENY"')
 
         groupcnt = srcdstips.groupBy(srcdstips.srcip,srcdstips.dstip).count().orderBy(desc('count')).limit(25)
         entries = groupcnt.collect()
@@ -871,8 +876,8 @@ class AnalyticsEngine(object):
     def getFirewallStats(self, fromdate, todate):
 
         _parquetPaths = self.buildParquetFileList('firewall', fromdate, todate)
-        self.firewallDF = self.sqlctx.parquetFile(*_parquetPaths)
-        self.sqlctx.registerDataFrameAsTable(self.firewallDF, 'firewall')
+        self.firewallDF = self.session.parquetFile(*_parquetPaths)
+        self.session.registerDataFrameAsTable(self.firewallDF, 'firewall')
         #self.firewallDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
@@ -889,7 +894,7 @@ class AnalyticsEngine(object):
         '''
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
         (year, month, day) = date.split('-')
-        loginsByUser = self.sqlctx.sql(
+        loginsByUser = self.session.sql(
             "select user from vpn where year=%s and month=%s and day=%s and remoteip='%s'" % (
                 year, month, day, remoteip)
         )
@@ -939,24 +944,24 @@ class AnalyticsEngine(object):
         :return:
         '''
         # Load CSV files into a Spark DataFrame
-        df = self.sqlctx.load(source="com.databricks.spark.csv", header="true", path=csv_path)
+        df = self.session.load(source="com.databricks.spark.csv", header="true", path=csv_path)
         # Register the DataFrame as a Spark SQL table called 'tl' so we can run queries using SQL syntax
-        self.sqlctx.registerDataFrameAsTable(df, 'tl')
+        self.session.registerDataFrameAsTable(df, 'tl')
         # Cache the table in memory for faster lookups
-        self.sqlctx.cacheTable('tl')
+        self.session.cacheTable('tl')
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
         # Create a df that contains deleted files
-        deletedFilesDF = self.sqlctx.sql("SELECT `date`, short FROM tl WHERE short LIKE '%DELETED%'")
-        self.sqlctx.registerDataFrameAsTable(deletedFilesDF, 'deleted')
+        deletedFilesDF = self.session.sql("SELECT `date`, short FROM tl WHERE short LIKE '%DELETED%'")
+        self.session.registerDataFrameAsTable(deletedFilesDF, 'deleted')
         # Create a list with dates and number of deleted files per day
-        deletedFilesDateList = self.sqlctx.sql(
+        deletedFilesDateList = self.session.sql(
             "SELECT `date`, count(*) as hits FROM deleted group by `date` order by hits desc limit 15").collect()
 
-        zipFiles = int(self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%zip'").collect()[0].hits)
-        pdfFiles = int(self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%pdf'").collect()[0].hits)
-        exeFiles = int(self.sqlctx.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%exe'").collect()[0].hits)
+        zipFiles = int(self.session.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%zip'").collect()[0].hits)
+        pdfFiles = int(self.session.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%pdf'").collect()[0].hits)
+        exeFiles = int(self.session.sql("SELECT count(*) as hits FROM tl WHERE short LIKE '%exe'").collect()[0].hits)
 
         dataChart = []
         descriptionChart = {
@@ -974,7 +979,7 @@ class AnalyticsEngine(object):
             columns_order=("date", "hits"),
             order_by="hits"
         )
-        # webhist = self.sqlctx.sql("select `date`, short from tl where source='WEBHIST' limit 100 ").collect()
+        # webhist = self.session.sql("select `date`, short from tl where source='WEBHIST' limit 100 ").collect()
 
         dataChart = []
         descriptionChart = {
@@ -1036,7 +1041,7 @@ class AnalyticsEngine(object):
                 logger.info("Already loaded this DataFrame")
                 pass
         except:
-            self.sccmDF = self.sqlctx.read.parquet('/user/jleaniz/sccm/df_sys_dsA1')
+            self.sccmDF = self.session.read.parquet('/user/jleaniz/sccm/df_sys_dsA1')
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
@@ -1168,7 +1173,7 @@ class AnalyticsEngine(object):
     def getCmdPrediction(self):
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
-        df = self.sqlctx.read.parquet('/user/jleaniz/ml/kmeans_new')
+        df = self.session.read.parquet('/user/jleaniz/ml/kmeans_new')
         outliers = df.groupBy("prediction").count().filter('count < 20').withColumnRenamed("prediction", "cluster")
         self.outlierCmds = outliers.join(df, df.prediction == outliers.cluster).distinct()
         result = []
@@ -1180,12 +1185,12 @@ class AnalyticsEngine(object):
     def getVPNLoginsGeoMap(self):
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
-        adlocation = self.sqlctx.read.format('com.databricks.spark.csv')\
+        adlocation = self.session.read.format('com.databricks.spark.csv')\
             .options(header='true',inferschema='true').load('ad.csv').filter('c not like ""')
 
         adlocation.cache()
 
-        vpn = self.sqlctx.read.parquet('/user/jleaniz/ciscovpn')
+        vpn = self.session.read.parquet('/user/jleaniz/ciscovpn')
         vpn.cache()
 
         def func(x):

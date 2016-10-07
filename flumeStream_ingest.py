@@ -37,7 +37,7 @@ def getSqlContextInstance(sparkContext):
 
 
 def parse(line):
-    if '-off-fw' in line:
+    if 'msr-off-fw' in line:
         return logParser.parseIPTables(line)
     elif '-net-bc' in line:
         return logParser.parseBCAccessLog(line)
@@ -65,7 +65,7 @@ def save_proxy(rdd):
 
 def process_fw(time, rdd):
     output_rdd = rdd.map(lambda x: str(time) + ' ' + x[0]['host'] + ' ' + x[1]) \
-        .filter(lambda x: '-off-fw' in x).map(parse) \
+        .filter(lambda x: 'msr-off-fw' in x).map(parse) \
         .filter(lambda x: isinstance(x, Row))
     return output_rdd
 
@@ -85,10 +85,10 @@ if __name__ == '__main__':
     ssc = StreamingContext(sc, 600)
     logParser = Parser(type='flume')
 
-    flumeStream = FlumeUtils.createStream(ssc, '0.0.0.0', 5141)
-    flumeStream1 = FlumeUtils.createStream(ssc, '0.0.0.0', 5141)
-    flumeStream2 = FlumeUtils.createStream(ssc, '0.0.0.0', 5141)
-    flumeStream3 = FlumeUtils.createStream(ssc, '0.0.0.0', 5141)
+    flumeStream = FlumeUtils.createStream(ssc, '10.129.4.182', 5141)
+    flumeStream1 = FlumeUtils.createStream(ssc, '10.129.4.175', 5141)
+    flumeStream2 = FlumeUtils.createStream(ssc, '10.129.4.174', 5141)
+    flumeStream3 = FlumeUtils.createStream(ssc, '10.129.4.178', 5141)
 
     unionStream = flumeStream.union(flumeStream1).union(flumeStream3).union(flumeStream3)
 
@@ -98,6 +98,16 @@ if __name__ == '__main__':
     #fwDStream.foreachRDD(save_fw)
     proxyDStream.foreachRDD(save_proxy)
     #proxyDStream.saveAsTextFiles("sg_")
+
+    '''
+    genericRDD = rdd.filter(lambda x: any(y in x[0]['host'] for y in ['msr-off-fw', '-net-bc']) == False)
+
+    if genericRDD.isEmpty() == False:
+        logger.warning('%s : Found unknown log entries, saving to generic bucket in HDFS.' % (str(time)))
+        tempFile = NamedTemporaryFile(delete=False)
+        genericRDD.coalesce(4).saveAsTextFile('/user/cloudera/rdd_bucket/%s' % (tempFile.name),
+                                              compressionCodecClass='org.apache.hadoop.io.compress.GzipCodec')
+    '''
 
     ssc.start()
     ssc.awaitTermination()

@@ -45,16 +45,16 @@ class Parser(object):
 
         self.patterns = {
             'sgAccessLog': re.compile(
-                '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+):\d+ \s\s\s-net-bcrep01 (\w+-\w+-\w+|"\w+-\w+-\w+") "(\d+-\d+-\d+)" "(\d+:\d+:\d+)" "(\d+)" "(\d+.\d+.\d+.\d+)" "(\d+)" "(\S+)" "(\d+)" "(\d+)" "(\w+)" "(\w+)" "(\d+.\d+.\d+.\d+|\S+)" "(\d+)" "(\S+)" "(\S+)" "(\S+)" "(\S+)" "(\d+.\d+.\d+.\d+|\S+)" "(\S+)" "(\S+)" "([^"].*?)" "(\S+)" "([\s\S]*?)" "(\S+)" "(\d+.\d+.\d+.\d+)"'
+                '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+):\d+ msr-net-bcrep01 (\w+-\w+-\w+|"\w+-\w+-\w+") "(\d+-\d+-\d+)" "(\d+:\d+:\d+)" "(\d+)" "(\d+.\d+.\d+.\d+)" "(\d+)" "(\S+)" "(\d+)" "(\d+)" "(\w+)" "(\w+)" "(\d+.\d+.\d+.\d+|\S+)" "(\d+)" "(\S+)" "(\S+)" "(\S+)" "(\S+)" "(\d+.\d+.\d+.\d+|\S+)" "(\S+)" "(\S+)" "([^"].*?)" "(\S+)" "([\s\S]*?)" "(\S+)" "(\d+.\d+.\d+.\d+)"'
             ),
             'sgAccessLogSSL': re.compile(
-                '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+:\d+) \s\s\s-net-bcrep01 (\w+-\w+-\w+|"\w+-\w+-\w+") (\d+-\d+-\d+) (\d+:\d+:\d+) (\d+) (\d+.\d+.\d+.\d+) (\d+) (\S+) (\d+) (\d+) (\w+) (\w+) (\d+.\d+.\d+.\d+|\S+) (\d+) (\S+) (\S+) (\S+) (\S+) (\d+.\d+.\d+.\d+|\S+) (\S+) (\S+) "?([^"].*?)"? (\S+) "([\s+\S+]*?)" (\S+) (\S+) (\d{3}|\S+) (\S+) (\d+.\d+.\d+.\d+)'
+                '(\d+-\d+-\d+T\d+:\d+:\d+\+\d+:\d+) msr-net-bcrep01 (\w+-\w+-\w+|"\w+-\w+-\w+") (\d+-\d+-\d+) (\d+:\d+:\d+) (\d+) (\d+.\d+.\d+.\d+) (\d+) (\S+) (\d+) (\d+) (\w+) (\w+) (\d+.\d+.\d+.\d+|\S+) (\d+) (\S+) (\S+) (\S+) (\S+) (\d+.\d+.\d+.\d+|\S+) (\S+) (\S+) "?([^"].*?)"? (\S+) "([\s+\S+]*?)" (\S+) (\S+) (\d{3}|\S+) (\S+) (\d+.\d+.\d+.\d+)'
             ),
             'sg_flume': re.compile(
-                '(\d+-\d+-\d+) (\d+:\d+:\d+) \s\s\s-net-bcrep01 (\w+-\w+-\w+|"\w+-\w+-\w+") "(\d+-\d+-\d+)" "(\d+:\d+:\d+)" "(\d+)" "(\d+.\d+.\d+.\d+)" "(\d+)" "(\S+)" "(\d+)" "(\d+)" "(\w+)" "(\w+)" "(\d+.\d+.\d+.\d+|\S+)" "(\d+)" "(\S+)" "(\S+)" "(\S+)" "(\S+)" "(\d+.\d+.\d+.\d+|\S+)" "(\S+)" "(\S+)" "([^"].*?)" "(\S+)" "([\s\S]*?)" "(\S+)" "(\d+.\d+.\d+.\d+)"'
+                '(\d+-\d+-\d+) (\d+:\d+:\d+) msr-net-bcrep01 (\w+-\w+-\w+|"\w+-\w+-\w+") "(\d+-\d+-\d+)" "(\d+:\d+:\d+)" "(\d+)" "(\d+.\d+.\d+.\d+)" "(\d+)" "(\S+)" "(\d+)" "(\d+)" "(\w+)" "(\w+)" "(\d+.\d+.\d+.\d+|\S+)" "(\d+)" "(\S+)" "(\S+)" "(\S+)" "(\S+)" "(\d+.\d+.\d+.\d+|\S+)" "(\S+)" "(\S+)" "([^"].*?)" "(\S+)" "([\s\S]*?)" "(\S+)" "(\d+.\d+.\d+.\d+)"'
             ),
             'sgSSL_flume': re.compile(
-                '(\d+-\d+-\d+) (\d+:\d+:\d+) \s\s\s-net-bcrep01 (\w+-\w+-\w+|"\w+-\w+-\w+") (\d+-\d+-\d+) (\d+:\d+:\d+) (\d+) (\d+.\d+.\d+.\d+) (\d+) (\S+) (\d+) (\d+) (\w+) (\w+) (\d+.\d+.\d+.\d+|\S+) (\d+) (\S+) (\S+) (\S+) (\S+) (\d+.\d+.\d+.\d+|\S+) (\S+) (\S+) "?([^"].*?)"? (\S+) "([\s+\S+]*?)" (\S+) (\S+) (\d{3}|\S+) (\S+) (\d+.\d+.\d+.\d+)'
+                '(\d+-\d+-\d+) (\d+:\d+:\d+) msr-net-bcrep01 (\w+-\w+-\w+|"\w+-\w+-\w+") (\d+-\d+-\d+) (\d+:\d+:\d+) (\d+) (\d+.\d+.\d+.\d+) (\d+) (\S+) (\d+) (\d+) (\w+) (\w+) (\d+.\d+.\d+.\d+|\S+) (\d+) (\S+) (\S+) (\S+) (\S+) (\d+.\d+.\d+.\d+|\S+) (\S+) (\S+) "?([^"].*?)"? (\S+) "([\s+\S+]*?)" (\S+) (\S+) (\d{3}|\S+) (\S+) (\d+.\d+.\d+.\d+)'
             ),
             'iptables': re.compile(
                 '(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+) (\S+) (\S+)(\s{1,2})(\s+)IN=(\S+) OUT=((\S+)?) MAC=(\S+)(\s+)SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
@@ -337,6 +337,10 @@ class Parser(object):
         :param partition:
         :return: Row
         """
+        '''
+          930  for i in `ssh jleaniz@msr-infr-log01 find /opt/var/log -name bash.log.gz`; do rsync -Rav jleaniz@msr-infr-log01:$i /mnt/hdfs/user/cloudera/bash; done
+          951  rsync -Rav --files-from=files.txt jleaniz@msr-infr-log01:/ /mnt/hdfs/user/cloudera/bash/
+        '''
         patterns = [self.patterns['bashlog'],
                     self.patterns['bashlogWarn']
                     ]

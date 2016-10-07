@@ -1,4 +1,4 @@
-#../spark-1.5.1-bin-testbuild/bin/pyspark --master spark://master.domain:7077 --total-executor-cores 8 --executor-cores 8 --executor-memory 4g --driver-memory 2g --conf spark.driver.maxResultSize=2g --files GeoIP.dat --jars /home/cloudera/spark-csv/target/scala-2.11/spark-csv_2.11-1.1.0.jar,/home/cloudera/spark-csv/target/scala-2.11/commons-csv-1.1/commons-csv-1.1.jar
+#../spark-1.5.1-bin-testbuild/bin/pyspark --master spark://mtl-ah374.domain.org:7077 --total-executor-cores 8 --executor-cores 8 --executor-memory 4g --driver-memory 2g --conf spark.driver.maxResultSize=2g --files GeoIP.dat --jars /home/cloudera/spark-csv/target/scala-2.11/spark-csv_2.11-1.1.0.jar,/home/cloudera/spark-csv/target/scala-2.11/commons-csv-1.1/commons-csv-1.1.jar
 
 from pyspark.sql.types import Row
 from pyspark.sql import SQLContext
