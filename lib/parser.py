@@ -16,8 +16,9 @@
 #
 import urllib2
 import re
-import calendar
+import calendar, datetime
 from pyspark.sql import Row
+
 
 class Parser(object):
     '''
@@ -60,9 +61,11 @@ class Parser(object):
             'iptables': re.compile(
                 '(\S\d\d\S)(\S+ \d{2}) (\d{2}:\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+|DROP \S+) (\S+) (\S+)(\s{1,2})(\s+)IN=(\S+) OUT=((\S+)?) MAC=(\S+)(\s+)SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
             ),
-            'iptables_flume': re.compile('(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+) (\S+) (\S+)(\s{1,2})(\s+)IN=(\S+) OUT=((\S+)?) MAC=(\S+)(\s+)SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
+            'iptables_flume': re.compile(
+                '(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+) (\S+) (\S+)(\s{1,2})(\s+)IN=(\S+) OUT=((\S+)?) MAC=(\S+)(\s+)SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
             ),
-            'iptables_flume_syn': re.compile('(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+) (\S+) (\S+) IN=(\S+) OUT=((\S+)?) MAC=(\S+)(\s+)SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
+            'iptables_flume_syn': re.compile(
+                '(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+) (\S+) (\S+) IN=(\S+) OUT=((\S+)?) MAC=(\S+)(\s+)SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
             ),
             'bashlog': re.compile(
                 "(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) bash: user: (\S+) as (\S+) from ip: (""\d+.\d+.\d+.\d+|\S+):pts\/\d{1,2} execs: '(.*)'"
@@ -158,7 +161,6 @@ class Parser(object):
                             malware=m.group(29),
                             proxyip=m.group(30)
                         )
-
 
     def parseBCAccessLogIter(self, partition):
         patterns = [self.patterns['sgAccessLog'],
@@ -279,7 +281,7 @@ class Parser(object):
         if 'flume' in self.type:
             patterns = [self.patterns['iptables_flume'],
                         self.patterns['iptables_flume_syn']
-            ]
+                        ]
             for pattern in patterns:
                 m = re.search(pattern, partition)
                 if m:
@@ -319,7 +321,7 @@ class Parser(object):
             m = re.search(fwlog, element)
             if m:
                 yield Row(
-                    date='2016'+str(list(calendar.month_abbr).index(m.group(1).split()[0]))+m.group(1).split()[1],
+                    date=str(datetime.datetime.now().year) + str(list(calendar.month_abbr).index(m.group(1).split()[0])) + m.group(1).split()[1],
                     time=m.group(3),
                     source=m.group(4),
                     action=m.group(8),
