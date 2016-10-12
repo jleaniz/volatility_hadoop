@@ -16,6 +16,7 @@
 #
 import urllib2
 import re
+import calendar
 from pyspark.sql import Row
 
 class Parser(object):
@@ -57,7 +58,7 @@ class Parser(object):
                 '(\d+-\d+-\d+) (\d+:\d+:\d+) msr-net-bcrep01 (\w+-\w+-\w+|"\w+-\w+-\w+") (\d+-\d+-\d+) (\d+:\d+:\d+) (\d+) (\d+.\d+.\d+.\d+) (\d+) (\S+) (\d+) (\d+) (\w+) (\w+) (\d+.\d+.\d+.\d+|\S+) (\d+) (\S+) (\S+) (\S+) (\S+) (\d+.\d+.\d+.\d+|\S+) (\S+) (\S+) "?([^"].*?)"? (\S+) "([\s+\S+]*?)" (\S+) (\S+) (\d{3}|\S+) (\S+) (\d+.\d+.\d+.\d+)'
             ),
             'iptables': re.compile(
-                '(\S+) (\d{2}) (\d{2}:\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+|DROP \S+) (\S+) (\S+)(\s{1,2})(\s+)IN=(\S+) OUT=((\S+)?) MAC=(\S+)(\s+)SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
+                '(\S\d\d\S)(\S+ \d{2}) (\d{2}:\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+|DROP \S+) (\S+) (\S+)(\s{1,2})(\s+)IN=(\S+) OUT=((\S+)?) MAC=(\S+)(\s+)SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
             ),
             'iptables_flume': re.compile('(\d{4}-\d{2}-\d{2}) (\d{2}:\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+) (\S+) (\S+)(\s{1,2})(\s+)IN=(\S+) OUT=((\S+)?) MAC=(\S+)(\s+)SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
             ),
@@ -318,17 +319,17 @@ class Parser(object):
             m = re.search(fwlog, element)
             if m:
                 yield Row(
-                    date=m.group(1),
-                    time=m.group(2),
-                    source=m.group(3),
-                    action=m.group(7),
-                    srcip=m.group(15),
-                    dstip=m.group(16),
-                    len=int(m.group(17)),
-                    ttl=int(m.group(20)),
-                    proto=m.group(22),
-                    srcport=int(m.group(23)),
-                    dstport=int(m.group(24))
+                    date='2016'+str(list(calendar.month_abbr).index(m.group(1).split()[0]))+m.group(1).split()[1],
+                    time=m.group(3),
+                    source=m.group(4),
+                    action=m.group(8),
+                    srcip=m.group(16),
+                    dstip=m.group(17),
+                    len=int(m.group(18)),
+                    ttl=int(m.group(21)),
+                    proto=m.group(23),
+                    srcport=int(m.group(24)),
+                    dstport=int(m.group(25))
                 )
 
     def parseBash(self, partition):
