@@ -56,7 +56,8 @@ def main():
                 for path in args.path:
                     print 'Ingesting iptables logs for ', (path)
                     log.path = path
-                    log.destPath = path.rsplit('/', 1)[0]
+                    #log.destPath = path.rsplit('/', 1)[0]
+                    log.destPath = '/user/jleaniz/'
                     log.saveLogByDate()
             elif arg == 'proxysg':
                 log.type = 'proxysg'
