@@ -65,7 +65,7 @@ def main():
                     print 'Ingesting Blue Coat ProxySG access logs...'
                     log.path = path
                     #log.destPath = path.rsplit('/', 1)[0]
-                    log.destPath = '/user/jleaniz/'
+                    log.destPath = '/data/srm/dbs/dw_srm/'
                     log.saveLogByDate()
             elif arg == 'bashlog':
                 log.type = 'bashlog'
