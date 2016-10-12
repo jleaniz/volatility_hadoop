@@ -49,7 +49,8 @@ class LogFile(object):
         if self.type is 'iptables':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseIPTablesIter)
             df = parsed_rdd.toDF()
-            df.write.parquet('%s/fw' % (self.destPath), mode='append', partitionBy=('date')).saveAsTable('iptables')
+            #df.write.parquet('%s/fw' % (self.destPath), mode='append', partitionBy=('date'))
+            df.saveAsTable('iptables', path='%s/fw' % (self.destPath), format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'apacheAccessLog':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseApacheAL())
