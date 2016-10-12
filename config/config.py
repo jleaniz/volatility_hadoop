@@ -53,7 +53,7 @@ class Config(object):
         self.spark_streaming_backpressure_enabled = 'false'
         self.spark_dynamicAllocation_enable = 'false'
         self.spark_shuffle_service_enabled = 'false'
-        self.spark_scheduler_allocation_file = '/srv/srm/bdsa-master/config/pool.xml'
+        self.spark_scheduler_allocation_file = 'config/pool.xml'
 
 
     def setSparkConf(self):
