@@ -36,10 +36,10 @@ class Config(object):
         self.spark_driver_memory = '10g'
         self.spark_worker_memory = '6g'
         self.spark_executor_memory = '4g'
-        self.spark_executor_cores = '6'
-        self.spark_yarn_am_cores = "6"
+        self.spark_executor_cores = '2'
+        self.spark_yarn_am_cores = "2"
         self.spark_executor_instances = "10"
-        self.spark_cores_max = '60'
+        self.spark_cores_max = '24'
         self.spark_akka_timeout = '3000'
         self.spark_network_timeout = '3000'
         self.spark_core_connection_ack_wait_timeout = '3000'
