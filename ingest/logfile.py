@@ -23,13 +23,13 @@ logger = logging.getLogger(__name__)
 
 
 class LogFile(object):
-    def __init__(self, path, parser, sc, spark, destPath):
+    def __init__(self, path, parser, sc, sparkSession, destPath):
         self.localHdfs = '/mnt/hdfs'
         self.path = None
         self.parser = parser
         self.type = None
         self.sContext = sc
-        self.sparkSession = spark
+        self.sparkSession = sparkSession
         self.destPath = destPath
 
     def parallelsave(self, localPath):
