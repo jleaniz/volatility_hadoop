@@ -53,6 +53,8 @@ class LogFile(object):
             elif self.type is 'ciscovpn':
                 df.write.saveAsTable('dw_srm.vpn', format='parquet', mode='append', partitionBy='date')
 
+            return
+
         if self.type is 'proxysg':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseBCAccessLogIter)
             df = parsed_rdd.toDF()
