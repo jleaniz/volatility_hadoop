@@ -21,6 +21,7 @@ import ingest.feeds as feeds
 from lib.parser import Parser
 from config import config as conf
 from pyspark import SparkContext
+from pyspark.sql import SparkSession
 
 
 def main():
@@ -42,11 +43,16 @@ def main():
     '''Initialize Spark Context with default config'''
     appConfig = conf.Config()
     sc = SparkContext(conf=appConfig.setSparkConf())
+    spark = SparkSession \
+        .builder \
+        .appName("BDSA v0.1 alpha") \
+        .enableHiveSupport() \
+        .getOrCreate()
 
     ''' LogFile and Parser objects
     Attributes will be defined after parsing "args" '''
     myParser = Parser()
-    log = LogFile(path='', parser=myParser, sc=sc, destPath=None)
+    log = LogFile(path='', parser=myParser, sc=sc, sparkSession=spark, destPath=None)
 
     '''Loop through the cli arguments'''
     if args.ingest:
