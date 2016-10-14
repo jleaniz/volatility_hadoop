@@ -33,7 +33,7 @@ def main():
     cliparser.add_argument('-i', '--ingest', action='append',
                            choices=['c2', 'openphish', 'alienvault_otx', 'proxysg', 'ciscovpn', 'iptables', 'imageinfo',
                                     'bashlog',
-                                    'pslist'],
+                                    'all'],
                            required=False, help='Ingest raw logs into HDFS (saves Parquet files)')
     cliparser.add_argument('-p', '--path', action='append',
                            required=False,
@@ -52,40 +52,41 @@ def main():
     ''' LogFile and Parser objects
     Attributes will be defined after parsing "args" '''
     myParser = Parser()
-    log = LogFile(path='', parser=myParser, sc=sc, sparkSession=spark, destPath=None)
+    log = LogFile(path='', parser=myParser, sc=sc, spark=spark)
 
     '''Loop through the cli arguments'''
     if args.ingest:
         for arg in args.ingest:
+            if arg == 'all':
+                log.type = 'all'
+                for path in args.path:
+                    print 'Ingest logs ... ', (path)
+                    log.path = path
+                    log.saveLogByDate()
             if arg == 'iptables':
                 log.type = 'iptables'
                 for path in args.path:
                     print 'Ingesting iptables logs for ', (path)
                     log.path = path
-                    #log.destPath = path.rsplit('/', 1)[0]
-                    log.destPath = '/user/jleaniz/'
                     log.saveLogByDate()
             elif arg == 'proxysg':
                 log.type = 'proxysg'
                 for path in args.path:
-                    print 'Ingesting Blue Coat ProxySG access logs...'
+                    print 'Ingesting ProxySG logs for ', (path)
                     log.path = path
-                    #log.destPath = path.rsplit('/', 1)[0]
-                    log.destPath = '/data/srm/dbs/dw_srm/'
                     log.saveLogByDate()
             elif arg == 'bashlog':
                 log.type = 'bashlog'
                 for path in args.path:
                     log.path = path
-                    log.destPath = path.rsplit('/', 1)[0]
-                    print 'Ingesting bash logs : %s\n Saving to: %s' % (log.path, log.destPath)
+                    #log.destPath = path.rsplit('/', 1)[0]
+                    print 'Ingesting Bash logs for ', (path)
                     log.saveLogByDate()
             elif arg == 'ciscovpn':
                 log.type = 'ciscovpn'
                 for path in args.path:
                     print 'Ingesting vpn logs...'
                     log.path = path
-                    log.destPath = path.rsplit('/', 1)[0]
                     log.saveLogByDate()
             elif arg == 'alienvault_otx':
                 print 'Updating local AlienVault OTX db...'

@@ -23,16 +23,14 @@ logger = logging.getLogger(__name__)
 
 
 class LogFile(object):
-    def __init__(self, path, parser, sc, spark, destPath):
-        self.localHdfs = '/mnt/hdfs'
+    def __init__(self, path, parser, sc, spark):
         self.path = None
         self.parser = parser
         self.type = None
         self.sContext = sc
         self.sparkSession = spark
-        self.destPath = destPath
 
-    def parallelsave(self, localPath):
+    def parallelsave(self):
 
         rdd = self.sContext.newAPIHadoopFile('%s' %(self.path),
             'org.apache.hadoop.mapreduce.lib.input.TextInputFormat',
@@ -41,11 +39,25 @@ class LogFile(object):
             conf={'mapreduce.input.fileinputformat.input.dir.recursive':'true'}
         )
 
-        #rdd = self.sContext.textFile('%s//*/*/*' % (self.path))
+        if self.type is 'all':
+            parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseAll)
+            df = parsed_rdd.toDF()
+            df = self.sparkSession.createDataFrame(parsed_rdd)
+
+            if self.type is 'proxysg':
+                df.write.saveAsTable('dw_srm.proxy', format='parquet', mode='append', partitionBy='date')
+            elif self.type is 'iptables':
+                df.write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
+            elif self.type is 'bashlog':
+                df.write.saveAsTable('dw_srm.bashlog', format='parquet', mode='append', partitionBy='date')
+            elif self.type is 'ciscovpn':
+                df.write.saveAsTable('dw_srm.vpn', format='parquet', mode='append', partitionBy='date')
+
         if self.type is 'proxysg':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseBCAccessLogIter)
             df = parsed_rdd.toDF()
-            df.write.parquet('%s/proxysgtest' % (self.destPath), mode='append', partitionBy=('date'))
+            df = self.sparkSession.createDataFrame(parsed_rdd)
+            df.write.saveAsTable('dw_srm.proxy', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'iptables':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseIPTablesIter)
@@ -57,18 +69,21 @@ class LogFile(object):
         if self.type is 'apacheAccessLog':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseApacheAL())
             df = parsed_rdd.toDF()
-            df.write.parquet('%s/apache' % (self.destPath), mode='append', partitionBy=('date'))
+            df = self.sparkSession.createDataFrame(parsed_rdd)
+            df.write.saveAsTable('dw_srm.apache', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'bashlog':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseBash)
             df = parsed_rdd.toDF()
             logger.info('Saving DataFrame')
-            df.write.parquet('%s/bashlog' % (self.destPath), mode='append', partitionBy=('date'))
+            df = self.sparkSession.createDataFrame(parsed_rdd)
+            df.write.saveAsTable('dw_srm.bash', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'ciscovpn':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseVPN)
             df = parsed_rdd.toDF()
-            df.write.parquet('%s/ciscovpn' % (self.destPath), mode='append', partitionBy=('date'))
+            df = self.sparkSession.createDataFrame(parsed_rdd)
+            df.write.saveAsTable('dw_srm.vpn', format='parquet', mode='append', partitionBy='date')
 
         print '=================='
         print "Completed task"
@@ -78,5 +93,5 @@ class LogFile(object):
         sqlCtx = SQLContext(self.sContext)
         sqlCtx.setConf('spark.sql.parquet.compression.codec', 'snappy')
         print self.path
-        self.parallelsave(self.path)
+        self.parallelsave()
 
