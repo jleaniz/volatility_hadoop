@@ -62,7 +62,7 @@ def save_proxy(rdd):
     save(rdd, 'proxysg')
 
 def process_fw(time, rdd):
-    output_rdd = rdd.filter(lambda x: 'msr-off-fw' in x).map(parse) \
+    output_rdd = rdd.filter(lambda x: '-onbe-fw01' in x).map(parse) \
         .filter(lambda x: isinstance(x, Row))
     return output_rdd
 
