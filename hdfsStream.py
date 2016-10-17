@@ -66,6 +66,7 @@ def process_fw(time, rdd):
     rdd.first()
     output_rdd = rdd.filter(lambda x: '-fw' in x).map(parse) \
         .filter(lambda x: isinstance(x, Row))
+    print output_rdd.collect()
     return output_rdd
 
 
