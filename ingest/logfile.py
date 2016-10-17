@@ -41,7 +41,7 @@ class LogFile(object):
         )
         '''
         rdd = self.sContext.wholeTextFiles('%s' %(self.path))
-        rdd.cache()
+        #rdd.cache()
 
         '''
         if self.type is 'all':
