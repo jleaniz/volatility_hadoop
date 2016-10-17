@@ -35,7 +35,7 @@ def getSqlContextInstance(sparkContext):
 
 
 def parse(line):
-    if 'msr-off-fw' in line:
+    if '-fw' in line:
         return logParser.parseIPTablesIter(line)
     elif '-net-bc' in line:
         return logParser.parseBCAccessLogIter(line)
@@ -62,7 +62,8 @@ def save_proxy(rdd):
     save(rdd, 'proxysg')
 
 def process_fw(time, rdd):
-    output_rdd = rdd.filter(lambda x: '-onbe-' in x).map(parse) \
+    rdd.first()
+    output_rdd = rdd.filter(lambda x: '-fw' in x).map(parse) \
         .filter(lambda x: isinstance(x, Row))
     return output_rdd
 
