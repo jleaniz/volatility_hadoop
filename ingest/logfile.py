@@ -32,15 +32,14 @@ class LogFile(object):
 
     def parallelsave(self):
 
-        '''
+
         rdd = self.sContext.newAPIHadoopFile('%s' %(self.path),
             'org.apache.hadoop.mapreduce.lib.input.TextInputFormat',
             'org.apache.hadoop.io.LongWritable',
             'org.apache.hadoop.io.Text',
             conf={'mapreduce.input.fileinputformat.input.dir.recursive':'true'}
         )
-        '''
-        rdd = self.sContext.wholeTextFiles('%s' %(self.path))
+
         #rdd.cache()
 
         '''
@@ -69,10 +68,10 @@ class LogFile(object):
 
         if self.type is 'iptables':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseIPTablesIter)
-            df = parsed_rdd.toDF()
-            df.write.parquet('/data/srm/dbs/dw_srm.db/fw', mode='append', partitionBy=('date'))
-            #df = self.sparkSession.createDataFrame(parsed_rdd)
-            #df.write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
+            #df = parsed_rdd.toDF()
+            #df.write.parquet('/data/srm/dbs/dw_srm.db/fw', mode='append', partitionBy=('date'))
+            df = self.sparkSession.createDataFrame(parsed_rdd)
+            df.coalesce(24).write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'apacheAccessLog':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseApacheAL())
