@@ -36,7 +36,7 @@ def getSqlContextInstance(sparkContext):
 
 def parse(line):
     if '-fw' in line:
-        return logParser.parseIPTablesIter(line)
+        return logParser.parseIPTables(line)
     elif '-net-bc' in line:
         return logParser.parseBCAccessLogIter(line)
     else:
@@ -62,13 +62,10 @@ def save_proxy(rdd):
     save(rdd, 'proxysg')
 
 def process_fw(time, rdd):
-    if rdd.isEmpty():
-        logger.warning('PROCESS-FW-Empty RDD. Skipping.')
-    else:
-        output_rdd = rdd.filter(lambda x: '-fw' in x).mapPartitions(parse) \
-            .filter(lambda x: isinstance(x, Row))
-        output_rdd.collect()
-        return output_rdd
+    output_rdd = rdd.filter(lambda x: '-fw' in x).map(parse) \
+        .filter(lambda x: isinstance(x, Row))
+    output_rdd.collect()
+    return output_rdd
 
 
 #https://issues.apache.org/jira/browse/PARQUET-222 - Parquet writer memory allocation
