@@ -36,6 +36,7 @@ def getSqlContextInstance(sparkContext):
 
 def parse(line):
     if '-fw' in line:
+        print line
         return logParser.parseIPTablesIter(line)
     elif '-net-bc' in line:
         return logParser.parseBCAccessLogIter(line)
