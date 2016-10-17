@@ -22,6 +22,7 @@ from pyspark import StorageLevel
 from lib.parser import Parser
 from config import config as conf
 import logging
+import datetime
 
 
 logging.basicConfig(level=logging.WARN)
@@ -84,15 +85,12 @@ def process_proxy(time, rdd):
 if __name__ == '__main__':
     appConfig = conf.Config()
     sc = SparkContext(conf=appConfig.setSparkConf())
+    current_ssc_date = datetime.date.today().strftime("%Y%m%d")
     ssc = StreamingContext(sc, 30)
     logParser = Parser(type='iptables')
 
-    stream = ssc.textFileStream('/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=20161017')
-    #stream.pprint()
-
+    stream = ssc.textFileStream('/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' %(current_ssc_date))
     fwDStream = stream.transform(process_fw)
-    fwDStream.pprint()
     fwDStream.foreachRDD(save_fw)
-
     ssc.start()
     ssc.awaitTermination()
