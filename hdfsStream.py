@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with BDSA.  If not, see <http://www.gnu.org/licenses/>.
 #
-from pyspark.streaming import StreamingContext
+from pyspark.streaming import StreamingContext, StreamingListener
 from pyspark.sql import SQLContext, SparkSession
 from pyspark.sql.types import Row
 from pyspark import SparkContext
@@ -27,6 +27,27 @@ import datetime
 
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
+
+
+class batchInfoCollector(StreamingListener):
+
+    def __init__(self):
+        super(StreamingListener, self).__init__()
+        self.batchInfosCompleted = []
+        self.batchInfosStarted = []
+        self.batchInfosSubmitted = []
+
+    def onBatchSubmitted(self, batchSubmitted):
+        self.batchInfosSubmitted.append(batchSubmitted.batchInfo())
+
+
+    def onBatchStarted(self, batchStarted):
+        self.batchInfosStarted.append(batchStarted.batchInfo())
+
+
+    def onBatchCompleted(self, batchCompleted):
+        self.batchInfosCompleted.append(batchCompleted.batchInfo())
+        print self.batchInfosCompleted
 
 
 def getSqlContextInstance():
@@ -69,7 +90,6 @@ def process_fw(time, rdd):
         output_rdd = rdd.filter(lambda x: '-fw' in x) \
             .map(parse) \
             .filter(lambda x: isinstance(x, Row))
-        print output_rdd.first()
         return output_rdd
 
 
@@ -84,13 +104,21 @@ def process_proxy(time, rdd):
 '''Main function'''
 if __name__ == '__main__':
     appConfig = conf.Config()
-    sc = SparkContext(conf=appConfig.setSparkConf())
     current_ssc_date = datetime.date.today().strftime("%Y%m%d")
+    sc = SparkContext(conf=appConfig.setSparkConf())
     ssc = StreamingContext(sc, 30)
-    logParser = Parser(type='iptables')
 
-    stream = ssc.textFileStream('/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' %(current_ssc_date))
+    collector = batchInfoCollector()
+    ssc.addStreamingListener(collector)
+    #batchInfosCompleted = collector.batchInfosCompleted
+    #for info in batchInfosCompleted:
+        #print info
+
+    logParser = Parser(type='iptables')
+    stream = ssc.textFileStream('/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % current_ssc_date )
     fwDStream = stream.transform(process_fw)
     fwDStream.foreachRDD(save_fw)
     ssc.start()
     ssc.awaitTermination()
+
+    # At this point, ssc was stopped
