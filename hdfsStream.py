@@ -83,7 +83,7 @@ def process_proxy(time, rdd):
 if __name__ == '__main__':
     appConfig = conf.Config()
     sc = SparkContext(conf=appConfig.setSparkConf())
-    ssc = StreamingContext(sc, 10)
+    ssc = StreamingContext(sc, 30)
     logParser = Parser(type='iptables')
 
     stream = ssc.textFileStream('/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=20161017')
