@@ -47,7 +47,7 @@ class batchInfoCollector(StreamingListener):
 
     def onBatchCompleted(self, batchCompleted):
         self.batchInfosCompleted.append(batchCompleted.batchInfo())
-        print self.batchInfosCompleted
+        logger.warning(self.batchInfosCompleted)
 
 
 def getSqlContextInstance():
