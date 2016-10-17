@@ -89,7 +89,7 @@ if __name__ == '__main__':
     logParser = Parser(type='iptables')
 
     stream = ssc.textFileStream('/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=20161017')
-    stream.pprint()
+    #stream.pprint()
 
     fwDStream = stream.transform(process_fw)
     fwDStream.foreachRDD(save_fw)
