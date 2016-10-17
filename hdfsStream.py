@@ -66,7 +66,7 @@ def process_fw(time, rdd):
     if rdd.isEmpty():
         logger.warning('Empty RDD. Skipping.')
     else:
-        rdd.first()
+        print rdd.first()
         output_rdd = rdd.filter(lambda x: '-fw' in x).map(parse) \
             .filter(lambda x: isinstance(x, Row))
         output_rdd.collect()
