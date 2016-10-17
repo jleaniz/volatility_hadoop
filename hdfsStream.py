@@ -63,11 +63,11 @@ def save_proxy(rdd):
 
 def process_fw(time, rdd):
     if rdd.isEmpty():
-        logger.warning('Empty RDD. Skipping.')
+        logger.warning('PROCESS-FW-Empty RDD. Skipping.')
     else:
         output_rdd = rdd.filter(lambda x: '-fw' in x).mapPartitions(parse) \
             .filter(lambda x: isinstance(x, Row))
-        print output_rdd.collect()
+        output_rdd.collect()
         return output_rdd
 
 
