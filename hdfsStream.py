@@ -63,8 +63,8 @@ def save_proxy(rdd):
 
 def process_fw(time, rdd):
     if not rdd.isEmpty():
-        output_rdd = rdd.filter(lambda x: '-fw' in x)
-            #.map(parse) \
+        output_rdd = rdd.filter(lambda x: '-fw' in x) \
+            .map(parse) \
             #.filter(lambda x: isinstance(x, Row))
         print output_rdd.first()
         return output_rdd

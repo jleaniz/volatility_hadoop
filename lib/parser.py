@@ -352,7 +352,7 @@ class Parser(object):
         fwlog = self.patterns['iptables']
         m = re.search(fwlog, input)
         if m:
-            yield Row(
+            return Row(
                 date=str(datetime.datetime.now().year) + str(list(calendar.month_abbr).index(m.group(2).split()[0])) + m.group(2).split()[1],
                 time=m.group(3),
                 source=m.group(4),
