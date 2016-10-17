@@ -62,8 +62,7 @@ def save_proxy(rdd):
     save(rdd, 'proxysg')
 
 def process_fw(time, rdd):
-    output_rdd = rdd.map(lambda x: str(time) + ' ' + x[0]['host'] + ' ' + x[1]) \
-        .filter(lambda x: 'msr-off-fw' in x).map(parse) \
+    output_rdd = rdd.filter(lambda x: 'msr-off-fw' in x).map(parse) \
         .filter(lambda x: isinstance(x, Row))
     return output_rdd
 
@@ -84,6 +83,7 @@ if __name__ == '__main__':
     logParser = Parser(type='iptables')
 
     stream = ssc.textFileStream('/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=20161017')
+    stream.pprint()
 
     fwDStream = stream.transform(process_fw)
     fwDStream.foreachRDD(save_fw)
