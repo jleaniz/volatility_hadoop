@@ -32,12 +32,16 @@ class LogFile(object):
 
     def parallelsave(self):
 
+        '''
         rdd = self.sContext.newAPIHadoopFile('%s' %(self.path),
             'org.apache.hadoop.mapreduce.lib.input.TextInputFormat',
             'org.apache.hadoop.io.LongWritable',
             'org.apache.hadoop.io.Text',
             conf={'mapreduce.input.fileinputformat.input.dir.recursive':'true'}
         )
+        '''
+        rdd = self.sContext.wholeTextFiles('%s' %(self.path))
+        rdd.cache()
 
         if self.type is 'all':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseAll)
