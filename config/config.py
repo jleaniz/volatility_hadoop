@@ -34,11 +34,11 @@ class Config(object):
         self.spark_driver_cores = '4'
         self.spark_driver_maxResultSize = '512m'
         self.spark_driver_memory = '10g'
-        self.spark_worker_memory = '6g'
-        self.spark_executor_memory = '4g'
-        self.spark_executor_cores = '2'
-        self.spark_yarn_am_cores = "2"
-        self.spark_executor_instances = "10"
+        self.spark_worker_memory = '4g'
+        self.spark_executor_memory = '12g'
+        self.spark_executor_cores = '4'
+        self.spark_yarn_am_cores = "4"
+        #self.spark_executor_instances = "10"
         self.spark_cores_max = '24'
         self.spark_akka_timeout = '3000'
         self.spark_network_timeout = '3000'
@@ -84,9 +84,9 @@ class Config(object):
                 .set("spark.scheduler.allocation.file", self.spark_scheduler_allocation_file)
                 .set('spark.streaming.backpressure.enabled', self.spark_streaming_backpressure_enabled)
                 #.set('spark.streaming.blockInterval', '0.2s')
-                .set('spark.executor.instances', self.spark_executor_instances)
+                #.set('spark.executor.instances', self.spark_executor_instances)
                 .set('spark.yarn.am.cores', self.spark_yarn_am_cores)
-                .set('spark.yarn.am.memory', '10g')
+                .set('spark.yarn.am.memory', '12g')
                 .set('spark.yarn.executor.memoryOverhead', '1024')
                 )
 
