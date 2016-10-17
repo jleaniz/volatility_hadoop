@@ -36,7 +36,6 @@ def getSqlContextInstance(sparkContext):
 
 def parse(line):
     if '-fw' in line:
-        print line
         return logParser.parseIPTablesIter(line)
     elif '-net-bc' in line:
         return logParser.parseBCAccessLogIter(line)
@@ -66,8 +65,7 @@ def process_fw(time, rdd):
     if rdd.isEmpty():
         logger.warning('Empty RDD. Skipping.')
     else:
-        #print rdd.first()
-        output_rdd = rdd.filter(lambda x: '-fw' in x).map(parse) \
+        output_rdd = rdd.filter(lambda x: '-fw' in x).mapPartitions(parse) \
             .filter(lambda x: isinstance(x, Row))
         print output_rdd.collect()
         return output_rdd
@@ -92,6 +90,7 @@ if __name__ == '__main__':
     #stream.pprint()
 
     fwDStream = stream.transform(process_fw)
+    fwDStream.pprint()
     fwDStream.foreachRDD(save_fw)
 
     ssc.start()

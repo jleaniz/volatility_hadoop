@@ -347,6 +347,25 @@ class Parser(object):
                     dstport=int(m.group(25))
                 )
 
+    def parseIPTables(self, input):
+
+        fwlog = self.patterns['iptables']
+        m = re.search(fwlog, input)
+        if m:
+            yield Row(
+                date=str(datetime.datetime.now().year) + str(list(calendar.month_abbr).index(m.group(2).split()[0])) + m.group(2).split()[1],
+                time=m.group(3),
+                source=m.group(4),
+                action=m.group(8),
+                srcip=m.group(16),
+                dstip=m.group(17),
+                len=int(m.group(18)),
+                ttl=int(m.group(21)),
+                proto=m.group(23),
+                srcport=int(m.group(24)),
+                dstport=int(m.group(25))
+            )
+
     def parseBash(self, partition):
         """
         Parse bash logs
