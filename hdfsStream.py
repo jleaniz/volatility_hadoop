@@ -15,7 +15,7 @@
 # along with BDSA.  If not, see <http://www.gnu.org/licenses/>.
 #
 from pyspark.streaming import StreamingContext
-from pyspark.sql import SQLContext
+from pyspark.sql import SQLContext, SparkSession
 from pyspark.sql.types import Row
 from pyspark import SparkContext
 from pyspark import StorageLevel
@@ -28,10 +28,14 @@ logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
 
 
-def getSqlContextInstance(sparkContext):
-    if ('sqlContextSingletonInstance' not in globals()):
-        globals()['sqlContextSingletonInstance'] = SQLContext(sparkContext)
-    return globals()['sqlContextSingletonInstance']
+def getSqlContextInstance():
+    if ('sparkSession' not in globals()):
+        globals()['sparkSession'] = SparkSession \
+        .builder \
+        .appName("BDSA v0.1 alpha") \
+        .enableHiveSupport() \
+        .getOrCreate()
+    return globals()['sparkSession']
 
 
 def parse(line):
@@ -44,12 +48,12 @@ def parse(line):
 
 
 def save(rdd, type):
-    sqlContext = getSqlContextInstance(rdd.context)
-    sqlContext.setConf('spark.sql.parquet.compression.codec', 'snappy')
+    spark = getSqlContextInstance()
+    spark.setConf('spark.sql.parquet.compression.codec', 'snappy')
     if rdd.isEmpty():
         logger.warning('Empty RDD. Skipping.')
     else:
-        df = sqlContext.createDataFrame(rdd)
+        df = spark.createDataFrame(rdd)
         logger.warning("Saving DataFrame - %s." % (type))
         #df.coalesce(1).write.parquet('/user/jleaniz/%s' % (type), mode="append", partitionBy=('date'))
         df.coalesce(1).write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
