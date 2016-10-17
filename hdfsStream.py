@@ -62,11 +62,12 @@ def save_proxy(rdd):
     save(rdd, 'proxysg')
 
 def process_fw(time, rdd):
-    output_rdd = rdd.filter(lambda x: '-fw' in x)\
-        .map(parse) \
-        .filter(lambda x: isinstance(x, Row))
-    print output_rdd.first()
-    return output_rdd
+    if not rdd.isEmpty():
+        output_rdd = rdd.filter(lambda x: '-fw' in x)\
+            .map(parse) \
+            .filter(lambda x: isinstance(x, Row))
+        print output_rdd.first()
+        return output_rdd
 
 
 #https://issues.apache.org/jira/browse/PARQUET-222 - Parquet writer memory allocation
