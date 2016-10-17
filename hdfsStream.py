@@ -54,8 +54,7 @@ def save(rdd, type):
     else:
         df = spark.createDataFrame(rdd)
         logger.warning("Saving DataFrame - %s." % (type))
-        #df.coalesce(1).write.parquet('/user/jleaniz/%s' % (type), mode="append", partitionBy=('date'))
-        df.coalesce(1).write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
+        df.write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
 
 def save_fw(rdd):
     save(rdd, 'fw')
@@ -68,7 +67,7 @@ def process_fw(time, rdd):
     if not rdd.isEmpty():
         output_rdd = rdd.filter(lambda x: '-fw' in x) \
             .map(parse) \
-            #.filter(lambda x: isinstance(x, Row))
+            .filter(lambda x: isinstance(x, Row))
         print output_rdd.first()
         return output_rdd
 
