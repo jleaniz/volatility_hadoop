@@ -40,26 +40,6 @@ class LogFile(object):
             conf={'mapreduce.input.fileinputformat.input.dir.recursive':'true'}
         )
 
-        #rdd.cache()
-
-        '''
-        if self.type is 'all':
-            parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseAll)
-            df = parsed_rdd.toDF()
-            df = self.sparkSession.createDataFrame(parsed_rdd)
-
-            if self.type is 'proxysg':
-                df.write.saveAsTable('dw_srm.proxy', format='parquet', mode='append', partitionBy='date')
-            elif self.type is 'iptables':
-                df.write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
-            elif self.type is 'bashlog':
-                df.write.saveAsTable('dw_srm.bashlog', format='parquet', mode='append', partitionBy='date')
-            elif self.type is 'ciscovpn':
-                df.write.saveAsTable('dw_srm.vpn', format='parquet', mode='append', partitionBy='date')
-
-            return
-        '''
-
         if self.type is 'proxysg':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseBCAccessLogIter)
             df = parsed_rdd.toDF()

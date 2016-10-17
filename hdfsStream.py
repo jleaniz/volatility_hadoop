@@ -15,14 +15,12 @@
 # along with BDSA.  If not, see <http://www.gnu.org/licenses/>.
 #
 from pyspark.streaming import StreamingContext
-from pyspark.streaming.flume import FlumeUtils
 from pyspark.sql import SQLContext
 from pyspark.sql.types import Row
 from pyspark import SparkContext
 from pyspark import StorageLevel
 from lib.parser import Parser
 from config import config as conf
-from tempfile import NamedTemporaryFile
 import logging
 
 
@@ -38,9 +36,9 @@ def getSqlContextInstance(sparkContext):
 
 def parse(line):
     if 'msr-off-fw' in line:
-        return logParser.parseIPTables(line)
+        return logParser.parseIPTablesIter(line)
     elif '-net-bc' in line:
-        return logParser.parseBCAccessLog(line)
+        return logParser.parseBCAccessLogIter(line)
     else:
         return line
 
@@ -53,8 +51,8 @@ def save(rdd, type):
     else:
         df = sqlContext.createDataFrame(rdd)
         logger.warning("Saving DataFrame - %s." % (type))
-        df.coalesce(1).write.parquet('/user/jleaniz/%s' % (type), mode="append", partitionBy=('date'))
-
+        #df.coalesce(1).write.parquet('/user/jleaniz/%s' % (type), mode="append", partitionBy=('date'))
+        df.coalesce(1).write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
 
 def save_fw(rdd):
     save(rdd, 'fw')
@@ -85,11 +83,10 @@ if __name__ == '__main__':
     ssc = StreamingContext(sc, 600)
     logParser = Parser(type='iptables')
 
-    stream =   streamingContext.textFileStream(dataDirectory)
+    stream = ssc.textFileStream('/data/datalake/dbs/dl_raw_infra.db/syslog_log')
 
-
-    #fwDStream = flumeStream.transform(process_fw)
-    #fwDStream.foreachRDD(save_fw)
+    fwDStream = stream.transform(process_fw)
+    fwDStream.foreachRDD(save_fw)
 
     ssc.start()
     ssc.awaitTermination()
