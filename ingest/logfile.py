@@ -43,6 +43,7 @@ class LogFile(object):
         rdd = self.sContext.wholeTextFiles('%s' %(self.path))
         rdd.cache()
 
+        '''
         if self.type is 'all':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseAll)
             df = parsed_rdd.toDF()
@@ -58,6 +59,7 @@ class LogFile(object):
                 df.write.saveAsTable('dw_srm.vpn', format='parquet', mode='append', partitionBy='date')
 
             return
+        '''
 
         if self.type is 'proxysg':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseBCAccessLogIter)
@@ -67,10 +69,10 @@ class LogFile(object):
 
         if self.type is 'iptables':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseIPTablesIter)
-            #df = parsed_rdd.toDF()
-            #df.write.parquet('%s/fw' % (self.destPath), mode='append', partitionBy=('date'))
-            df = self.sparkSession.createDataFrame(parsed_rdd)
-            df.write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
+            df = parsed_rdd.toDF()
+            df.write.parquet('/data/srm/dbs/dw_srm.db/fw', mode='append', partitionBy=('date'))
+            #df = self.sparkSession.createDataFrame(parsed_rdd)
+            #df.write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'apacheAccessLog':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseApacheAL())
