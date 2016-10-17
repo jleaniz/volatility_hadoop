@@ -49,7 +49,6 @@ def parse(line):
 
 def save(rdd, type):
     spark = getSqlContextInstance()
-    spark.setConf('spark.sql.parquet.compression.codec', 'snappy')
     if rdd.isEmpty():
         logger.warning('Empty RDD. Skipping.')
     else:
