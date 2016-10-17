@@ -70,7 +70,7 @@ class LogFile(object):
             #df = parsed_rdd.toDF()
             #df.write.parquet('%s/fw' % (self.destPath), mode='append', partitionBy=('date'))
             df = self.sparkSession.createDataFrame(parsed_rdd)
-            df.coalesce(128).write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
+            df.write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'apacheAccessLog':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseApacheAL())
