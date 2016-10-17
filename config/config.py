@@ -34,7 +34,7 @@ class Config(object):
         self.spark_driver_cores = '4'
         self.spark_driver_maxResultSize = '512m'
         self.spark_driver_memory = '10g'
-        self.spark_worker_memory = '4g'
+        self.spark_worker_memory = '12g'
         self.spark_executor_memory = '12g'
         self.spark_executor_cores = '4'
         self.spark_yarn_am_cores = "4"
