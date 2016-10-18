@@ -24,7 +24,7 @@ import logging
 import datetime
 
 logging.basicConfig(level=logging.WARN)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('BDSA HDFS Streaming')
 global last_updated
 last_updated = datetime.datetime.today()
 
