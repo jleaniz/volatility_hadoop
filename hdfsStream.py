@@ -50,7 +50,7 @@ class batchInfoCollector(StreamingListener):
             .endTime() / 1000)
         logger.warning('batchDate: ' + str(batchDate))
         if batchDate - last_updated > datetime.timedelta(minutes=1):
-            logger.warning('Date has changed, Stopping StreamingContext...')
+            logger.warning('Date has changed, Stopping StreamingContext.')
             StreamingContext.getActive().stop(stopSparkContext=False, stopGraceFully=True)
 
 
@@ -119,6 +119,7 @@ if __name__ == '__main__':
     while True:
         if StreamingContext.getActive() is None:
             # Create streaming Context and DStreams
+            logger.warning('Starting streaming context.')
             ssc = StreamingContext(sc, 30)
             ssc.addStreamingListener(collector)
             last_updated = datetime.datetime.today()
