@@ -26,7 +26,6 @@ import datetime
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger('BDSA HDFS Streaming')
 global last_updated
-last_updated = datetime.datetime.today()
 
 
 class batchInfoCollector(StreamingListener):
@@ -101,10 +100,11 @@ def process_fw(time, rdd):
 
 # https://issues.apache.org/jira/browse/PARQUET-222 - Parquet writer memory allocation
 def process_proxy(time, rdd):
-    output_rdd = rdd.filter(lambda x: '-net-bc' in x) \
-        .map(parse) \
-        .filter(lambda x: isinstance(x, Row))
-    return output_rdd
+    if not rdd.isEmpty():
+        output_rdd = rdd.filter(lambda x: '-net-bc' in x) \
+            .map(parse) \
+            .filter(lambda x: isinstance(x, Row))
+        return output_rdd
 
 
 '''Main function'''
