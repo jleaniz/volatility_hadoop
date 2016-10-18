@@ -25,6 +25,7 @@ import datetime
 
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
+global last_updated
 last_updated = datetime.datetime.today()
 
 
@@ -108,7 +109,6 @@ def process_proxy(time, rdd):
 if __name__ == '__main__':
     appConfig = conf.Config()
     logParser = Parser(type='iptables')
-    global last_updated
 
     # Create SparkContext, StreamingContext and StreamingListener
     sc = SparkContext(conf=appConfig.setSparkConf())
