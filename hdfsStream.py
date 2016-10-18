@@ -51,7 +51,7 @@ class batchInfoCollector(StreamingListener):
         logger.warning('batchDate: ' + str(batchDate))
         if batchDate - last_updated > datetime.timedelta(minutes=1):
             logger.warning('Date has changed, restarting StreamingContext...')
-            StreamingContext.getActive().stop(stopSparkContext=False)
+            StreamingContext.getActive().stop(stopSparkContext=False, stopGraceFully=True)
 
 
 def getSqlContextInstance():
