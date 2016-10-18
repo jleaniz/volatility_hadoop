@@ -24,7 +24,7 @@ class Config(object):
     and Spark
     '''
 
-    def __init__(self, yarn_cores, cores_max):
+    def __init__(self, yarn_cores, cores_max, instances):
         '''
         Init function with default attributes
         :return:
@@ -35,10 +35,10 @@ class Config(object):
         self.spark_driver_maxResultSize = '512m'
         self.spark_driver_memory = '10g'
         self.spark_worker_memory = '12g'
-        self.spark_executor_memory = '12g'
+        self.spark_executor_memory = '6g'
         self.spark_executor_cores = '4'
         self.spark_yarn_am_cores = yarn_cores
-        self.spark_executor_instances = "12"
+        self.spark_executor_instances = instances
         self.spark_cores_max = cores_max
         self.spark_network_timeout = '3000'
         self.spark_core_connection_ack_wait_timeout = '3000'

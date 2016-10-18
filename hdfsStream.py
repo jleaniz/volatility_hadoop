@@ -110,7 +110,7 @@ def process_proxy(time, rdd):
 
 '''Main function'''
 if __name__ == '__main__':
-    appConfig = conf.Config(yarn_cores=2, cores_max=8)
+    appConfig = conf.Config(yarn_cores=2, cores_max=8, instances=4)
     logParser = Parser()
 
     # Create SparkContext and StreamingListener
