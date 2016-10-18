@@ -47,7 +47,7 @@ class batchInfoCollector(StreamingListener):
     def onBatchCompleted(self, batchCompleted):
         self.batchInfosCompleted.append(batchCompleted.batchInfo())
         batchDate = datetime.datetime.fromtimestamp(
-            self.batchInfosCompleted[0].outputOperationInfos()[0].endTime()) \
+            self.batchInfosCompleted[0].outputOperationInfos()[0].endTime()/1000) \
             .strftime("%Y%m%d")
         logger.warning(batchDate)
         if batchDate != current_ssc_date:
