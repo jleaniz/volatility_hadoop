@@ -24,7 +24,7 @@ class Config(object):
     and Spark
     '''
 
-    def __init__(self, yarn_cores, exec_cores, cores_max, instances):
+    def __init__(self, yarn_cores, exec_cores, cores_max, instances, queue):
         '''
         Init function with default attributes
         :return:
@@ -53,6 +53,7 @@ class Config(object):
         self.spark_dynamicAllocation_enable = 'false'
         self.spark_shuffle_service_enabled = 'false'
         self.spark_scheduler_allocation_file = 'pool.xml'
+        self.spark_yarn_queue = queue
 
 
     def setSparkConf(self):
@@ -86,6 +87,7 @@ class Config(object):
                 .set('spark.yarn.am.cores', self.spark_yarn_am_cores)
                 .set('spark.yarn.am.memory', '4g')
                 .set('spark.yarn.executor.memoryOverhead', '1024')
+                .set('spark.yarn.queue', self.spark_yarn_queue)
                 )
 
         return conf
