@@ -101,9 +101,9 @@ def process_fw(time, rdd):
 # https://issues.apache.org/jira/browse/PARQUET-222 - Parquet writer memory allocation
 def process_proxy(time, rdd):
     if not rdd.isEmpty():
-        output_rdd = rdd.filter(lambda x: '-net-bc' in x)
-            #.map(parse) \
-            #.filter(lambda x: isinstance(x, Row))
+        output_rdd = rdd.filter(lambda x: '-net-bc' in x) \
+            .map(parse) \
+            .filter(lambda x: isinstance(x, Row))
         print output_rdd.collect()
         return output_rdd
 
