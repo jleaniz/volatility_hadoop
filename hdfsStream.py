@@ -50,6 +50,7 @@ class batchInfoCollector(StreamingListener):
         logger.warning('batchDate: ' + str(batchDate))
         if batchDate - last_updated > datetime.timedelta(minutes=1):
             logger.warning('Date has changed, Stopping StreamingContext.')
+            del self.batchInfosCompleted[:]
             StreamingContext.getActive().stop(stopSparkContext=False, stopGraceFully=True)
 
 
@@ -78,8 +79,8 @@ def save(rdd, type):
         logger.warning('Empty RDD. Skipping.')
     else:
         df = spark.createDataFrame(rdd)
-        logger.warning("Saving DataFrame - %s." % (type))
-        df.write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
+        logger.warning("Saving DataFrame - %s." % type)
+        df.write.saveAsTable('dw_srm.%s' % type, format='parquet', mode='append', partitionBy='date')
 
 
 def save_fw(rdd):
