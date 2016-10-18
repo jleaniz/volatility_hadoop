@@ -48,7 +48,7 @@ class batchInfoCollector(StreamingListener):
             .outputOperationInfos()[0]
             .endTime() / 1000)
         logger.warning('batchDate: ' + str(batchDate))
-        if batchDate - last_updated > datetime.timedelta(minutes=1):
+        if batchDate - last_updated > datetime.timedelta(days=1):
             logger.warning('Date has changed, Stopping StreamingContext.')
             del self.batchInfosCompleted[:]
             StreamingContext.getActive().stop(stopSparkContext=False, stopGraceFully=True)
@@ -129,9 +129,9 @@ if __name__ == '__main__':
             stream = ssc.textFileStream(
                 '/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
 
-            #fwDStream = stream.transform(process_fw)
+            fwDStream = stream.transform(process_fw)
             proxyStream = stream.transform(process_proxy)
-            #fwDStream.foreachRDD(save_fw)
+            fwDStream.foreachRDD(save_fw)
             proxyStream.foreachRDD(save_proxy)
 
             # Start Streaming Context and wait for termination
