@@ -101,6 +101,7 @@ def process_fw(time, rdd):
 # https://issues.apache.org/jira/browse/PARQUET-222 - Parquet writer memory allocation
 def process_proxy(time, rdd):
     if not rdd.isEmpty():
+        print rdd.first()
         output_rdd = rdd.filter(lambda x: '-net-bc' in x) \
             .map(parse) \
             .filter(lambda x: isinstance(x, Row))
@@ -127,9 +128,9 @@ if __name__ == '__main__':
             stream = ssc.textFileStream(
                 '/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
 
-            fwDStream = stream.transform(process_fw)
+            #fwDStream = stream.transform(process_fw)
             proxyStream = stream.transform(process_proxy)
-            fwDStream.foreachRDD(save_fw)
+            #fwDStream.foreachRDD(save_fw)
             proxyStream.foreachRDD(save_proxy)
 
             # Start Streaming Context and wait for termination
