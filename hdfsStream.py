@@ -49,7 +49,7 @@ class batchInfoCollector(StreamingListener):
             .outputOperationInfos()[0]
             .endTime() / 1000)
         logger.warning('batchDate: ', batchDate)
-        if last_updated - batchDate > datetime.timedelta(minutes=1):
+        if batchDate - last_updated > datetime.timedelta(minutes=1):
             logger.warning('Date has changed, restarting StreamingContext...')
             StreamingContext.getActive().stop(stopSparkContext=False)
 
