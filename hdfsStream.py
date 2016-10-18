@@ -18,7 +18,6 @@ from pyspark.streaming import StreamingContext, StreamingListener
 from pyspark.sql import SQLContext, SparkSession
 from pyspark.sql.types import Row
 from pyspark import SparkContext
-from pyspark import StorageLevel
 from lib.parser import Parser
 from config import config as conf
 import logging
@@ -27,7 +26,7 @@ import datetime
 
 logging.basicConfig(level=logging.WARN)
 logger = logging.getLogger(__name__)
-
+current_ssc_date = datetime.date.today().strftime("%Y%m%d")
 
 class batchInfoCollector(StreamingListener):
 
@@ -47,7 +46,13 @@ class batchInfoCollector(StreamingListener):
 
     def onBatchCompleted(self, batchCompleted):
         self.batchInfosCompleted.append(batchCompleted.batchInfo())
-        logger.warning(self.batchInfosCompleted[0].outputOperationInfos()[0].endTime())
+        batchDate = datetime.datetime.fromtimestamp(
+            self.batchInfosCompleted[0].outputOperationInfos()[0].endTime() \
+            .strftime("%Y%m%d"))
+        logger.warning(batchDate)
+        if batchDate != current_ssc_date:
+            logger.warning('Date has changed, restarting StreamingContext...')
+            StreamingContext.getActive().stop(stopSparkContext=False)
 
 
 def getSqlContextInstance():
@@ -104,21 +109,22 @@ def process_proxy(time, rdd):
 '''Main function'''
 if __name__ == '__main__':
     appConfig = conf.Config()
-    current_ssc_date = datetime.date.today().strftime("%Y%m%d")
+    logParser = Parser(type='iptables')
+    global current_ssc_date
+
+    # Create SparkContext, StreamingContext and StreamingListener
     sc = SparkContext(conf=appConfig.setSparkConf())
     ssc = StreamingContext(sc, 30)
-
     collector = batchInfoCollector()
     ssc.addStreamingListener(collector)
-    #batchInfosCompleted = collector.batchInfosCompleted
-    #for info in batchInfosCompleted:
-        #print info
 
-    logParser = Parser(type='iptables')
-    stream = ssc.textFileStream('/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % current_ssc_date )
-    fwDStream = stream.transform(process_fw)
-    fwDStream.foreachRDD(save_fw)
-    ssc.start()
-    ssc.awaitTermination()
+    while True:
+        if StreamingContext.getActive() is None:
+            # Create a DStream and start the StreamingContext
+            current_ssc_date = datetime.date.today().strftime("%Y%m%d")
+            stream = ssc.textFileStream('/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % current_ssc_date )
+            fwDStream = stream.transform(process_fw)
+            fwDStream.foreachRDD(save_fw)
+            ssc.start()
+            ssc.awaitTermination()
 
-    # At this point, ssc was stopped
