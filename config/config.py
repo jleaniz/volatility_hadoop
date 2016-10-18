@@ -52,7 +52,7 @@ class Config(object):
         self.spark_streaming_backpressure_enabled = 'true'
         self.spark_dynamicAllocation_enable = 'false'
         self.spark_shuffle_service_enabled = 'false'
-        self.spark_scheduler_allocation_file = 'hdfs:///user/jleaniz/pool.xml'
+        self.spark_scheduler_allocation_file = 'pool.xml'
 
 
     def setSparkConf(self):
