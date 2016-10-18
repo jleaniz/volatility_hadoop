@@ -95,7 +95,7 @@ def process_fw(time, rdd):
     if not rdd.isEmpty():
         output_rdd = rdd.filter(lambda x: '-fw' in x) \
             .map(parse) \
-            .filter(lambda x: isinstance(x, Row)).repartition(4)
+            .filter(lambda x: isinstance(x, Row)).repartition(2)
         return output_rdd
 
 
@@ -104,13 +104,13 @@ def process_proxy(time, rdd):
     if not rdd.isEmpty():
         output_rdd = rdd.filter(lambda x: '-net-bc' in x) \
             .map(parse) \
-            .filter(lambda x: isinstance(x, Row)).repartition(4)
+            .filter(lambda x: isinstance(x, Row)).repartition(2)
         return output_rdd
 
 
 '''Main function'''
 if __name__ == '__main__':
-    appConfig = conf.Config(exec_cores=2, yarn_cores=8, cores_max=8, instances=4)
+    appConfig = conf.Config(exec_cores=4, yarn_cores=8, cores_max=8, instances=2)
     logParser = Parser()
 
     # Create SparkContext and StreamingListener
