@@ -112,13 +112,13 @@ if __name__ == '__main__':
     appConfig = conf.Config()
     logParser = Parser(type='iptables')
 
-    # Create SparkContext, StreamingContext and StreamingListener
+    # Create SparkContext and StreamingListener
     sc = SparkContext(conf=appConfig.setSparkConf())
     collector = batchInfoCollector()
 
     while True:
         if StreamingContext.getActive() is None:
-            # Create a DStream and start the StreamingContext
+            # Create streaming Context and DStreams
             ssc = StreamingContext(sc, 30)
             ssc.addStreamingListener(collector)
             last_updated = datetime.datetime.today()
@@ -131,5 +131,6 @@ if __name__ == '__main__':
             fwDStream.foreachRDD(save_fw)
             proxyStream.foreachRDD(save_proxy)
 
+            # Start Streaming Context and wait for termination
             ssc.start()
             ssc.awaitTermination()
