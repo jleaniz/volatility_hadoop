@@ -29,9 +29,9 @@ class Config(object):
         Init function with default attributes
         :return:
         '''
-        self.master = ''
-        self.appName = 'BDSA 0.1 alpha'
-        self.spark_driver_cores = '4'
+        self.master = 'yarn'
+        self.appName = 'BDSA 0.1 beta'
+        self.spark_driver_cores = '8'
         self.spark_driver_maxResultSize = '512m'
         self.spark_driver_memory = '10g'
         self.spark_worker_memory = '12g'
@@ -40,7 +40,6 @@ class Config(object):
         self.spark_yarn_am_cores = "4"
         self.spark_executor_instances = "12"
         self.spark_cores_max = '24'
-        self.spark_akka_timeout = '3000'
         self.spark_network_timeout = '3000'
         self.spark_core_connection_ack_wait_timeout = '3000'
         self.spark_io_compression_codec = 'snappy'
@@ -50,7 +49,7 @@ class Config(object):
         self.spark_sql_codegen = 'true'
         self.spark_sql_planner_externalSort = 'true'
         self.spark_scheduler_mode = "FAIR"
-        self.spark_streaming_backpressure_enabled = 'false'
+        self.spark_streaming_backpressure_enabled = 'true'
         self.spark_dynamicAllocation_enable = 'false'
         self.spark_shuffle_service_enabled = 'false'
         self.spark_scheduler_allocation_file = 'config/pool.xml'
@@ -71,7 +70,6 @@ class Config(object):
                 .set("spark.executor.memory", self.spark_executor_memory)
                 .set("spark.executor.cores", self.spark_executor_cores)
                 .set("spark.cores.max", self.spark_cores_max)
-                .set("spark.akka.timeout", self.spark_akka_timeout)
                 .set("spark.network.timeout", self.spark_network_timeout)
                 .set("spark.core.connection.ack.wait.timeout", self.spark_core_connection_ack_wait_timeout)
                 .set("spark.serializer", self.spark_serializer)
