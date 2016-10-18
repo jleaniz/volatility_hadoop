@@ -101,7 +101,7 @@ def process_fw(time, rdd):
 def process_proxy(time, rdd):
     output_rdd = rdd.filter(lambda x: '-net-bc' in x) \
         .map(parse) \
-        .filter(lambda x: isinstance(x, Row)).repartition(10)
+        .filter(lambda x: isinstance(x, Row))
     return output_rdd
 
 
