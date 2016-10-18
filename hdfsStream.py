@@ -95,7 +95,7 @@ def process_fw(time, rdd):
     if not rdd.isEmpty():
         output_rdd = rdd.filter(lambda x: '-fw' in x) \
             .map(parse) \
-            .filter(lambda x: isinstance(x, Row))
+            .filter(lambda x: isinstance(x, Row)).repartition(4)
         return output_rdd
 
 
@@ -104,14 +104,14 @@ def process_proxy(time, rdd):
     if not rdd.isEmpty():
         output_rdd = rdd.filter(lambda x: '-net-bc' in x) \
             .map(parse) \
-            .filter(lambda x: isinstance(x, Row))
+            .filter(lambda x: isinstance(x, Row)).repartition(4)
         return output_rdd
 
 
 '''Main function'''
 if __name__ == '__main__':
-    appConfig = conf.Config()
-    logParser = Parser(type='iptables')
+    appConfig = conf.Config(yarn_cores=2, cores_max=8)
+    logParser = Parser()
 
     # Create SparkContext and StreamingListener
     sc = SparkContext(conf=appConfig.setSparkConf())
@@ -121,7 +121,7 @@ if __name__ == '__main__':
         if StreamingContext.getActive() is None:
             # Create streaming Context and DStreams
             logger.warning('Starting streaming context.')
-            ssc = StreamingContext(sc, 30)
+            ssc = StreamingContext(sc, 300)
             ssc.addStreamingListener(collector)
             last_updated = datetime.datetime.today()
             logger.warning('last_updated: ' + str(last_updated))

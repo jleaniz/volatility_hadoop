@@ -24,7 +24,7 @@ class Config(object):
     and Spark
     '''
 
-    def __init__(self):
+    def __init__(self, yarn_cores, cores_max):
         '''
         Init function with default attributes
         :return:
@@ -37,9 +37,9 @@ class Config(object):
         self.spark_worker_memory = '12g'
         self.spark_executor_memory = '12g'
         self.spark_executor_cores = '4'
-        self.spark_yarn_am_cores = "4"
+        self.spark_yarn_am_cores = yarn_cores
         self.spark_executor_instances = "12"
-        self.spark_cores_max = '24'
+        self.spark_cores_max = cores_max
         self.spark_network_timeout = '3000'
         self.spark_core_connection_ack_wait_timeout = '3000'
         self.spark_io_compression_codec = 'snappy'
@@ -84,7 +84,7 @@ class Config(object):
                 #.set('spark.streaming.blockInterval', '0.2s')
                 .set('spark.executor.instances', self.spark_executor_instances)
                 .set('spark.yarn.am.cores', self.spark_yarn_am_cores)
-                .set('spark.yarn.am.memory', '12g')
+                .set('spark.yarn.am.memory', '4g')
                 .set('spark.yarn.executor.memoryOverhead', '1024')
                 )
 
