@@ -46,7 +46,7 @@ class batchInfoCollector(StreamingListener):
         batchDate = datetime.datetime.fromtimestamp(
             self.batchInfosCompleted[0].outputOperationInfos()[0].endTime() / 1000)
         logger.warning(batchDate)
-        if last_updated - batchDate > datetime.timedelta(1):
+        if last_updated - batchDate > datetime.timedelta(minutes=1):
             logger.warning('Date has changed, restarting StreamingContext...')
             StreamingContext.getActive().stop(stopSparkContext=False)
 
@@ -65,7 +65,7 @@ def parse(line):
     if '-fw' in line:
         return logParser.parseIPTables(line)
     elif '-net-bc' in line:
-        return logParser.parseBCAccessLogIter(line)
+        return logParser.parseBCAccessLog(line)
     else:
         return line
 
@@ -98,8 +98,8 @@ def process_fw(time, rdd):
 
 # https://issues.apache.org/jira/browse/PARQUET-222 - Parquet writer memory allocation
 def process_proxy(time, rdd):
-    output_rdd = rdd.map(lambda x: str(time) + ' ' + x[0]['host'] + ' ' + x[1]) \
-        .filter(lambda x: '-net-bc' in x).map(parse) \
+    output_rdd = rdd.filter(lambda x: '-net-bc' in x) \
+        .map(parse) \
         .filter(lambda x: isinstance(x, Row)).repartition(10)
     return output_rdd
 
@@ -122,7 +122,11 @@ if __name__ == '__main__':
             last_updated = datetime.datetime.today()
             stream = ssc.textFileStream(
                 '/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
+
             fwDStream = stream.transform(process_fw)
+            proxyStream = stream.transform(process_proxy)
             fwDStream.foreachRDD(save_fw)
+            proxyStream.foreachRDD(save_proxy)
+
             ssc.start()
             ssc.awaitTermination()

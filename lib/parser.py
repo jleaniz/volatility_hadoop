@@ -215,6 +215,76 @@ class Parser(object):
                         )
 
 
+    def parseBCAccessLog(self, input):
+        patterns = [self.patterns['sgAccessLog'],
+                    self.patterns['sgAccessLogSSL']
+                    ]
+        for pattern in patterns:
+            m = re.search(pattern, input)
+            if m:
+                if pattern == patterns[0]:
+                    return Row(
+                        date=m.group(4),
+                        source=m.group(3),
+                        time=m.group(5),
+                        clientip=m.group(7),
+                        scstatus=m.group(8),
+                        saction=m.group(9),
+                        scbytes=int(m.group(10)),
+                        csbytes=int(m.group(11)),
+                        method=m.group(12),
+                        urischeme=m.group(13),
+                        host=m.group(14),
+                        port=int(m.group(15)),
+                        path=m.group(16),
+                        query=m.group(17),
+                        username=m.group(18),
+                        group=m.group(19),
+                        sname=m.group(20),
+                        contenttype=m.group(21),
+                        referer=m.group(22),
+                        agent=m.group(23),
+                        action=m.group(24),
+                        categories=m.group(25),
+                        tlsver='',
+                        tlscipher='',
+                        ciphersize='',
+                        malware=m.group(26),
+                        proxyip=m.group(27)
+                    )
+
+                elif pattern == patterns[1]:
+                    return Row(
+                        date=m.group(4),
+                        source=m.group(3),
+                        time=m.group(5),
+                        clientip=m.group(7),
+                        scstatus=m.group(8),
+                        saction=m.group(9),
+                        scbytes=int(m.group(10)),
+                        csbytes=int(m.group(11)),
+                        method=m.group(12),
+                        urischeme=m.group(13),
+                        host=m.group(14),
+                        port=int(m.group(15)),
+                        path=m.group(16),
+                        query=m.group(17),
+                        username=m.group(18),
+                        group=m.group(19),
+                        sname=m.group(20),
+                        contenttype=m.group(21),
+                        referer=m.group(22),
+                        agent=m.group(23),
+                        action=m.group(24),
+                        categories=m.group(25),
+                        tlsver=m.group(26),
+                        tlscipher=m.group(27),
+                        ciphersize=m.group(28),
+                        malware=m.group(29),
+                        proxyip=m.group(30)
+                    )
+
+
     def parseBCAccessLogIter(self, partition):
         patterns = [self.patterns['sgAccessLog'],
                     self.patterns['sgAccessLogSSL']
