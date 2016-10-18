@@ -121,7 +121,7 @@ if __name__ == '__main__':
     while True:
         if StreamingContext.getActive() is None:
             # Create a DStream and start the StreamingContext
-            last_updated = str(datetime.datetime.today())
+            last_updated = datetime.datetime.today()
             logger.warning('last_updated: ' + str(last_updated))
             stream = ssc.textFileStream(
                 '/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
