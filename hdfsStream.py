@@ -45,7 +45,9 @@ class batchInfoCollector(StreamingListener):
     def onBatchCompleted(self, batchCompleted):
         self.batchInfosCompleted.append(batchCompleted.batchInfo())
         batchDate = datetime.datetime.fromtimestamp(
-            self.batchInfosCompleted[0].outputOperationInfos()[0].endTime() / 1000)
+            self.batchInfosCompleted[len(self.batchInfosCompleted)-1]
+            .outputOperationInfos()[0]
+            .endTime() / 1000)
         logger.warning(batchDate)
         if last_updated - batchDate > datetime.timedelta(minutes=1):
             logger.warning('Date has changed, restarting StreamingContext...')
