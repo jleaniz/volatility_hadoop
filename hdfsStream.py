@@ -50,7 +50,7 @@ class batchInfoCollector(StreamingListener):
             .endTime() / 1000)
         logger.warning('batchDate: ' + str(batchDate))
         if batchDate - last_updated > datetime.timedelta(minutes=1):
-            logger.warning('Date has changed, restarting StreamingContext...')
+            logger.warning('Date has changed, Stopping StreamingContext...')
             StreamingContext.getActive().stop(stopSparkContext=False, stopGraceFully=True)
 
 
@@ -114,13 +114,13 @@ if __name__ == '__main__':
 
     # Create SparkContext, StreamingContext and StreamingListener
     sc = SparkContext(conf=appConfig.setSparkConf())
-    ssc = StreamingContext(sc, 30)
     collector = batchInfoCollector()
-    ssc.addStreamingListener(collector)
 
     while True:
         if StreamingContext.getActive() is None:
             # Create a DStream and start the StreamingContext
+            ssc = StreamingContext(sc, 30)
+            ssc.addStreamingListener(collector)
             last_updated = datetime.datetime.today()
             logger.warning('last_updated: ' + str(last_updated))
             stream = ssc.textFileStream(
