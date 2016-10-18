@@ -105,7 +105,6 @@ def process_proxy(time, rdd):
         output_rdd = rdd.filter(lambda x: '-net-bc' in x) \
             .map(parse) \
             .filter(lambda x: isinstance(x, Row))
-        print output_rdd.collect()
         return output_rdd
 
 
