@@ -43,16 +43,20 @@ class batchInfoCollector(StreamingListener):
 
     def onBatchCompleted(self, batchCompleted):
         self.batchInfosCompleted.append(batchCompleted.batchInfo())
-        if len(self.batchInfosCompleted) > 1:
-            batchDate = datetime.datetime.fromtimestamp(
-                self.batchInfosCompleted[len(self.batchInfosCompleted)-1]
-                .outputOperationInfos()[len(self.batchInfosCompleted)-1]
-                .endTime() / 1000)
-            logger.warning('batchDate: ' + str(batchDate))
-            if batchDate - last_updated > datetime.timedelta(minutes=1):
-                logger.warning('Date has changed, Stopping StreamingContext.')
-                StreamingContext.getActive().stop(stopSparkContext=False, stopGraceFully=True)
-
+        '''
+        batchDate = datetime.datetime.fromtimestamp(
+            self.batchInfosCompleted[len(self.batchInfosCompleted)-1]
+            .outputOperationInfos()[len(self.batchInfosCompleted)-1]
+            .endTime() / 1000)
+        logger.warning('batchDate: ' + str(batchDate))
+        if batchDate - last_updated > datetime.timedelta(minutes=1):
+            logger.warning('Date has changed, Stopping StreamingContext.')
+            StreamingContext.getActive().stop(stopSparkContext=False, stopGraceFully=True)
+        '''
+        for info in self.batchInfosCompleted:
+            for outputId in info.outputOperationInfos():
+                outputInfo = info.outputOperationInfos()[outputId]
+                logger.warning('batch date: %s' % outputInfo.endTime())
 
 def getSqlContextInstance():
     if ('sparkSession' not in globals()):
