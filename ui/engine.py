@@ -120,7 +120,7 @@ class AnalyticsEngine(object):
     def getVPNUnusualActivity(self):
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
-        adlocation = self.session.read('ad.csv').filter('c not like ""')
+        adlocation = self.session.read.parquet('ad.csv').filter('c not like ""')
         adlocation.cache()
 
         vpn = self.session.read.parquet('/data/srm/dbs/dw_srm.db/vpn/ciscovpn')
@@ -175,7 +175,7 @@ class AnalyticsEngine(object):
 
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.session.read(*_parquetPaths)
+        self.proxyDF = self.session.read.parquet(*_parquetPaths)
         # Register DataFrame as a Spark SQL Table
         self.proxyDF.createOrReplaceTempView('proxysg')
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER) # not enough capacity for this right now
@@ -229,7 +229,7 @@ class AnalyticsEngine(object):
         '''
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.session.read(*_parquetPaths)
+        self.proxyDF = self.session.read.parquet(*_parquetPaths)
         self.proxyDF.createOrReplaceTempView('proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
@@ -288,7 +288,7 @@ class AnalyticsEngine(object):
         '''
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.session.read(*_parquetPaths)
+        self.proxyDF = self.session.read.parquet(*_parquetPaths)
         self.proxyDF.createOrReplaceTempView('proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
@@ -322,7 +322,7 @@ class AnalyticsEngine(object):
         '''
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.session.read(*_parquetPaths)
+        self.proxyDF = self.session.read.parquet(*_parquetPaths)
         self.proxyDF.createOrReplaceTempView('proxysg')
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
@@ -355,7 +355,7 @@ class AnalyticsEngine(object):
         '''
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.session.read(*_parquetPaths)
+        self.proxyDF = self.session.read.parquet(*_parquetPaths)
         self.proxyDF.createOrReplaceTempView('proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
@@ -389,7 +389,7 @@ class AnalyticsEngine(object):
         '''
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.session.read(*_parquetPaths)
+        self.proxyDF = self.session.read.parquet(*_parquetPaths)
         self.proxyDF.createOrReplaceTempView('proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
@@ -422,7 +422,7 @@ class AnalyticsEngine(object):
         '''
         _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.session.read(*_parquetPaths)
+        self.proxyDF = self.session.read.parquet(*_parquetPaths)
         self.proxyDF.createOrReplaceTempView('proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
@@ -492,24 +492,24 @@ class AnalyticsEngine(object):
         try:
             if 'proxysg' in tables:
                 _parquetPaths = self.buildParquetFileList('proxysg', sdate, edate)
-                self.proxyDF = self.session.read(*_parquetPaths)
+                self.proxyDF = self.session.read.parquet(*_parquetPaths)
                 self.proxyDF.createOrReplaceTempView('proxysg')
 
             if 'ciscovpn' in tables:
                 _parquetPaths = self.buildParquetFileList('ciscovpn', sdate, edate)
-                self.vpnLogsDF = self.session.read(*_parquetPaths)
+                self.vpnLogsDF = self.session.read.parquet(*_parquetPaths)
                 self.vpnLogsDF.createOrReplaceTempView('ciscovpn')
 
             if 'fw' in tables:
                 logger.info('Re-loading dataframe fw')
                 _parquetPaths = self.buildParquetFileList('fw', sdate, edate)
-                self.fwDF = self.session.read(*_parquetPaths)
+                self.fwDF = self.session.read.parquet(*_parquetPaths)
                 self.fwDF.createOrReplaceTempView('fw')
 
             if 'bashlog' in tables:
                 logger.info('Re-loading dataframe bashlog')
                 _parquetPaths = self.buildParquetFileList('bashlog', sdate, edate)
-                self.bashDF = self.session.read(*_parquetPaths)
+                self.bashDF = self.session.read.parquet(*_parquetPaths)
                 self.bashDF.createOrReplaceTempView('bashlog')
 
             if 'sccm_vuln' in tables:
@@ -541,7 +541,7 @@ class AnalyticsEngine(object):
     def bashKeywordSearch(self, keyword, fromdate, todate):
         _parquetPaths = self.buildParquetFileList('bashlog', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.bashDF = self.session.read(*_parquetPaths)
+        self.bashDF = self.session.read.parquet(*_parquetPaths)
         self.bashDF.createOrReplaceTempView('bashlog')
 
         query = ("select * from bashlog where command like '%s'" % (keyword))
@@ -581,7 +581,7 @@ class AnalyticsEngine(object):
     def bashUserActivity(self, keyword, fromdate, todate):
         _parquetPaths = self.buildParquetFileList('bashlog', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.bashDF = self.session.read(*_parquetPaths)
+        self.bashDF = self.session.read.parquet(*_parquetPaths)
         self.bashDF.createOrReplaceTempView('bashlog')
 
         query = ( "select * from bashlog where username like  ' %s' " % (keyword) )
@@ -626,7 +626,7 @@ class AnalyticsEngine(object):
         except:
             logger.info("Loading new DataFrame")
             _parquetPaths = self.buildParquetFileList('fw', fromdate, todate)
-            self.fwDF = self.session.read(*_parquetPaths)
+            self.fwDF = self.session.read.parquet(*_parquetPaths)
             self.fwDF.createOrReplaceTempView('fw')
             #self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
