@@ -473,8 +473,8 @@ class AnalyticsEngine(object):
         for day in days:
             if table == 'fw':
                 parquetPaths.append(
-                    '/data/srm/dbs/dw_srm.db/fw/date=%s-%s-%s' % (
-                        day.year, str(day).split('-')[1], str(day).split('-')[2])
+                    '/data/srm/dbs/dw_srm.db/fw/date=%s%s%s' % (
+                        day.year, str(int(day)).split('-')[1], str(int(day)).split('-')[2])
                 )
             else:
                 parquetPaths.append(
