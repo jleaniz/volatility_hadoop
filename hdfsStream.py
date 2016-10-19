@@ -121,7 +121,7 @@ if __name__ == '__main__':
         if StreamingContext.getActive() is None:
             # Create streaming Context and DStreams
             logger.warning('Starting streaming context.')
-            ssc = StreamingContext(sc, 300)
+            ssc = StreamingContext(sc, 120)
             ssc.addStreamingListener(collector)
             last_updated = datetime.datetime.today()
             logger.warning('last_updated: ' + str(last_updated))
