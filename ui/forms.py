@@ -15,18 +15,18 @@
 # along with BDSA.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms.fields import StringField, SubmitField, SelectField, TextAreaField, SelectMultipleField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Email
 
 
-class UserForm(Form):
+class UserForm(FlaskForm):
     name = StringField(u'VPN Username', validators=[Email(message="Invalid input. Ex: srm-ais@email.com")])
     lookup = SubmitField(u'Lookup')
 
 
-class UserDateForm(Form):
+class UserDateForm(FlaskForm):
     fromdate = DateField(u'From', format='%Y-%m-%d',
                          validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     todate = DateField(u'To', format='%Y-%m-%d',
@@ -35,7 +35,7 @@ class UserDateForm(Form):
     lookup = SubmitField(u'Lookup')
 
 
-class DateForm(Form):
+class DateForm(FlaskForm):
     fromdate = DateField(u'From', format='%Y-%m-%d',
                          validators=[DataRequired(message="Invalid input. Ex: 2015-01-01")])
     todate = DateField(u'To', format='%Y-%m-%d',
@@ -43,7 +43,7 @@ class DateForm(Form):
     lookup = SubmitField(u'Lookup')
 
 
-class SearchForm(Form):
+class SearchForm(FlaskForm):
     tables = SelectMultipleField(u'Tables',
                                  choices=[('firewall', 'firewall'), ('proxysg', 'proxysg'), ('bashlog', 'bashlog'),
                                           ('ciscovpn', 'ciscovpn'), ('sccm_vuln', 'sccm_vuln'), ('otx', 'otx'), ('c2', 'c2')],
@@ -62,17 +62,17 @@ class SearchForm(Form):
     download = SubmitField(u'Download')
 
 
-class CustomSearchForm(Form):
+class CustomSearchForm(FlaskForm):
     query = TextAreaField(u'Query', validators=[DataRequired(message="Field required")])
     lookup = SubmitField(u'Lookup')
     download = SubmitField(u'Download')
 
 
-class PathForm(Form):
+class PathForm(FlaskForm):
     name = StringField(u'Path', validators=[DataRequired(message="Field required")])
     lookup = SubmitField(u'Lookup')
 
 
-class KeywordForm(Form):
+class KeywordForm(FlaskForm):
     keyword = StringField(u'Keyword', validators=[DataRequired(message="Field required")])
     lookup = SubmitField(u'Lookup')
