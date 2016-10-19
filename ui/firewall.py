@@ -33,7 +33,7 @@ def index():
 def DisplayPortStats():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
-        jsonChart = analytics_engine.getFirewallPortStats(form.fromdate.data.strftime('%Y-%m-%d'),
+        jsonChart = analytics_engine.getfwPortStats(form.fromdate.data.strftime('%Y-%m-%d'),
                                                           form.todate.data.strftime('%Y-%m-%d'))
         return render_template('DisplayTableAndCharts.html', jsonTable=jsonChart, jsonChart=jsonChart)
 
@@ -44,7 +44,7 @@ def DisplayPortStats():
 def DisplayIPStats():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
-        jsonChart = analytics_engine.getFirewallIPStats(form.fromdate.data.strftime('%Y-%m-%d'),
+        jsonChart = analytics_engine.getfwIPStats(form.fromdate.data.strftime('%Y-%m-%d'),
                                                         form.todate.data.strftime('%Y-%m-%d'))
         return render_template('DisplayTableAndCharts.html', jsonTable=jsonChart, jsonChart=jsonChart)
 
@@ -55,7 +55,7 @@ def DisplayIPStats():
 def DisplayMalwareConns():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
-        jsonChart = analytics_engine.getFirewallMalwareConns(form.fromdate.data.strftime('%Y-%m-%d'),
+        jsonChart = analytics_engine.getfwMalwareConns(form.fromdate.data.strftime('%Y-%m-%d'),
                                                              form.todate.data.strftime('%Y-%m-%d'))
         return render_template('DisplayTableAndCharts.html', jsonTable=jsonChart, jsonChart=jsonChart)
 
@@ -66,7 +66,7 @@ def DisplayMalwareConns():
 def DisplayTopTalkers():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
-        jsonChart = analytics_engine.getFirewallTopTalkers(form.fromdate.data.strftime('%Y-%m-%d'),
+        jsonChart = analytics_engine.getfwTopTalkers(form.fromdate.data.strftime('%Y-%m-%d'),
                                                              form.todate.data.strftime('%Y-%m-%d'))
         return render_template('DisplayTableAndCharts.html', sankey=True, jsonTable=jsonChart, jsonChart=jsonChart)
 
