@@ -53,10 +53,16 @@ class batchInfoCollector(StreamingListener):
             logger.warning('Date has changed, Stopping StreamingContext.')
             StreamingContext.getActive().stop(stopSparkContext=False, stopGraceFully=True)
         '''
-        for info in self.batchInfosCompleted:
+        batchDate = None
+        for info in self.batchInfosCompleted[-1]:
             for outputId in info.outputOperationInfos():
                 outputInfo = info.outputOperationInfos()[outputId]
-                logger.warning('batch date: %s' % outputInfo.endTime())
+                batchDate = datetime.datetime.fromtimestamp(outputInfo.endTime()/1000)
+                logger.warning('batch date: %s' % batchDate)
+
+        if batchDate - last_updated > datetime.timedelta(minutes=1):
+            logger.warning('Date has changed, Stopping StreamingContext.')
+            StreamingContext.getActive().stop(stopSparkContext=False, stopGraceFully=True)
 
 def getSqlContextInstance():
     if ('sparkSession' not in globals()):
