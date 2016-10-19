@@ -46,7 +46,7 @@ class batchInfoCollector(StreamingListener):
         if len(self.batchInfosCompleted) > 1:
             batchDate = datetime.datetime.fromtimestamp(
                 self.batchInfosCompleted[len(self.batchInfosCompleted)-1]
-                .outputOperationInfos()[0]
+                .outputOperationInfos()[len(self.batchInfosCompleted)-1]
                 .endTime() / 1000)
             logger.warning('batchDate: ' + str(batchDate))
             if batchDate - last_updated > datetime.timedelta(minutes=1):
@@ -115,7 +115,6 @@ if __name__ == '__main__':
 
     # Create SparkContext and StreamingListener
     sc = SparkContext(conf=appConfig.setSparkConf())
-    collector = batchInfoCollector()
 
     while True:
         if StreamingContext.getActive() is None:
