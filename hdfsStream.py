@@ -45,8 +45,8 @@ class batchInfoCollector(StreamingListener):
         self.batchInfosCompleted.append(batchCompleted.batchInfo())
         '''
         batchDate = datetime.datetime.fromtimestamp(
-            self.batchInfosCompleted[len(self.batchInfosCompleted)-1]
-            .outputOperationInfos()[len(self.batchInfosCompleted)-1]
+            self.batchInfosCompleted[-1]
+            .outputOperationInfos()[-1]
             .endTime() / 1000)
         logger.warning('batchDate: ' + str(batchDate))
         if batchDate - last_updated > datetime.timedelta(minutes=1):
@@ -54,7 +54,6 @@ class batchInfoCollector(StreamingListener):
             StreamingContext.getActive().stop(stopSparkContext=False, stopGraceFully=True)
         '''
         batchDate = None
-        #batchinfo = self.batchInfosCompleted[-1]
         batchinfo = batchCompleted.batchInfo()
         for outputId in batchinfo.outputOperationInfos():
             try:
