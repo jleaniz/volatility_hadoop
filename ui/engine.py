@@ -327,7 +327,7 @@ class AnalyticsEngine(object):
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
         visitedDomains = self.session.sql(
-            'select host, count(*) as hits from dw_srm.proxysg '
+            'select host, count(*) as hits from proxysg '
             'group by host order by hits desc limit 15'
         )
         entries = visitedDomains.collect()
@@ -361,7 +361,7 @@ class AnalyticsEngine(object):
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
         malwareDomains = self.session.sql(
-            'select host, count(*) as hits from dw_srm.proxysg where categories like "%Mal%" '
+            'select host, count(*) as hits from proxysg where categories like "%Mal%" '
             'group by host order by hits desc limit 15'
         )
         entries = malwareDomains.collect()
