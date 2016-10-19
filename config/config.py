@@ -45,7 +45,7 @@ class Config(object):
         self.spark_io_compression_codec = 'snappy'
         self.spark_serializer = 'org.apache.spark.serializer.KryoSerializer'
         self.spark_kryoserializer_buffer_max = '1024m'
-        self.spark_sql_shuffle_partitions = '512'
+        self.spark_sql_shuffle_partitions = '128'
         self.spark_sql_codegen = 'true'
         self.spark_sql_planner_externalSort = 'true'
         self.spark_scheduler_mode = "FAIR"
