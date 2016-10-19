@@ -43,7 +43,7 @@ class batchInfoCollector(StreamingListener):
 
     def onBatchCompleted(self, batchCompleted):
         self.batchInfosCompleted.append(batchCompleted.batchInfo())
-        if len(self.batchInfosCompleted) > 0:
+        if len(self.batchInfosCompleted) > 1:
             batchDate = datetime.datetime.fromtimestamp(
                 self.batchInfosCompleted[len(self.batchInfosCompleted)-1]
                 .outputOperationInfos()[0]
@@ -122,6 +122,7 @@ if __name__ == '__main__':
             # Create streaming Context and DStreams
             logger.warning('Starting streaming context.')
             ssc = StreamingContext(sc, 120)
+            collector = batchInfoCollector()
             ssc.addStreamingListener(collector)
             last_updated = datetime.datetime.today()
             logger.warning('last_updated: ' + str(last_updated))
