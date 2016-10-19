@@ -60,7 +60,7 @@ class batchInfoCollector(StreamingListener):
                 outputInfo = batchinfo.outputOperationInfos()[outputId]
                 batchDate = datetime.datetime.fromtimestamp(outputInfo.endTime()/1000)
                 logger.warning('batch date: %s' % batchDate)
-                if batchDate - last_updated > datetime.timedelta(minutes=1):
+                if batchDate - last_updated > datetime.timedelta(days=1):
                     logger.warning('Date has changed, Stopping StreamingContext.')
                     StreamingContext.getActive().stop(stopSparkContext=False, stopGraceFully=False)
             except:
@@ -133,7 +133,7 @@ if __name__ == '__main__':
         if StreamingContext.getActive() is None:
             # Create streaming Context and DStreams
             logger.warning('Starting streaming context.')
-            ssc = StreamingContext(sc, 60)
+            ssc = StreamingContext(sc, 300)
             ssc.addStreamingListener(collector)
             last_updated = datetime.datetime.today()
             logger.warning('last_updated: ' + str(last_updated))
@@ -141,9 +141,9 @@ if __name__ == '__main__':
                 '/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
             logger.warning('setting new path: /data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
             fwDStream = stream.transform(process_fw)
-            #proxyStream = stream.transform(process_proxy)
+            proxyStream = stream.transform(process_proxy)
             fwDStream.foreachRDD(save_fw)
-            #proxyStream.foreachRDD(save_proxy)
+            proxyStream.foreachRDD(save_proxy)
 
             # Start Streaming Context and wait for termination
             ssc.start()
