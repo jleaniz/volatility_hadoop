@@ -54,10 +54,11 @@ class batchInfoCollector(StreamingListener):
             StreamingContext.getActive().stop(stopSparkContext=False, stopGraceFully=True)
         '''
         batchDate = None
-        batchinfo = self.batchInfosCompleted[-1]
-        for outputId in batchinfo.outputOperationInfos():
-            outputInfo = batchinfo.outputOperationInfos()[outputId]
-            batchDate = datetime.datetime.fromtimestamp(outputInfo.endTime()/1000)
+        #batchinfo = self.batchInfosCompleted[-1]
+        for batchinfo in batchCompleted.batchInfo():
+            for outputId in batchinfo.outputOperationInfos():
+                outputInfo = batchinfo.outputOperationInfos()[outputId]
+                batchDate = datetime.datetime.fromtimestamp(outputInfo.endTime()/1000)
 
         logger.warning('batch date: %s' % batchDate)
         if batchDate - last_updated > datetime.timedelta(minutes=1):
@@ -125,13 +126,13 @@ if __name__ == '__main__':
 
     # Create SparkContext and StreamingListener
     sc = SparkContext(conf=appConfig.setSparkConf())
+    collector = batchInfoCollector()
 
     while True:
         if StreamingContext.getActive() is None:
             # Create streaming Context and DStreams
             logger.warning('Starting streaming context.')
             ssc = StreamingContext(sc, 60)
-            collector = batchInfoCollector()
             ssc.addStreamingListener(collector)
             last_updated = datetime.datetime.today()
             logger.warning('last_updated: ' + str(last_updated))
@@ -139,9 +140,9 @@ if __name__ == '__main__':
                 '/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
             logger.warning('setting new path: /data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
             fwDStream = stream.transform(process_fw)
-            proxyStream = stream.transform(process_proxy)
+            #proxyStream = stream.transform(process_proxy)
             fwDStream.foreachRDD(save_fw)
-            proxyStream.foreachRDD(save_proxy)
+            #proxyStream.foreachRDD(save_proxy)
 
             # Start Streaming Context and wait for termination
             ssc.start()
