@@ -55,10 +55,10 @@ class batchInfoCollector(StreamingListener):
         '''
         batchDate = None
         #batchinfo = self.batchInfosCompleted[-1]
-        for batchinfo in batchCompleted.batchInfo():
-            for outputId in batchinfo.outputOperationInfos():
-                outputInfo = batchinfo.outputOperationInfos()[outputId]
-                batchDate = datetime.datetime.fromtimestamp(outputInfo.endTime()/1000)
+        batchinfo = batchCompleted.batchInfo()
+        for outputId in batchinfo.outputOperationInfos():
+            outputInfo = batchinfo.outputOperationInfos()[outputId]
+            batchDate = datetime.datetime.fromtimestamp(outputInfo.endTime()/1000)
 
         logger.warning('batch date: %s' % batchDate)
         if batchDate - last_updated > datetime.timedelta(minutes=1):
