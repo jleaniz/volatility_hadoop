@@ -44,7 +44,7 @@ class LogFile(object):
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseBCAccessLogIter)
             df = parsed_rdd.toDF()
             df = self.sparkSession.createDataFrame(parsed_rdd)
-            df.write.saveAsTable('dw_srm.proxy', format='parquet', mode='append', partitionBy='date')
+            df.write.saveAsTable('dw_srm.proxysg', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'iptables':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseIPTablesIter)
