@@ -41,7 +41,7 @@ def main():
     args = cliparser.parse_args()
 
     '''Initialize Spark Context with default config'''
-    appConfig = conf.Config(exec_cores=8, yarn_cores=8, cores_max=80, instances=10, queue='root.llama')
+    appConfig = conf.Config(exec_cores=8, yarn_cores=8, cores_max=144, instances=18, queue='root.llama')
     sc = SparkContext(conf=appConfig.setSparkConf())
     spark = SparkSession \
         .builder \
