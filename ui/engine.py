@@ -119,7 +119,6 @@ class AnalyticsEngine(object):
 
     def getVPNUnusualActivity(self):
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        try:
 
         adlocation = self.session.read('ad.csv').filter('c not like ""')
         adlocation.cache()
