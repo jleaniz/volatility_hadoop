@@ -54,9 +54,9 @@ class batchInfoCollector(StreamingListener):
             StreamingContext.getActive().stop(stopSparkContext=False, stopGraceFully=True)
         '''
         batchDate = None
-        info = self.batchInfosCompleted[-1]
-        for outputId in info.outputOperationInfos():
-            outputInfo = info.outputOperationInfos()[outputId]
+        batchinfo = self.batchInfosCompleted[-1]
+        for outputId in batchinfo.outputOperationInfos():
+            outputInfo = batchinfo.outputOperationInfos()[outputId]
             batchDate = datetime.datetime.fromtimestamp(outputInfo.endTime()/1000)
 
         logger.warning('batch date: %s' % batchDate)
