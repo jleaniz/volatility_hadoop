@@ -500,7 +500,7 @@ class AnalyticsEngine(object):
                 self.vpnLogsDF = self.session.read.parquet(*_parquetPaths)
                 self.vpnLogsDF.createOrReplaceTempView('ciscovpn')
 
-            if 'fw' in tables:
+            if 'firewall' in tables:
                 logger.info('Re-loading dataframe fw')
                 _parquetPaths = self.buildParquetFileList('fw', sdate, edate)
                 self.fwDF = self.session.read.parquet(*_parquetPaths)
