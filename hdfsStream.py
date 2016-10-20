@@ -58,9 +58,9 @@ class batchInfoCollector(StreamingListener):
         for outputId in batchinfo.outputOperationInfos():
             try:
                 outputInfo = batchinfo.outputOperationInfos()[outputId]
-                batchDate = datetime.datetime.fromtimestamp(outputInfo.endTime()/1000)
+                batchDate = datetime.datetime.fromtimestamp(outputInfo.endTime()/1000).date()
                 logger.warning('batch date: %s' % batchDate)
-                if batchDate - last_updated > datetime.timedelta(days=1):
+                if batchDate - last_updated > datetime.timedelta(minutes=1439):
                     logger.warning('Date has changed, Stopping StreamingContext.')
                     StreamingContext.getActive().stop(stopSparkContext=False, stopGraceFully=False)
             except:
@@ -135,7 +135,7 @@ if __name__ == '__main__':
             logger.warning('Starting streaming context.')
             ssc = StreamingContext(sc, 300)
             ssc.addStreamingListener(collector)
-            last_updated = datetime.datetime.today()
+            last_updated = datetime.datetime.today().date()
             logger.warning('last_updated: ' + str(last_updated))
             stream = ssc.textFileStream(
                 '/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
