@@ -43,28 +43,28 @@ class LogFile(object):
         if self.type is 'proxysg':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseBCAccessLogIter)
             df = self.sparkSession.createDataFrame(parsed_rdd)
-            df.coalesce(256).write.saveAsTable('dw_srm.proxysg', format='parquet', mode='append', partitionBy='date')
+            df.coalesce(512).write.saveAsTable('dw_srm.proxysg', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'iptables':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseIPTablesIter)
             df = self.sparkSession.createDataFrame(parsed_rdd)
-            df.coalesce(256).write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
+            df.coalesce(512).write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'apacheAccessLog':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseApacheAL())
             df = self.sparkSession.createDataFrame(parsed_rdd)
-            df.coalesce(256).write.saveAsTable('dw_srm.apache', format='parquet', mode='append', partitionBy='date')
+            df.coalesce(512).write.saveAsTable('dw_srm.apache', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'bashlog':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseBash)
             logger.info('Saving DataFrame')
             df = self.sparkSession.createDataFrame(parsed_rdd)
-            df.coalesce(256).write.saveAsTable('dw_srm.bash', format='parquet', mode='append', partitionBy='date')
+            df.coalesce(512).write.saveAsTable('dw_srm.bash', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'ciscovpn':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseVPN)
             df = self.sparkSession.createDataFrame(parsed_rdd)
-            df.coalesce(256).write.saveAsTable('dw_srm.vpn', format='parquet', mode='append', partitionBy='date')
+            df.coalesce(512).write.saveAsTable('dw_srm.vpn', format='parquet', mode='append', partitionBy='date')
 
         print '=================='
         print "Completed task"
