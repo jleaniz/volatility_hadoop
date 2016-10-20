@@ -42,35 +42,29 @@ class LogFile(object):
 
         if self.type is 'proxysg':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseBCAccessLogIter)
-            df = parsed_rdd.toDF()
             df = self.sparkSession.createDataFrame(parsed_rdd)
             df.coalesce(256).write.saveAsTable('dw_srm.proxysg', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'iptables':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseIPTablesIter)
-            #df = parsed_rdd.toDF()
-            #df.write.parquet('/data/srm/dbs/dw_srm.db/fw', mode='append', partitionBy=('date'))
             df = self.sparkSession.createDataFrame(parsed_rdd)
-            df.write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
+            df.coalesce(256).write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'apacheAccessLog':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseApacheAL())
-            df = parsed_rdd.toDF()
             df = self.sparkSession.createDataFrame(parsed_rdd)
-            df.write.saveAsTable('dw_srm.apache', format='parquet', mode='append', partitionBy='date')
+            df.coalesce(256).write.saveAsTable('dw_srm.apache', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'bashlog':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseBash)
-            df = parsed_rdd.toDF()
             logger.info('Saving DataFrame')
             df = self.sparkSession.createDataFrame(parsed_rdd)
-            df.write.saveAsTable('dw_srm.bash', format='parquet', mode='append', partitionBy='date')
+            df.coalesce(256).write.saveAsTable('dw_srm.bash', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'ciscovpn':
             parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseVPN)
-            df = parsed_rdd.toDF()
             df = self.sparkSession.createDataFrame(parsed_rdd)
-            df.write.saveAsTable('dw_srm.vpn', format='parquet', mode='append', partitionBy='date')
+            df.coalesce(256).write.saveAsTable('dw_srm.vpn', format='parquet', mode='append', partitionBy='date')
 
         print '=================='
         print "Completed task"
