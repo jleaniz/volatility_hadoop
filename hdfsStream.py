@@ -107,7 +107,7 @@ def process_fw(time, rdd):
     if not rdd.isEmpty():
         output_rdd = rdd.filter(lambda x: '-fw' in x) \
             .map(parse) \
-            .filter(lambda x: isinstance(x, Row)).repartition(2)
+            .filter(lambda x: isinstance(x, Row))
         return output_rdd
 
 
@@ -116,7 +116,7 @@ def process_proxy(time, rdd):
     if not rdd.isEmpty():
         output_rdd = rdd.filter(lambda x: '-net-bc' in x) \
             .map(parse) \
-            .filter(lambda x: isinstance(x, Row)).repartition(2)
+            .filter(lambda x: isinstance(x, Row))
         return output_rdd
 
 
