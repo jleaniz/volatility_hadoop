@@ -31,7 +31,7 @@ global last_updated
 class batchInfoCollector(StreamingListener):
     def __init__(self):
         super(StreamingListener, self).__init__()
-        self.batchInfosCompleted = []
+        #self.batchInfosCompleted = []
         self.batchInfosStarted = []
         self.batchInfosSubmitted = []
 
@@ -42,7 +42,7 @@ class batchInfoCollector(StreamingListener):
         self.batchInfosStarted.append(batchStarted.batchInfo())
 
     def onBatchCompleted(self, batchCompleted):
-        self.batchInfosCompleted.append(batchCompleted.batchInfo())
+        #self.batchInfosCompleted.append(batchCompleted.batchInfo())
         '''
         batchDate = datetime.datetime.fromtimestamp(
             self.batchInfosCompleted[-1]
