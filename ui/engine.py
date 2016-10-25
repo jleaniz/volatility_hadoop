@@ -959,7 +959,7 @@ class AnalyticsEngine(object):
     def pm_dashboard(self):
         paths = ['/user/jleaniz/sccm/df_sys_dsA1','path2']
         try:
-            self.sccmDF = self.session.read.parquet(paths)
+            self.sccmDF = self.session.read.parquet(*paths)
         except AnalysisException as e:
             logger.warning(e)
             logger.warning(e.args)
