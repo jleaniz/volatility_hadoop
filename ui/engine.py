@@ -960,10 +960,7 @@ class AnalyticsEngine(object):
         try:
             self.sccmDF = self.session.read.parquet('/user/jleaniz/sccm/df_sys_dsA1')
         except AnalysisException as e:
-            logger.warning((e.__str__().split(' ')[-1]))
-            logger.warning(e)
-            logger.warning(e.args)
-            logger.warning(e.message)
+            logger.warning(e.__str__().split(' ')[-1][:-1])
             return
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
