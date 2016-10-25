@@ -659,7 +659,7 @@ class AnalyticsEngine(object):
     def getfwIPStats(self, fromdate, todate):
 
         _parquetPaths = self.buildParquetFileList('fw', fromdate, todate)
-        self.fwDF = self.session.parquetFile(*_parquetPaths)
+        self.fwDF = self.session.read.parquet(*_parquetPaths)
         self.fwDF.createOrReplaceTempView('fw')
         #self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
@@ -718,7 +718,7 @@ class AnalyticsEngine(object):
     def getfwMalwareConns(self, fromdate, todate):
 
         _parquetPaths = self.buildParquetFileList('fw', fromdate, todate)
-        self.fwDF = self.session.parquetFile(*_parquetPaths)
+        self.fwDF = self.session.read.parquet(*_parquetPaths)
         self.fwDF.createOrReplaceTempView('fw')
         #self.fwDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
@@ -755,7 +755,7 @@ class AnalyticsEngine(object):
     def getfwTopTalkers(self, fromdate, todate):
 
         _parquetPaths = self.buildParquetFileList('fw', fromdate, todate)
-        self.fwDF = self.session.parquetFile(*_parquetPaths)
+        self.fwDF = self.session.read.parquet(*_parquetPaths)
         self.fwDF.createOrReplaceTempView('fw')
         #self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
@@ -790,7 +790,7 @@ class AnalyticsEngine(object):
     def getfwStats(self, fromdate, todate):
 
         _parquetPaths = self.buildParquetFileList('fw', fromdate, todate)
-        self.fwDF = self.session.parquetFile(*_parquetPaths)
+        self.fwDF = self.session.read.parquet(*_parquetPaths)
         self.fwDF.createOrReplaceTempView('fw')
         #self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
