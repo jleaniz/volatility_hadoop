@@ -497,6 +497,7 @@ class AnalyticsEngine(object):
             return df
         except AnalysisException as e:
             logger.warning(e)
+            pass
 
         return None
 
@@ -530,8 +531,8 @@ class AnalyticsEngine(object):
                 if not self.sccmDF:
                     self.session.read.parquet('/user/jleaniz/sccm/df_sys_dsA1')
 
-        except AttributeError as e:
-            logger.info('AttributeError' + str(e))
+        except Exception as e:
+            logger.warning(e)
             pass
 
         try:
