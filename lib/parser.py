@@ -75,145 +75,6 @@ class Parser(object):
             )
         }
 
-    def parseAll(self, partition):
-        patterns = [self.patterns['sgAccessLog'],
-                    self.patterns['sgAccessLogSSL'],
-                    self.patterns['iptables'],
-                    self.patterns['bashlog'],
-                    self.patterns['bashlogWarn'],
-                    self.patterns['ciscovpnLogin'],
-                    self.patterns['ciscovpnLogout']
-                    ]
-
-        for element in partition:
-            for pattern in patterns:
-                m = re.search(pattern, element)
-                if m:
-                    if pattern == patterns[0]:
-                        self.type = 'proxysg'
-                        yield Row(
-                            date=m.group(4),
-                            source=m.group(3),
-                            time=m.group(5),
-                            clientip=m.group(7),
-                            scstatus=m.group(8),
-                            saction=m.group(9),
-                            scbytes=int(m.group(10)),
-                            csbytes=int(m.group(11)),
-                            method=m.group(12),
-                            urischeme=m.group(13),
-                            host=m.group(14),
-                            port=int(m.group(15)),
-                            path=m.group(16),
-                            query=m.group(17),
-                            username=m.group(18),
-                            group=m.group(19),
-                            sname=m.group(20),
-                            contenttype=m.group(21),
-                            referer=m.group(22),
-                            agent=m.group(23),
-                            action=m.group(24),
-                            categories=m.group(25),
-                            tlsver='',
-                            tlscipher='',
-                            ciphersize='',
-                            malware=m.group(26),
-                            proxyip=m.group(27)
-                        )
-
-                    elif pattern == patterns[1]:
-                        self.type = 'proxysg'
-                        yield Row(
-                            date=m.group(4),
-                            source=m.group(3),
-                            time=m.group(5),
-                            clientip=m.group(7),
-                            scstatus=m.group(8),
-                            saction=m.group(9),
-                            scbytes=int(m.group(10)),
-                            csbytes=int(m.group(11)),
-                            method=m.group(12),
-                            urischeme=m.group(13),
-                            host=m.group(14),
-                            port=int(m.group(15)),
-                            path=m.group(16),
-                            query=m.group(17),
-                            username=m.group(18),
-                            group=m.group(19),
-                            sname=m.group(20),
-                            contenttype=m.group(21),
-                            referer=m.group(22),
-                            agent=m.group(23),
-                            action=m.group(24),
-                            categories=m.group(25),
-                            tlsver=m.group(26),
-                            tlscipher=m.group(27),
-                            ciphersize=m.group(28),
-                            malware=m.group(29),
-                            proxyip=m.group(30)
-                        )
-
-                    elif pattern == patterns[2]:
-                        self.type = 'iptables'
-                        yield Row(
-                            date=str(datetime.datetime.now().year) + str(
-                                list(calendar.month_abbr).index(m.group(2).split()[0])) + m.group(2).split()[1],
-                            time=m.group(3),
-                            source=m.group(4),
-                            action=m.group(8),
-                            srcip=m.group(16),
-                            dstip=m.group(17),
-                            len=int(m.group(18)),
-                            ttl=int(m.group(21)),
-                            proto=m.group(23),
-                            srcport=int(m.group(24)),
-                            dstport=int(m.group(25))
-                        )
-
-                    elif pattern == patterns[3] or pattern == patterns[4]:
-                        self.type = 'bashlog'
-                        try:
-                            yield Row(
-                                date=m.group(1),
-                                source=m.group(3),
-                                username=m.group(4),
-                                exec_as=m.group(5),
-                                srcip=m.group(6),
-                                command=m.group(7)
-                            )
-                        except:
-                            pass
-
-                    elif pattern == patterns[5]:
-                        self.type = 'ciscovpn'
-                        yield Row(
-                            date=m.group(1),
-                            time=m.group(2),
-                            source=m.group(3),
-                            user=m.group(4),
-                            remoteip=m.group(5),
-                            localip=m.group(6),
-                            duration='',
-                            bytesxmt='',
-                            bytesrcv='',
-                            reason='',
-                        )
-
-                    elif pattern == patterns[6]:
-                        self.type = 'ciscovpn'
-                        yield Row(
-                            date=m.group(1),
-                            time=m.group(2),
-                            source=m.group(3),
-                            user=m.group(4),
-                            remoteip=m.group(5),
-                            localip='',
-                            duration=m.group(6),
-                            bytesxmt=m.group(7),
-                            bytesrcv=m.group(8),
-                            reason=m.group(9)
-                        )
-
 
     def parseBCAccessLog(self, input):
         patterns = [self.patterns['sgAccessLog'],
@@ -404,7 +265,7 @@ class Parser(object):
             m = re.search(fwlog, element)
             if m:
                 yield Row(
-                    date=str(datetime.datetime.now().year) + str(list(calendar.month_abbr).index(m.group(2).split()[0])) + m.group(2).split()[1],
+                    date=str(datetime.datetime.now().year) + str(list(calendar.month_abbr).index(m.group(2).split()[0])).rjust(2,'0') + m.group(2).split()[1],
                     time=m.group(3),
                     source=m.group(4),
                     action=m.group(8),
@@ -423,7 +284,7 @@ class Parser(object):
         m = re.search(fwlog, input)
         if m:
             return Row(
-                date=str(datetime.datetime.now().year) + str(list(calendar.month_abbr).index(m.group(2).split()[0])) + m.group(2).split()[1],
+                date=str(datetime.datetime.now().year) + str(list(calendar.month_abbr).index(m.group(2).split()[0])).rjust(2,'0') + m.group(2).split()[1],
                 time=m.group(3),
                 source=m.group(4),
                 action=m.group(8),
