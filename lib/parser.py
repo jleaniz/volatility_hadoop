@@ -265,7 +265,7 @@ class Parser(object):
             m = re.search(fwlog, element)
             if m:
                 yield Row(
-                    date=str(datetime.datetime.now().year) + str(list(calendar.month_abbr).index(m.group(2).split()[0])).rjust(2,'0') + m.group(2).split()[1],
+                    date=str(datetime.datetime.now().year) + str(list(calendar.month_abbr).index(m.group(2).split()[0])).rjust(2,'0') + m.group(2).split()[1].rjust(2,'0'),
                     time=m.group(3),
                     source=m.group(4),
                     action=m.group(8),
@@ -284,7 +284,7 @@ class Parser(object):
         m = re.search(fwlog, input)
         if m:
             return Row(
-                date=str(datetime.datetime.now().year) + str(list(calendar.month_abbr).index(m.group(2).split()[0])).rjust(2,'0') + m.group(2).split()[1],
+                date=str(datetime.datetime.now().year) + str(list(calendar.month_abbr).index(m.group(2).split()[0])).rjust(2,'0') + m.group(2).split()[1].rjust(2,'0'),
                 time=m.group(3),
                 source=m.group(4),
                 action=m.group(8),
