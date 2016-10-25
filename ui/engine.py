@@ -500,6 +500,7 @@ class AnalyticsEngine(object):
                 logger.warning(e)
                 logger.warning(e.__str__().split(' ')[-1][:-2])
                 _parquetPaths.remove(e.__str__().split('')[-1][:-2])
+                logger.warning(_parquetPaths)
 
         return None
 
