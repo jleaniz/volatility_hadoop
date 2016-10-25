@@ -53,7 +53,7 @@ class Parser(object):
                 '<\d{1,3}>(\S+\W+\d+) (\d+:\d+:\d+) \S+ (\w+-\w+-\w+|"\w+-\w+-\w+") (\d+-\d+-\d+) (\d+:\d+:\d+) (\d+) (\d+.\d+.\d+.\d+) (\d+) (\S+) (\d+) (\d+) (\w+) (\w+) (\d+.\d+.\d+.\d+|\S+) (\d+) (\S+) (\S+) (\S+) (\S+) (\d+.\d+.\d+.\d+|\S+) (\S+) (\S+) "?([^"].*?)"? (\S+) "([\s+\S+]*?)" (\S+) (\S+) (\d{3}|\S+) (\S+) (\d+.\d+.\d+.\d+)'
             ),
             'iptables': re.compile(
-                '(\S\d\d\S)(\S+ \d{2}) (\d{2}:\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+|DROP \S+) (\S+) (\S+)(\s{1,2})(\s+)IN=(\S+) OUT=((\S+)?) MAC=(\S+)(\s+)SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
+                '(<\d{1,3}>)(\S+  \d{1,2}) (\d{2}:\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+|DROP \S+) (\S+) (\S+)(\s{1,2})(\s+)IN=(\S+) OUT=((\S+)?) MAC=(\S+|)(\s+)SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
             ),
             'bashlog': re.compile(
                 "(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) bash: user: (\S+) as (\S+) from ip: (""\d+.\d+.\d+.\d+|\S+):pts\/\d{1,2} execs: '(.*)'"
