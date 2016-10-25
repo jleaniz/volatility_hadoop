@@ -951,11 +951,9 @@ class AnalyticsEngine(object):
 
     def pm_dashboard(self):
         try:
-            if self.sccmDF:
-                logger.info("Already loaded this DataFrame")
-                pass
-        except:
             self.sccmDF = self.session.read.parquet('/user/jleaniz/sccm/df_sys_dsA1')
+        except Exception as e:
+            logger.warning(e)
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
