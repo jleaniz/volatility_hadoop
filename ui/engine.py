@@ -174,9 +174,8 @@ class AnalyticsEngine(object):
 
     def getProxyUserMalwareHits(self, username, fromdate, todate):
 
-        _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
+        self.proxyDF = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.session.read.parquet(*_parquetPaths)
         # Register DataFrame as a Spark SQL Table
         self.proxyDF.createOrReplaceTempView('proxysg')
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER) # not enough capacity for this right now
@@ -228,9 +227,8 @@ class AnalyticsEngine(object):
         '''
         :return:
         '''
-        _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
+        self.proxyDF = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.session.read.parquet(*_parquetPaths)
         self.proxyDF.createOrReplaceTempView('proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
@@ -287,9 +285,8 @@ class AnalyticsEngine(object):
         '''
         :return:
         '''
-        _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
+        self.proxyDF = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.session.read.parquet(*_parquetPaths)
         self.proxyDF.createOrReplaceTempView('proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
@@ -321,9 +318,8 @@ class AnalyticsEngine(object):
         '''
         :return:
         '''
-        _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
+        self.proxyDF = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.session.read.parquet(*_parquetPaths)
         self.proxyDF.createOrReplaceTempView('proxysg')
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
@@ -354,9 +350,8 @@ class AnalyticsEngine(object):
         '''
         :return:
         '''
-        _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
+        self.proxyDF = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.session.read.parquet(*_parquetPaths)
         self.proxyDF.createOrReplaceTempView('proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
@@ -388,9 +383,8 @@ class AnalyticsEngine(object):
         '''
         :return:
         '''
-        _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
+        self.proxyDF = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.session.read.parquet(*_parquetPaths)
         self.proxyDF.createOrReplaceTempView('proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
@@ -421,9 +415,8 @@ class AnalyticsEngine(object):
         '''
         :return:
         '''
-        _parquetPaths = self.buildParquetFileList('proxysg', fromdate, todate)
+        self.proxyDF = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.proxyDF = self.session.read.parquet(*_parquetPaths)
         self.proxyDF.createOrReplaceTempView('proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
@@ -489,7 +482,6 @@ class AnalyticsEngine(object):
                         table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
 
-        #_parquetPaths = [x for x in parquetPaths if os.path.exists('/mnt/hdfs' + x)]
         _parquetPaths = [x for x in parquetPaths]
 
         while(len(_parquetPaths)>0):
@@ -498,8 +490,6 @@ class AnalyticsEngine(object):
                 return df
             except AnalysisException as e:
                 logger.warning(e)
-                logger.warning(_parquetPaths)
-                logger.warning(e.__str__().split(' ')[-1][:-2])
                 path = e.__str__().split(' ')[-1][:-2].split('hdfs://bdp-prod-1')[1]
                 _parquetPaths.remove(path)
 
@@ -509,26 +499,19 @@ class AnalyticsEngine(object):
         #days = self.buildDateList(sdate, edate)
         try:
             if 'proxysg' in tables:
-                #_parquetPaths = self.buildParquetFileList('proxysg', sdate, edate)
-                #self.proxyDF = self.session.read.parquet(*_parquetPaths)
                 self.proxyDF = self.buildParquetFileList('proxysg',sdate, edate)
                 self.proxyDF.createOrReplaceTempView('proxysg')
 
             if 'ciscovpn' in tables:
-                _parquetPaths = self.buildParquetFileList('ciscovpn', sdate, edate)
-                self.vpnLogsDF = self.session.read.parquet(*_parquetPaths)
+                self.vpnLogsDF = self.buildParquetFileList('ciscovpn', sdate, edate)
                 self.vpnLogsDF.createOrReplaceTempView('ciscovpn')
 
             if 'firewall' in tables:
-                logger.info('Re-loading dataframe fw')
-                _parquetPaths = self.buildParquetFileList('fw', sdate, edate)
-                self.fwDF = self.session.read.parquet(*_parquetPaths)
+                self.fwDF = self.buildParquetFileList('fw', sdate, edate)
                 self.fwDF.createOrReplaceTempView('fw')
 
             if 'bashlog' in tables:
-                logger.info('Re-loading dataframe bashlog')
-                _parquetPaths = self.buildParquetFileList('bashlog', sdate, edate)
-                self.bashDF = self.session.read.parquet(*_parquetPaths)
+                self.bashDF = self.buildParquetFileList('bashlog', sdate, edate)
                 self.bashDF.createOrReplaceTempView('bashlog')
 
             if 'sccm_vuln' in tables:
@@ -558,9 +541,8 @@ class AnalyticsEngine(object):
             pass
 
     def bashKeywordSearch(self, keyword, fromdate, todate):
-        _parquetPaths = self.buildParquetFileList('bashlog', fromdate, todate)
+        self.bashDF = self.buildParquetFileList('bashlog', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.bashDF = self.session.read.parquet(*_parquetPaths)
         self.bashDF.createOrReplaceTempView('bashlog')
 
         query = ("select * from bashlog where command like '%s'" % (keyword))
@@ -598,9 +580,8 @@ class AnalyticsEngine(object):
         return json
 
     def bashUserActivity(self, keyword, fromdate, todate):
-        _parquetPaths = self.buildParquetFileList('bashlog', fromdate, todate)
+        self.bashDF = self.buildParquetFileList('bashlog', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.bashDF = self.session.read.parquet(*_parquetPaths)
         self.bashDF.createOrReplaceTempView('bashlog')
 
         query = ( "select * from bashlog where username like  ' %s' " % (keyword) )
@@ -644,8 +625,7 @@ class AnalyticsEngine(object):
                 pass
         except:
             logger.info("Loading new DataFrame")
-            _parquetPaths = self.buildParquetFileList('fw', fromdate, todate)
-            self.fwDF = self.session.read.parquet(*_parquetPaths)
+            self.fwDF = self.buildParquetFileList('fw', fromdate, todate)
             self.fwDF.createOrReplaceTempView('fw')
             #self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
@@ -677,8 +657,7 @@ class AnalyticsEngine(object):
 
     def getfwIPStats(self, fromdate, todate):
 
-        _parquetPaths = self.buildParquetFileList('fw', fromdate, todate)
-        self.fwDF = self.session.read.parquet(*_parquetPaths)
+        self.fwDF = self.buildParquetFileList('fw', fromdate, todate)
         self.fwDF.createOrReplaceTempView('fw')
         #self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
@@ -736,8 +715,7 @@ class AnalyticsEngine(object):
 
     def getfwMalwareConns(self, fromdate, todate):
 
-        _parquetPaths = self.buildParquetFileList('fw', fromdate, todate)
-        self.fwDF = self.session.read.parquet(*_parquetPaths)
+        self.fwDF = self.buildParquetFileList('fw', fromdate, todate)
         self.fwDF.createOrReplaceTempView('fw')
         #self.fwDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
@@ -773,8 +751,7 @@ class AnalyticsEngine(object):
 
     def getfwTopTalkers(self, fromdate, todate):
 
-        _parquetPaths = self.buildParquetFileList('fw', fromdate, todate)
-        self.fwDF = self.session.read.parquet(*_parquetPaths)
+        self.fwDF = self.buildParquetFileList('fw', fromdate, todate)
         self.fwDF.createOrReplaceTempView('fw')
         #self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
@@ -808,8 +785,7 @@ class AnalyticsEngine(object):
 
     def getfwStats(self, fromdate, todate):
 
-        _parquetPaths = self.buildParquetFileList('fw', fromdate, todate)
-        self.fwDF = self.session.read.parquet(*_parquetPaths)
+        self.fwDF = self.buildParquetFileList('fw', fromdate, todate)
         self.fwDF.createOrReplaceTempView('fw')
         #self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
