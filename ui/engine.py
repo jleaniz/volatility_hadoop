@@ -492,14 +492,21 @@ class AnalyticsEngine(object):
         #_parquetPaths = [x for x in parquetPaths if os.path.exists('/mnt/hdfs' + x)]
         _parquetPaths = [x for x in parquetPaths]
 
-        return _parquetPaths
+        try:
+            df = self.session.read.parquet(*_parquetPaths)
+            return df
+        except AnalysisException as e:
+            logger.warning(e)
+
+        return None
 
     def getSearchResults(self, tables, sdate, edate, query, num):
         #days = self.buildDateList(sdate, edate)
         try:
             if 'proxysg' in tables:
-                _parquetPaths = self.buildParquetFileList('proxysg', sdate, edate)
-                self.proxyDF = self.session.read.parquet(*_parquetPaths)
+                #_parquetPaths = self.buildParquetFileList('proxysg', sdate, edate)
+                #self.proxyDF = self.session.read.parquet(*_parquetPaths)
+                self.proxyDF = self.buildParquetFileList('proxysg',sdate, edate)
                 self.proxyDF.createOrReplaceTempView('proxysg')
 
             if 'ciscovpn' in tables:
@@ -961,12 +968,7 @@ class AnalyticsEngine(object):
         try:
             self.sccmDF = self.session.read.parquet(*paths)
         except AnalysisException as e:
-            logger.warning(e)
-            logger.warning(e.args)
-            logger.warning(e.message)
-            logger.warning(e.strerror)
-            logger.warning(e.__str__().split(' ')[-1][:-2])
-            return
+            pass
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
