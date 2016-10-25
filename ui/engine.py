@@ -500,7 +500,7 @@ class AnalyticsEngine(object):
                 logger.warning(e)
                 logger.warning(_parquetPaths)
                 logger.warning(e.__str__().split(' ')[-1][:-2])
-                path = e.__str__().split(' ')[-1][:-2]
+                path = e.__str__().split(' ')[-1][:-2].split('hdfs://bdp-prod-1/')[1]
                 _parquetPaths.remove(path)
 
         return None
