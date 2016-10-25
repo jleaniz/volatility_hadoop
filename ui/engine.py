@@ -498,8 +498,8 @@ class AnalyticsEngine(object):
                 return df
             except AnalysisException as e:
                 logger.warning(e)
-                logger.warning(e.__str__()[:-1][:-2])
-                _parquetPaths.remove(e.__str__()[:-1][:-2])
+                logger.warning(e.__str__().split(' ')[:-1][:-2])
+                _parquetPaths.remove(e.__str__().splt('')[:-1][:-2])
 
         return None
 
