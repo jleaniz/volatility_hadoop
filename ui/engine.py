@@ -24,6 +24,7 @@ from pyspark.mllib.clustering import KMeans
 from pyspark.mllib.feature import Word2Vec
 from pyspark.ml.feature import Word2Vec
 from pyspark.ml.clustering import KMeans, KMeansModel
+from pyspark.sql.utils import AnalysisException
 from config import config as conf
 #from py4j.java_gateway import Py4JJavaError
 import gviz_api
@@ -958,8 +959,11 @@ class AnalyticsEngine(object):
     def pm_dashboard(self):
         try:
             self.sccmDF = self.session.read.parquet('/user/jleaniz/sccm/df_sys_dsA1')
-        except Exception as e:
-            logger.warning(e.__str__().split(' ')[-1])
+        except AnalysisException as e:
+            logger.warning((e.__str__().split(' ')[-1]))
+            logger.warning(e)
+            logger.warning(e.args)
+            logger.warning(e.message)
             return
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
