@@ -492,12 +492,14 @@ class AnalyticsEngine(object):
         #_parquetPaths = [x for x in parquetPaths if os.path.exists('/mnt/hdfs' + x)]
         _parquetPaths = [x for x in parquetPaths]
 
-        try:
-            df = self.session.read.parquet(*_parquetPaths)
-            return df
-        except AnalysisException as e:
-            logger.warning(e)
-            pass
+        while(len(_parquetPaths)>0):
+            try:
+                df = self.session.read.parquet(*_parquetPaths)
+                return df
+            except AnalysisException as e:
+                logger.warning(e)
+                logger.warning(e.__str__()[:-1][:-2])
+                _parquetPaths.remove(e.__str__()[:-1][:-2])
 
         return None
 
