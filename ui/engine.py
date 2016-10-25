@@ -499,7 +499,7 @@ class AnalyticsEngine(object):
             except AnalysisException as e:
                 logger.warning(e)
                 logger.warning(e.__str__().split(' ')[-1][:-2])
-                _parquetPaths.remove(e.__str__().splt('')[-1][:-2])
+                _parquetPaths.remove(e.__str__().split('')[-1][:-2])
 
         return None
 
