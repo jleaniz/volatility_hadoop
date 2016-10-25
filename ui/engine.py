@@ -466,7 +466,13 @@ class AnalyticsEngine(object):
         return days
 
     def buildParquetFileList(self, table, sdate, edate):
-
+        '''
+        TODO : Return a DataFrame after checking all paths
+        :param table:
+        :param sdate:
+        :param edate:
+        :return:
+        '''
         days = self.buildDateList(sdate, edate)
 
         parquetPaths = []
@@ -482,9 +488,9 @@ class AnalyticsEngine(object):
                         table, day.year, str(day).split('-')[1], str(day).split('-')[2])
                 )
 
-        # _parquetPaths = [x for x in parquetPaths if hdfs.exists(x)]
         #_parquetPaths = [x for x in parquetPaths if os.path.exists('/mnt/hdfs' + x)]
         _parquetPaths = [x for x in parquetPaths]
+
         return _parquetPaths
 
     def getSearchResults(self, tables, sdate, edate, query, num):
@@ -953,7 +959,7 @@ class AnalyticsEngine(object):
         try:
             self.sccmDF = self.session.read.parquet('/user/jleaniz/sccm/df_sys_dsA1')
         except Exception as e:
-            logger.warning(e)
+            logger.warning(e.message)
             return
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
