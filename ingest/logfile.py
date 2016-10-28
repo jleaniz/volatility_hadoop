@@ -56,7 +56,7 @@ class LogFile(object):
             df.coalesce(256).write.saveAsTable('dw_srm.apache', format='parquet', mode='append', partitionBy='date')
 
         if self.type is 'bashlog':
-            parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseBash)
+            parsed_rdd = rdd.map(lambda x: x[1]).mapPartitions(self.parser.parseBashIter)
             df = self.sparkSession.createDataFrame(parsed_rdd)
             df.coalesce(256).write.saveAsTable('dw_srm.bash', format='parquet', mode='append', partitionBy='date')
 

@@ -363,6 +363,7 @@ class Parser(object):
                         command=m.group(6)
                     )
 
+
     def parseApacheAL(self, partition):
         '''
         Parse Apache access logs
