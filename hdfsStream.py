@@ -89,7 +89,7 @@ def parse(line):
         return line
 
 
-def save(rdd, type):
+def save(rdd):
     spark = getSqlContextInstance()
     if rdd.isEmpty():
         logger.warning('Empty RDD. Skipping.')
@@ -112,9 +112,7 @@ def save(rdd, type):
             logger.warning('Unknown schema. Skipping')
             return
 
-
 '''
-
 def save_fw(rdd):
     save(rdd, 'fw')
 
@@ -129,6 +127,8 @@ def save_bash(rdd):
 
 def save_vpn(rdd):
     save(rdd, 'ciscovpn')
+'''
+
 
 def process_fw(time, rdd):
     if not rdd.isEmpty():
@@ -141,7 +141,7 @@ def process_fw(time, rdd):
 # https://issues.apache.org/jira/browse/PARQUET-222 - Parquet writer memory allocation
 def process_proxy(time, rdd):
     if not rdd.isEmpty():
-        output_rdd = rdd.filter(lambda x: '-net-bc' in x) \
+        output_rdd = rdd.filter(lambda x: '-net-bc' in x and 'bash:' not in x) \
             .map(parse) \
             .filter(lambda x: isinstance(x, Row))
         return output_rdd
@@ -161,15 +161,7 @@ def process_vpn(time, rdd):
             .map(parse) \
             .filter(lambda x: isinstance(x, Row))
         return output_rdd
-'''
 
-
-
-def process(time, rdd):
-    if not rdd.isEmpty():
-        output_rdd = rdd.map(parse) \
-            .filter(lambda x: isinstance(x, Row))
-        return output_rdd
 
 '''Main function'''
 if __name__ == '__main__':
@@ -191,20 +183,16 @@ if __name__ == '__main__':
             stream = ssc.textFileStream(
                 '/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
             logger.warning('setting new path: /data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
-            '''
             fwDStream = stream.transform(process_fw)
             bashStream = stream.transform(process_bash)
             vpnStream = stream.transform(process_vpn)
             proxyStream = stream.transform(process_proxy)
 
-            fwDStream.foreachRDD(save_fw)
-            bashStream.foreachRDD(save_bash)
-            vpnStream.foreachRDD(save_vpn)
-            proxyStream.foreachRDD(save_proxy)
+            fwDStream.foreachRDD(save)
+            bashStream.foreachRDD(save)
+            vpnStream.foreachRDD(save)
+            proxyStream.foreachRDD(save)
 
-            '''
-            data = stream.transform(process)
-            data.foreachRDD(save)
             # Start Streaming Context and wait for termination
             ssc.start()
             ssc.awaitTermination()
