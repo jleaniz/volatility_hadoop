@@ -128,7 +128,7 @@ class AnalyticsEngine(object):
         adlocation = self.session.read.csv(header='true', inferSchema='true', path='/user/jleaniz/ad.csv')
         adlocation.cache()
 
-        vpn = self.session.read.parquet('/data/srm/dbs/dw_srm.db/ciscovpn')
+        vpn = self.session.read.parquet('/data/srm/dbs/dw_srm.db/ciscovpn').rdd()
         vpn.cache()
 
         def func(x):
@@ -137,7 +137,7 @@ class AnalyticsEngine(object):
             return Row(bytesrcv=x.bytesrcv, bytesxmt=x.bytesxmt, duration=x.duration, localip=x.localip, reason=x.reason,
                        remoteip=x.remoteip, source=x.source, time=x.time, user=x.user, date=x.date, remoteipcc=cc)
 
-        vpnDF = vpn.foreach(func).toDF()
+        vpnDF = vpn.map(func).toDF()
         joinDF = vpnDF.join(adlocation, vpnDF.user == adlocation.EmailAddress)
         joinDF.cache()
 
