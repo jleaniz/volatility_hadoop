@@ -128,7 +128,7 @@ class AnalyticsEngine(object):
         adlocation = self.session.read.csv(header='true', inferSchema='true', path='/user/jleaniz/ad.csv')
         adlocation.cache()
 
-        vpn = self.session.read.parquet('/data/srm/dbs/dw_srm.db/ciscovpn').rdd()
+        vpn = self.session.read.parquet('/data/srm/dbs/dw_srm.db/ciscovpn').rdd
         vpn.cache()
 
         def func(x):
