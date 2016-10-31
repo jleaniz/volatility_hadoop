@@ -125,7 +125,7 @@ class AnalyticsEngine(object):
     def getVPNUnusualActivity(self):
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
-        adlocation = self.session.read.parquet('/user/jleaniz/ad.csv').filter('c not like ""')
+        adlocation = self.session.read.csv('/user/jleaniz/ad.csv').filter('c not like ""')
         adlocation.cache()
 
         vpn = self.session.read.parquet('/data/srm/dbs/dw_srm.db/ciscovpn')
