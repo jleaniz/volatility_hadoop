@@ -514,9 +514,9 @@ class AnalyticsEngine(object):
                 self.fwDF = self.buildParquetFileList('fw', sdate, edate)
                 self.fwDF.createOrReplaceTempView('fw')
 
-            if 'bashlog' in tables:
-                self.bashDF = self.buildParquetFileList('bashlog', sdate, edate)
-                self.bashDF.createOrReplaceTempView('bashlog')
+            if 'bash' in tables:
+                self.bashDF = self.buildParquetFileList('bash', sdate, edate)
+                self.bashDF.createOrReplaceTempView('bash')
 
             if 'sccm_vuln' in tables:
                 if not self.sccmDF:
@@ -545,11 +545,11 @@ class AnalyticsEngine(object):
             pass
 
     def bashKeywordSearch(self, keyword, fromdate, todate):
-        self.bashDF = self.buildParquetFileList('bashlog', fromdate, todate)
+        self.bashDF = self.buildParquetFileList('bash', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.bashDF.createOrReplaceTempView('bashlog')
+        self.bashDF.createOrReplaceTempView('bash')
 
-        query = ("select * from bashlog where command like '%s'" % (keyword))
+        query = ("select * from bash where command like '%s'" % (keyword))
         logger.info(query)
 
         # Query using Spark SQL
@@ -584,11 +584,11 @@ class AnalyticsEngine(object):
         return json
 
     def bashUserActivity(self, keyword, fromdate, todate):
-        self.bashDF = self.buildParquetFileList('bashlog', fromdate, todate)
+        self.bashDF = self.buildParquetFileList('bash', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.bashDF.createOrReplaceTempView('bashlog')
+        self.bashDF.createOrReplaceTempView('bash')
 
-        query = ( "select * from bashlog where username like  ' %s' " % (keyword) )
+        query = ( "select * from bash where username like  ' %s' " % (keyword) )
         logger.info(query)
 
         # Query using Spark SQL
