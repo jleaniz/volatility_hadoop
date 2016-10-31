@@ -590,7 +590,7 @@ class AnalyticsEngine(object):
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
         self.bashDF.createOrReplaceTempView('bash')
 
-        query = ( "select * from bash where username like  ' %s' " % (keyword) )
+        query = ( "select * from bash where username like  '%s'" % (keyword) )
         logger.info(query)
 
         # Query using Spark SQL
