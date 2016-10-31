@@ -104,7 +104,7 @@ def save(rdd):
             df.write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
         elif 'command' in columns:
             logger.warning("Saving DataFrame - bash")
-            df.write.saveAsTable('dw_srm.bashlog', format='parquet', mode='append', partitionBy='date')
+            df.write.saveAsTable('dw_srm.bash', format='parquet', mode='append', partitionBy='date')
         elif 'duration' in columns:
             logger.warning("Saving DataFrame - ciscovpn")
             df.write.saveAsTable('dw_srm.ciscovpn', format='parquet', mode='append', partitionBy='date')
