@@ -175,7 +175,7 @@ if __name__ == '__main__':
             fwDStream.foreachRDD(save_fw)
             proxyStream.foreachRDD(save_proxy)
             bashStream.foreachRDD(save_bash)
-            vpnStream.foreachRDd(save_vpn)
+            vpnStream.foreachRDD(save_vpn)
 
             # Start Streaming Context and wait for termination
             ssc.start()
