@@ -1097,7 +1097,7 @@ class AnalyticsEngine(object):
     def getVPNLoginsGeoMap(self):
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
-        adlocation = self.session.read.csv.options(header='true',inferschema='true').load('/user/jleaniz/ad.csv').filter('c not like ""')
+        adlocation = self.session.read.csv.options(header='true',inferschema='true').load('/user/jleaniz/ad.csv')
 
         adlocation.cache()
 
