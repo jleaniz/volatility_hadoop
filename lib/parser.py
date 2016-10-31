@@ -62,13 +62,10 @@ class Parser(object):
                 "<\d{1,3}>(\S+\s+\d{1,2}) (\d{2}:\d{2}:\d{2}) (\S+) bash: WARNING (.*) user: (\S+) execs '(.*)'"
             ),
             'ciscovpnLogin': re.compile(
-                '(\d\d\d\d-\d\d-\d\d)T(\d\d:\d\d:\d\d)\+\d\d:\d\d (\S+) : %ASA-\d-722051: \S+ \S+ User <(\S+)> IP <('
-                '\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})> IPv4 Address <(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})>'
+                '<\d{1,3}>(\S+\s+\d{1,2}) (\d\d:\d\d:\d\d) (\S+)(\s|\s\S\s)%ASA-\d-722051: \S+ \S+ User <(\S+)> IP <(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})> IPv4 Address <(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})>'
             ),
             'ciscovpnLogout': re.compile(
-                '(\d\d\d\d-\d\d-\d\d)T(\d\d:\d\d:\d\d)\+\d\d:\d\d (\S+) : %ASA-\d-113019: Group = \S+ Username = ('
-                '\S+), IP = (\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}), Session disconnected. Session Type: \S+, Duration: (\d{'
-                '1,3}h:\d{1,2}m:\d{1,2}s), Bytes xmt: (\d+), Bytes rcv: (\d+), Reason: (.*)'
+                '<\d{1,3}>(\S+\s+\d{1,2}) (\d\d:\d\d:\d\d) (\S+)(\s|\s\S\s)%ASA-\d-113019: Group = \S+ Username = (\S+), IP = (\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}), Session disconnected. Session Type: \S+, Duration: (\d{1,3}d \d{1,3}h:\d{1,2}m:\d{1,2}s|\d{1,3}h:\d{1,2}m:\d{1,2}s), Bytes xmt: (\d+), Bytes rcv: (\d+), Reason: (.*)'
             ),
             'apacheAccessLog': re.compile(
                 "^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(\\S+) (\\S+) (\\S+)\" (\\d{3}) (\\d+)"
@@ -216,7 +213,52 @@ class Parser(object):
                             proxyip=m.group(30)
                         )
 
-    def parseVPN(self, partition):
+    def parseVPN(self, input):
+        '''
+        Parse Cisco VPN logs
+        :return: pyspark.sql.Row
+        '''
+        patterns = [self.patterns['ciscovpnLogin'],
+                    self.patterns['ciscovpnLogout']
+                    ]
+
+        for pattern in patterns:
+            m = re.search(pattern, input)
+            if m:
+                if pattern == patterns[0]:
+                    return Row(
+                        date=str(datetime.datetime.now().year) + '-' + str(
+                            list(calendar.month_abbr).index(m.group(1).split()[0])).rjust(2, '0') + '-' +
+                             m.group(1).split()[1].rjust(2, '0'),
+                        time=m.group(2),
+                        source=m.group(3),
+                        user=m.group(5),
+                        remoteip=m.group(6),
+                        localip=m.group(7),
+                        duration='',
+                        bytesxmt='',
+                        bytesrcv='',
+                        reason='',
+                    )
+
+                elif pattern == patterns[1]:
+                    return Row(
+                        date=str(datetime.datetime.now().year) + '-' + str(
+                            list(calendar.month_abbr).index(m.group(1).split()[0])).rjust(2, '0') + '-' +
+                             m.group(1).split()[1].rjust(2, '0'),
+                        time=m.group(2),
+                        source=m.group(3),
+                        user=m.group(5),
+                        remoteip=m.group(6),
+                        localip='',
+                        duration=m.group(7),
+                        bytesxmt=m.group(8),
+                        bytesrcv=m.group(9),
+                        reason=m.group(10)
+                    )
+
+
+    def parseVPNIter(self, partition):
         '''
         Parse Cisco VPN logs
         :return: pyspark.sql.Row
@@ -231,12 +273,14 @@ class Parser(object):
                 if m:
                     if pattern == patterns[0]:
                         yield Row(
-                            date=m.group(1),
+                            date=str(datetime.datetime.now().year) + '-' + str(
+                                list(calendar.month_abbr).index(m.group(1).split()[0])).rjust(2, '0') + '-' +
+                                 m.group(1).split()[1].rjust(2, '0'),
                             time=m.group(2),
                             source=m.group(3),
-                            user=m.group(4),
-                            remoteip=m.group(5),
-                            localip=m.group(6),
+                            user=m.group(5),
+                            remoteip=m.group(6),
+                            localip=m.group(7),
                             duration='',
                             bytesxmt='',
                             bytesrcv='',
@@ -245,16 +289,18 @@ class Parser(object):
 
                     elif pattern == patterns[1]:
                         yield Row(
-                            date=m.group(1),
+                            date=str(datetime.datetime.now().year) + '-' + str(
+                                list(calendar.month_abbr).index(m.group(1).split()[0])).rjust(2, '0') + '-' +
+                                 m.group(1).split()[1].rjust(2, '0'),
                             time=m.group(2),
                             source=m.group(3),
-                            user=m.group(4),
-                            remoteip=m.group(5),
+                            user=m.group(5),
+                            remoteip=m.group(6),
                             localip='',
-                            duration=m.group(6),
-                            bytesxmt=m.group(7),
-                            bytesrcv=m.group(8),
-                            reason=m.group(9)
+                            duration=m.group(7),
+                            bytesxmt=m.group(8),
+                            bytesrcv=m.group(9),
+                            reason=m.group(10)
                         )
 
 
