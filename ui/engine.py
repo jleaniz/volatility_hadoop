@@ -70,6 +70,8 @@ class AnalyticsEngine(object):
         :return:
         '''
 
+        self.vpnLogsDF = self.session.read.parquet('/data/srm/dbs/dw_srm.db/ciscovpn')
+        self.vpnLogsDF.createOrReplaceTempView('ciscovpn')
         loginsByUser = self.session.sql(
             "select `date`, time, remoteip, reason from ciscovpn where user='%s' group by `date`, time, "
             "remoteip, reason" % (username)
@@ -89,6 +91,8 @@ class AnalyticsEngine(object):
         '''
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
+        self.vpnLogsDF = self.session.read.parquet('/data/srm/dbs/dw_srm.db/ciscovpn')
+        self.vpnLogsDF.createOrReplaceTempView('ciscovpn')
 
         loginsByUser = self.session.sql(
             "select remoteip, count(*) as hits from ciscovpn where user='%s' group by remoteip" % (username)
@@ -121,10 +125,10 @@ class AnalyticsEngine(object):
     def getVPNUnusualActivity(self):
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
-        adlocation = self.session.read.parquet('ad.csv').filter('c not like ""')
+        adlocation = self.session.read.csv(header='true', inferSchema='true', path='/user/jleaniz/ad.csv')
         adlocation.cache()
 
-        vpn = self.session.read.parquet('/data/srm/dbs/dw_srm.db/vpn/ciscovpn')
+        vpn = self.session.read.parquet('/data/srm/dbs/dw_srm.db/ciscovpn').rdd
         vpn.cache()
 
         def func(x):
@@ -418,6 +422,8 @@ class AnalyticsEngine(object):
         self.proxyDF = self.buildParquetFileList('proxysg', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
         self.proxyDF.createOrReplaceTempView('proxysg')
+        self.session.read.parquet('/data/srm/dbs/dw_srm.db/otx').createOrReplaceTempView('otx')
+        self.session.read.parquet('/data/srm/dbs/dw_srm.db/c2').createOrReplaceTempView('c2')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
@@ -510,9 +516,9 @@ class AnalyticsEngine(object):
                 self.fwDF = self.buildParquetFileList('fw', sdate, edate)
                 self.fwDF.createOrReplaceTempView('fw')
 
-            if 'bashlog' in tables:
-                self.bashDF = self.buildParquetFileList('bashlog', sdate, edate)
-                self.bashDF.createOrReplaceTempView('bashlog')
+            if 'bash' in tables:
+                self.bashDF = self.buildParquetFileList('bash', sdate, edate)
+                self.bashDF.createOrReplaceTempView('bash')
 
             if 'sccm_vuln' in tables:
                 if not self.sccmDF:
@@ -541,11 +547,11 @@ class AnalyticsEngine(object):
             pass
 
     def bashKeywordSearch(self, keyword, fromdate, todate):
-        self.bashDF = self.buildParquetFileList('bashlog', fromdate, todate)
+        self.bashDF = self.buildParquetFileList('bash', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.bashDF.createOrReplaceTempView('bashlog')
+        self.bashDF.createOrReplaceTempView('bash')
 
-        query = ("select * from bashlog where command like '%s'" % (keyword))
+        query = ("select * from bash where command like '%s'" % (keyword))
         logger.info(query)
 
         # Query using Spark SQL
@@ -580,11 +586,11 @@ class AnalyticsEngine(object):
         return json
 
     def bashUserActivity(self, keyword, fromdate, todate):
-        self.bashDF = self.buildParquetFileList('bashlog', fromdate, todate)
+        self.bashDF = self.buildParquetFileList('bash', fromdate, todate)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        self.bashDF.createOrReplaceTempView('bashlog')
+        self.bashDF.createOrReplaceTempView('bash')
 
-        query = ( "select * from bashlog where username like  ' %s' " % (keyword) )
+        query = ( "select * from bash where username like  '%s'" % (keyword) )
         logger.info(query)
 
         # Query using Spark SQL
@@ -718,6 +724,8 @@ class AnalyticsEngine(object):
         self.fwDF = self.buildParquetFileList('fw', fromdate, todate)
         self.fwDF.createOrReplaceTempView('fw')
         #self.fwDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
+        self.session.read.parquet('/data/srm/dbs/dw_srm.db/otx').createOrReplaceTempView('otx')
+        self.session.read.parquet('/data/srm/dbs/dw_srm.db/c2').createOrReplaceTempView('c2')
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
         fwotx = self.session.sql('select fw.dstip from fw join otx on otx.ip=fw.dstip')
@@ -1093,12 +1101,11 @@ class AnalyticsEngine(object):
     def getVPNLoginsGeoMap(self):
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
-        adlocation = self.session.read.format('com.databricks.spark.csv')\
-            .options(header='true',inferschema='true').load('ad.csv').filter('c not like ""')
+        adlocation = self.session.read.csv(header='true', inferSchema='true', path='/user/jleaniz/ad.csv')
 
         adlocation.cache()
 
-        vpn = self.session.read.parquet('/user/jleaniz/ciscovpn')
+        vpn = self.session.read.parquet('/data/srm/dbs/dw_srm.db/ciscovpn').rdd
         vpn.cache()
 
         def func(x):

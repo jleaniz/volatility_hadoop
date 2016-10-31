@@ -53,22 +53,19 @@ class Parser(object):
                 '<\d{1,3}>(\S+\W+\d+) (\d+:\d+:\d+) \S+ (\w+-\w+-\w+|"\w+-\w+-\w+") (\d+-\d+-\d+) (\d+:\d+:\d+) (\d+) (\d+.\d+.\d+.\d+) (\d+) (\S+) (\d+) (\d+) (\w+) (\w+) (\d+.\d+.\d+.\d+|\S+) (\d+) (\S+) (\S+) (\S+) (\S+) (\d+.\d+.\d+.\d+|\S+) (\S+) (\S+) "?([^"].*?)"? (\S+) "([\s+\S+]*?)" (\S+) (\S+) (\d{3}|\S+) (\S+) (\d+.\d+.\d+.\d+)'
             ),
             'iptables': re.compile(
-                '(<\d{1,3}>)(\S+  \d{1,2}) (\d{2}:\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+|DROP \S+) (\S+) (\S+)(\s{1,2})(\s+)IN=(\S+) OUT=((\S+)?) MAC=(\S+|)(\s+)SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
+                '(<\d{1,3}>)(\S+\s+\d{1,2}) (\d{2}:\d{2}:\d{2}) (\S+) (\S+)  (RULE \S+ \d+|RULE \d+|DROP \S+) (\S+) (\S+)(\s{1,2})(\s+)IN=(\S+) OUT=((\S+)?) MAC=(\S+|)(\s+)SRC=(\d+.\d+.\d+.\d+) DST=(\d+.\d+.\d+.\d+) LEN=(\d+) TOS=(\d+) PREC=(\S+) TTL=(\d+) ID=(\d+).*PROTO=(\S+) SPT=(\d+) DPT=(\d+)'
             ),
             'bashlog': re.compile(
-                "(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) bash: user: (\S+) as (\S+) from ip: (""\d+.\d+.\d+.\d+|\S+):pts\/\d{1,2} execs: '(.*)'"
+                "<\d{1,3}>(\S+\s+\d{1,2}) (\d{2}:\d{2}:\d{2}) (\S+) bash: user: (\S+) as (\S+) from ip: (""\d+.\d+.\d+.\d+|\S+):pts\/\d{1,2} execs: '(.*)'"
             ),
             'bashlogWarn': re.compile(
-                "(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}) (\S+) bash: WARNING (.*) execs '(.*)'"
+                "<\d{1,3}>(\S+\s+\d{1,2}) (\d{2}:\d{2}:\d{2}) (\S+) bash: WARNING (.*) user: (\S+) execs '(.*)'"
             ),
             'ciscovpnLogin': re.compile(
-                '(\d\d\d\d-\d\d-\d\d)T(\d\d:\d\d:\d\d)\+\d\d:\d\d (\S+) : %ASA-\d-722051: \S+ \S+ User <(\S+)> IP <('
-                '\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})> IPv4 Address <(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})>'
+                '<\d{1,3}>(\S+\s+\d{1,2}) (\d\d:\d\d:\d\d) (\S+)(\s|\s\S\s)%ASA-\d-722051: \S+ \S+ User <(\S+)> IP <(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})> IPv4 Address <(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})>'
             ),
             'ciscovpnLogout': re.compile(
-                '(\d\d\d\d-\d\d-\d\d)T(\d\d:\d\d:\d\d)\+\d\d:\d\d (\S+) : %ASA-\d-113019: Group = \S+ Username = ('
-                '\S+), IP = (\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}), Session disconnected. Session Type: \S+, Duration: (\d{'
-                '1,3}h:\d{1,2}m:\d{1,2}s), Bytes xmt: (\d+), Bytes rcv: (\d+), Reason: (.*)'
+                '<\d{1,3}>(\S+\s+\d{1,2}) (\d\d:\d\d:\d\d) (\S+)(\s|\s\S\s)%ASA-\d-113019: Group = \S+ Username = (\S+), IP = (\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}), Session disconnected. Session Type: \S+, Duration: (\d{1,3}d \d{1,3}h:\d{1,2}m:\d{1,2}s|\d{1,3}h:\d{1,2}m:\d{1,2}s), Bytes xmt: (\d+), Bytes rcv: (\d+), Reason: (.*)'
             ),
             'apacheAccessLog': re.compile(
                 "^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(\\S+) (\\S+) (\\S+)\" (\\d{3}) (\\d+)"
@@ -216,7 +213,52 @@ class Parser(object):
                             proxyip=m.group(30)
                         )
 
-    def parseVPN(self, partition):
+    def parseVPN(self, input):
+        '''
+        Parse Cisco VPN logs
+        :return: pyspark.sql.Row
+        '''
+        patterns = [self.patterns['ciscovpnLogin'],
+                    self.patterns['ciscovpnLogout']
+                    ]
+
+        for pattern in patterns:
+            m = re.search(pattern, input)
+            if m:
+                if pattern == patterns[0]:
+                    return Row(
+                        date=str(datetime.datetime.now().year) + '-' + str(
+                            list(calendar.month_abbr).index(m.group(1).split()[0])).rjust(2, '0') + '-' +
+                             m.group(1).split()[1].rjust(2, '0'),
+                        time=m.group(2),
+                        source=m.group(3),
+                        user=m.group(5),
+                        remoteip=m.group(6),
+                        localip=m.group(7),
+                        duration='',
+                        bytesxmt='',
+                        bytesrcv='',
+                        reason='',
+                    )
+
+                elif pattern == patterns[1]:
+                    return Row(
+                        date=str(datetime.datetime.now().year) + '-' + str(
+                            list(calendar.month_abbr).index(m.group(1).split()[0])).rjust(2, '0') + '-' +
+                             m.group(1).split()[1].rjust(2, '0'),
+                        time=m.group(2),
+                        source=m.group(3),
+                        user=m.group(5),
+                        remoteip=m.group(6),
+                        localip='',
+                        duration=m.group(7),
+                        bytesxmt=m.group(8),
+                        bytesrcv=m.group(9),
+                        reason=m.group(10)
+                    )
+
+
+    def parseVPNIter(self, partition):
         '''
         Parse Cisco VPN logs
         :return: pyspark.sql.Row
@@ -231,12 +273,14 @@ class Parser(object):
                 if m:
                     if pattern == patterns[0]:
                         yield Row(
-                            date=m.group(1),
+                            date=str(datetime.datetime.now().year) + '-' + str(
+                                list(calendar.month_abbr).index(m.group(1).split()[0])).rjust(2, '0') + '-' +
+                                 m.group(1).split()[1].rjust(2, '0'),
                             time=m.group(2),
                             source=m.group(3),
-                            user=m.group(4),
-                            remoteip=m.group(5),
-                            localip=m.group(6),
+                            user=m.group(5),
+                            remoteip=m.group(6),
+                            localip=m.group(7),
                             duration='',
                             bytesxmt='',
                             bytesrcv='',
@@ -245,16 +289,18 @@ class Parser(object):
 
                     elif pattern == patterns[1]:
                         yield Row(
-                            date=m.group(1),
+                            date=str(datetime.datetime.now().year) + '-' + str(
+                                list(calendar.month_abbr).index(m.group(1).split()[0])).rjust(2, '0') + '-' +
+                                 m.group(1).split()[1].rjust(2, '0'),
                             time=m.group(2),
                             source=m.group(3),
-                            user=m.group(4),
-                            remoteip=m.group(5),
+                            user=m.group(5),
+                            remoteip=m.group(6),
                             localip='',
-                            duration=m.group(6),
-                            bytesxmt=m.group(7),
-                            bytesrcv=m.group(8),
-                            reason=m.group(9)
+                            duration=m.group(7),
+                            bytesxmt=m.group(8),
+                            bytesrcv=m.group(9),
+                            reason=m.group(10)
                         )
 
 
@@ -297,16 +343,13 @@ class Parser(object):
                 dstport=int(m.group(25))
             )
 
-    def parseBash(self, partition):
+    def parseBashIter(self, partition):
         """
         Parse bash logs
         :param partition:
         :return: Row
         """
-        '''
-          930  for i in `ssh jleaniz@msr-infr-log01 find /opt/var/log -name bash.log.gz`; do rsync -Rav jleaniz@msr-infr-log01:$i /mnt/hdfs/user/cloudera/bash; done
-          951  rsync -Rav --files-from=files.txt jleaniz@msr-infr-log01:/ /mnt/hdfs/user/cloudera/bash/
-        '''
+
         patterns = [self.patterns['bashlog'],
                     self.patterns['bashlogWarn']
                     ]
@@ -314,17 +357,58 @@ class Parser(object):
             for pattern in patterns:
                 m = re.search(pattern, element)
                 if m:
-                    try:
+                    if pattern == patterns[0]:
                         yield Row(
-                            date=m.group(1),
+                            date=str(datetime.datetime.now().year) + '-' + str(list(calendar.month_abbr).index(m.group(1).split()[0])).rjust(2,'0') + '-' + m.group(1).split()[1].rjust(2,'0'),
                             source=m.group(3),
                             username=m.group(4),
                             exec_as=m.group(5),
                             srcip=m.group(6),
                             command=m.group(7)
                         )
-                    except:
-                        pass
+                    elif pattern == patterns[1]:
+                        yield Row(
+                            date=str(datetime.datetime.now().year) + '-' + str(list(calendar.month_abbr).index(m.group(1).split()[0])).rjust(2,'0') + '-' + m.group(1).split()[1].rjust(2,'0'),
+                            source=m.group(3),
+                            username=m.group(5),
+                            exec_as=m.group(4),
+                            srcip='',
+                            command=m.group(6)
+                        )
+
+
+    def parseBash(self, input):
+        """
+        Parse bash logs
+        :param partition:
+        :return: Row
+        """
+
+        patterns = [self.patterns['bashlog'],
+                    self.patterns['bashlogWarn']
+                    ]
+        for pattern in patterns:
+            m = re.search(pattern, input)
+            if m:
+                if pattern == patterns[0]:
+                    return Row(
+                        date=str(datetime.datetime.now().year) + '-' + str(list(calendar.month_abbr).index(m.group(1).split()[0])).rjust(2,'0') + '-' + m.group(1).split()[1].rjust(2,'0'),
+                        source=m.group(3),
+                        username=m.group(4),
+                        exec_as=m.group(5),
+                        srcip=m.group(6),
+                        command=m.group(7)
+                    )
+                elif pattern == patterns[1]:
+                    return Row(
+                        date=str(datetime.datetime.now().year) + '-' + str(list(calendar.month_abbr).index(m.group(1).split()[0])).rjust(2,'0') + '-' + m.group(1).split()[1].rjust(2,'0'),
+                        source=m.group(3),
+                        username=m.group(5),
+                        exec_as=m.group(4),
+                        srcip='',
+                        command=m.group(6)
+                    )
+
 
     def parseApacheAL(self, partition):
         '''

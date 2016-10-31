@@ -36,7 +36,7 @@ def updateAlienvaultOtx(sContext):
     parsed_rdd = rdd.map(myParser.parseAlienVaultOTX)
     parsed_rdd.collect()
     df = parsed_rdd.toDF()
-    df.save('reputation/otx', 'parquet', 'overwrite')
+    df.write.saveAsTable('dw_srm.otx', format='parquet')
 
 
 def getC2Feeds():
@@ -116,7 +116,7 @@ def updateC2Feeds(sContext):
     parsed_rdd = rdd.map(myParser.parsec2)
     parsed_rdd.collect()
     df = parsed_rdd.toDF()
-    df.save('reputation/c2', 'parquet', 'overwrite')
+    df.write.saveAsTable('dw_srm.c2', format='parquet')
 
 
 def updateOpenphish(sContext):
@@ -132,4 +132,4 @@ def updateOpenphish(sContext):
     parsed_rdd = rdd.map(myParser.parseOpenPhish)
     parsed_rdd.collect()
     df = parsed_rdd.toDF()
-    df.save('reputation/openphish', 'parquet', 'overwrite')
+    df.write.saveAsTable('dw_srm.openphish', format='parquet')

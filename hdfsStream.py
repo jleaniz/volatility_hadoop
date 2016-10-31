@@ -79,28 +79,55 @@ def getSqlContextInstance():
 def parse(line):
     if '-fw' in line:
         return logParser.parseIPTables(line)
+    elif 'ASA-' in line:
+        return logParser.parseVPN(line)
+    elif 'bash:' in line:
+        return logParser.parseBash(line)
     elif '-net-bc' in line:
         return logParser.parseBCAccessLog(line)
     else:
         return line
 
 
-def save(rdd, type):
+def save(rdd):
     spark = getSqlContextInstance()
     if rdd.isEmpty():
         logger.warning('Empty RDD. Skipping.')
     else:
         df = spark.createDataFrame(rdd)
-        logger.warning("Saving DataFrame - %s." % type)
-        df.write.saveAsTable('dw_srm.%s' % type, format='parquet', mode='append', partitionBy='date')
+        columns = df.schema.names
+        if 'proxyip' in columns:
+            logger.warning("Saving DataFrame - proxysg")
+            df.write.saveAsTable('dw_srm.proxysg', format='parquet', mode='append', partitionBy='date')
+        elif 'srcport' in columns:
+            logger.warning("Saving DataFrame - fw")
+            df.write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
+        elif 'command' in columns:
+            logger.warning("Saving DataFrame - bash")
+            df.write.saveAsTable('dw_srm.bash', format='parquet', mode='append', partitionBy='date')
+        elif 'duration' in columns:
+            logger.warning("Saving DataFrame - ciscovpn")
+            df.write.saveAsTable('dw_srm.ciscovpn', format='parquet', mode='append', partitionBy='date')
+        else:
+            logger.warning('Unknown schema. Skipping')
+            return
 
-
+'''
 def save_fw(rdd):
     save(rdd, 'fw')
 
 
 def save_proxy(rdd):
     save(rdd, 'proxysg')
+
+
+def save_bash(rdd):
+    save(rdd, 'bashlog')
+
+
+def save_vpn(rdd):
+    save(rdd, 'ciscovpn')
+'''
 
 
 def process_fw(time, rdd):
@@ -114,7 +141,23 @@ def process_fw(time, rdd):
 # https://issues.apache.org/jira/browse/PARQUET-222 - Parquet writer memory allocation
 def process_proxy(time, rdd):
     if not rdd.isEmpty():
-        output_rdd = rdd.filter(lambda x: '-net-bc' in x) \
+        output_rdd = rdd.filter(lambda x: '-net-bc' in x and 'bash:' not in x) \
+            .map(parse) \
+            .filter(lambda x: isinstance(x, Row))
+        return output_rdd
+
+
+def process_bash(time, rdd):
+    if not rdd.isEmpty():
+        output_rdd = rdd.filter(lambda x: 'bash:' in x) \
+            .map(parse) \
+            .filter(lambda x: isinstance(x, Row))
+        return output_rdd
+
+
+def process_vpn(time, rdd):
+    if not rdd.isEmpty():
+        output_rdd = rdd.filter(lambda x: 'ASA-' in x) \
             .map(parse) \
             .filter(lambda x: isinstance(x, Row))
         return output_rdd
@@ -141,9 +184,14 @@ if __name__ == '__main__':
                 '/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
             logger.warning('setting new path: /data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
             fwDStream = stream.transform(process_fw)
+            bashStream = stream.transform(process_bash)
+            vpnStream = stream.transform(process_vpn)
             proxyStream = stream.transform(process_proxy)
-            fwDStream.foreachRDD(save_fw)
-            proxyStream.foreachRDD(save_proxy)
+
+            fwDStream.foreachRDD(save)
+            bashStream.foreachRDD(save)
+            vpnStream.foreachRDD(save)
+            proxyStream.foreachRDD(save)
 
             # Start Streaming Context and wait for termination
             ssc.start()
