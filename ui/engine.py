@@ -70,6 +70,8 @@ class AnalyticsEngine(object):
         :return:
         '''
 
+        self.vpnLogsDF = self.session.read.parquet('/data/srm/dbs/dw_srm.db/ciscovpn')
+        self.vpnLogsDF.createOrReplaceTempView('ciscovpn')
         loginsByUser = self.session.sql(
             "select `date`, time, remoteip, reason from ciscovpn where user='%s' group by `date`, time, "
             "remoteip, reason" % (username)
@@ -89,6 +91,8 @@ class AnalyticsEngine(object):
         '''
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
+        self.vpnLogsDF = self.session.read.parquet('/data/srm/dbs/dw_srm.db/ciscovpn')
+        self.vpnLogsDF.createOrReplaceTempView('ciscovpn')
 
         loginsByUser = self.session.sql(
             "select remoteip, count(*) as hits from ciscovpn where user='%s' group by remoteip" % (username)
@@ -124,7 +128,7 @@ class AnalyticsEngine(object):
         adlocation = self.session.read.parquet('ad.csv').filter('c not like ""')
         adlocation.cache()
 
-        vpn = self.session.read.parquet('/data/srm/dbs/dw_srm.db/vpn/ciscovpn')
+        vpn = self.session.read.parquet('/data/srm/dbs/dw_srm.db/ciscovpn')
         vpn.cache()
 
         def func(x):
