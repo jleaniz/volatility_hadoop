@@ -95,9 +95,25 @@ def save(rdd, type):
         logger.warning('Empty RDD. Skipping.')
     else:
         df = spark.createDataFrame(rdd)
-        logger.warning("Saving DataFrame - %s." % type)
-        df.write.saveAsTable('dw_srm.%s' % type, format='parquet', mode='append', partitionBy='date')
+        columns = df.schema.names
+        if 'proxyip' in columns:
+            logger.warning("Saving DataFrame - proxysg")
+            df.write.saveAsTable('dw_srm.proxysg', format='parquet', mode='append', partitionBy='date')
+        elif 'srcport' in columns:
+            logger.warning("Saving DataFrame - fw")
+            df.write.saveAsTable('dw_srm.fw', format='parquet', mode='append', partitionBy='date')
+        elif 'command' in columns:
+            logger.warning("Saving DataFrame - bash")
+            df.write.saveAsTable('dw_srm.bashlog', format='parquet', mode='append', partitionBy='date')
+        elif 'duration' in columns:
+            logger.warning("Saving DataFrame - ciscovpn")
+            df.write.saveAsTable('dw_srm.ciscovpn', format='parquet', mode='append', partitionBy='date')
+        else:
+            logger.warning('Unknown schema. Skipping')
+            return
 
+
+'''
 
 def save_fw(rdd):
     save(rdd, 'fw')
@@ -113,7 +129,6 @@ def save_bash(rdd):
 
 def save_vpn(rdd):
     save(rdd, 'ciscovpn')
-
 
 def process_fw(time, rdd):
     if not rdd.isEmpty():
@@ -146,7 +161,15 @@ def process_vpn(time, rdd):
             .map(parse) \
             .filter(lambda x: isinstance(x, Row))
         return output_rdd
+'''
 
+
+
+def process(time, rdd):
+    if not rdd.isEmpty():
+        output_rdd = rdd.map(parse) \
+            .filter(lambda x: isinstance(x, Row))
+        return output_rdd
 
 '''Main function'''
 if __name__ == '__main__':
@@ -168,6 +191,7 @@ if __name__ == '__main__':
             stream = ssc.textFileStream(
                 '/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
             logger.warning('setting new path: /data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
+            '''
             fwDStream = stream.transform(process_fw)
             bashStream = stream.transform(process_bash)
             vpnStream = stream.transform(process_vpn)
@@ -178,6 +202,9 @@ if __name__ == '__main__':
             vpnStream.foreachRDD(save_vpn)
             proxyStream.foreachRDD(save_proxy)
 
+            '''
+            data = stream.transform(process)
+            data.foreachRDD(save)
             # Start Streaming Context and wait for termination
             ssc.start()
             ssc.awaitTermination()
