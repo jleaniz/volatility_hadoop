@@ -79,12 +79,12 @@ def getSqlContextInstance():
 def parse(line):
     if '-fw' in line:
         return logParser.parseIPTables(line)
+    elif 'ASA-' in line:
+        return logParser.parseVPN(line)
+    elif 'bash:' in line:
+        return logParser.parseBash(line)
     elif '-net-bc' in line:
         return logParser.parseBCAccessLog(line)
-    elif 'ASA' in line:
-        return logParser.parseVPN(line)
-    elif 'bash' in line:
-        return logParser.parseBash(line)
     else:
         return line
 
@@ -134,7 +134,7 @@ def process_proxy(time, rdd):
 
 def process_bash(time, rdd):
     if not rdd.isEmpty():
-        output_rdd = rdd.filter(lambda x: 'bash' in x) \
+        output_rdd = rdd.filter(lambda x: 'bash:' in x) \
             .map(parse) \
             .filter(lambda x: isinstance(x, Row))
         return output_rdd
@@ -142,7 +142,7 @@ def process_bash(time, rdd):
 
 def process_vpn(time, rdd):
     if not rdd.isEmpty():
-        output_rdd = rdd.filter(lambda x: 'ASA' in x) \
+        output_rdd = rdd.filter(lambda x: 'ASA-' in x) \
             .map(parse) \
             .filter(lambda x: isinstance(x, Row))
         return output_rdd
@@ -169,14 +169,14 @@ if __name__ == '__main__':
                 '/data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
             logger.warning('setting new path: /data/datalake/dbs/dl_raw_infra.db/syslog_log/dt=%s' % last_updated.strftime("%Y%m%d"))
             fwDStream = stream.transform(process_fw)
-            proxyStream = stream.transform(process_proxy)
             bashStream = stream.transform(process_bash)
             vpnStream = stream.transform(process_vpn)
+            proxyStream = stream.transform(process_proxy)
 
             fwDStream.foreachRDD(save_fw)
-            proxyStream.foreachRDD(save_proxy)
             bashStream.foreachRDD(save_bash)
             vpnStream.foreachRDD(save_vpn)
+            proxyStream.foreachRDD(save_proxy)
 
             # Start Streaming Context and wait for termination
             ssc.start()
