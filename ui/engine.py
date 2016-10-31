@@ -137,7 +137,7 @@ class AnalyticsEngine(object):
             return Row(bytesrcv=x.bytesrcv, bytesxmt=x.bytesxmt, duration=x.duration, localip=x.localip, reason=x.reason,
                        remoteip=x.remoteip, source=x.source, time=x.time, user=x.user, date=x.date, remoteipcc=cc)
 
-        vpnDF = vpn.map(func).toDF()
+        vpnDF = vpn.foreach(func).toDF()
         joinDF = vpnDF.join(adlocation, vpnDF.user == adlocation.EmailAddress)
         joinDF.cache()
 
