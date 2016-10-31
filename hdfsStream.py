@@ -79,7 +79,7 @@ def getSqlContextInstance():
 def parse(line):
     if '-fw' in line:
         return logParser.parseIPTables(line)
-    elif 'net-bc' or 'proxycache' in line:
+    elif 'net-bc' in line:
         return logParser.parseBCAccessLog(line)
     elif 'ASA' in line:
         return logParser.parseVPN(line)
@@ -126,10 +126,11 @@ def process_fw(time, rdd):
 # https://issues.apache.org/jira/browse/PARQUET-222 - Parquet writer memory allocation
 def process_proxy(time, rdd):
     if not rdd.isEmpty():
-        output_rdd = rdd.filter(lambda x: '-net-bc' or 'proxycache' in x) \
+        output_rdd = rdd.filter(lambda x: '-net-bc' in x) \
             .map(parse) \
             .filter(lambda x: isinstance(x, Row))
         return output_rdd
+
 
 def process_bash(time, rdd):
     if not rdd.isEmpty():
