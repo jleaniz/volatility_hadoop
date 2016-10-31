@@ -425,8 +425,8 @@ class AnalyticsEngine(object):
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-        sgotx = self.session.sql('select proxysg.host from proxysg join otx on otx.ip=proxysg.host')
-        sgc2 = self.session.sql('select proxysg.host from proxysg join c2 on c2.host=proxysg.host')
+        sgotx = self.session.sql('select proxysg.host from proxysg join dw_srm.otx on dw_srm.otx.ip=proxysg.host')
+        sgc2 = self.session.sql('select proxysg.host from proxysg join dw_srm.c2 on dw_srm.c2.host=proxysg.host')
         sgall = sgotx.unionAll(sgc2)
 
         # This breaks the Kryo serializer - unknown class
@@ -724,8 +724,8 @@ class AnalyticsEngine(object):
         #self.fwDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        fwotx = self.session.sql('select fw.dstip from fw join otx on otx.ip=fw.dstip')
-        fwc2 = self.session.sql('select fw.dstip from fw join c2 on c2.host=fw.dstip')
+        fwotx = self.session.sql('select fw.dstip from fw join dw_srm.otx on dw_srm.otx.ip=fw.dstip')
+        fwc2 = self.session.sql('select fw.dstip from fw join dw_srm.c2 on dw_srm.c2.host=fw.dstip')
         fwall = fwotx.unionAll(fwc2)
 
         groupcnt = fwall.groupBy(fwall.dstip).count().orderBy(desc('count'))
