@@ -79,7 +79,7 @@ def getSqlContextInstance():
 def parse(line):
     if '-fw' in line:
         return logParser.parseIPTables(line)
-    elif 'net-bc' in line:
+    elif '-net-bc' in line:
         return logParser.parseBCAccessLog(line)
     elif 'ASA' in line:
         return logParser.parseVPN(line)
