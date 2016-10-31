@@ -66,7 +66,7 @@ TEMPLATE_AUTHZ_URL = ('https://login.windows.net/{}/oauth2/authorize?'+
 def access_token_required(func):
     @wraps(func)
     def __decorator():
-        if session.get('id_token'):
+        if not session.get('id_token'):
             return Response(json.dumps({'auth': 'error: invalid token'}), mimetype='application/json')
         return func()
 
