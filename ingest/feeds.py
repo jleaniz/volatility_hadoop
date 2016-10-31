@@ -116,7 +116,7 @@ def updateC2Feeds(sContext):
     parsed_rdd = rdd.map(myParser.parsec2)
     parsed_rdd.collect()
     df = parsed_rdd.toDF()
-    df.save('reputation/c2', 'parquet', 'overwrite')
+    df.write.saveAsTable('dw_srm.c2', format='parquet', mode='overwrite')
 
 
 def updateOpenphish(sContext):
@@ -132,4 +132,4 @@ def updateOpenphish(sContext):
     parsed_rdd = rdd.map(myParser.parseOpenPhish)
     parsed_rdd.collect()
     df = parsed_rdd.toDF()
-    df.save('reputation/openphish', 'parquet', 'overwrite')
+    df.write.saveAsTable('dw_srm.openphish', format='parquet', mode='overwrite')
