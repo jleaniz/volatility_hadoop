@@ -36,7 +36,7 @@ def updateAlienvaultOtx(sContext):
     parsed_rdd = rdd.map(myParser.parseAlienVaultOTX)
     parsed_rdd.collect()
     df = parsed_rdd.toDF()
-    df.save('reputation/otx', 'parquet', 'overwrite')
+    df.saveAsTable('dw_srm.otx', format='parquet', mode='overwrite')
 
 
 def getC2Feeds():
