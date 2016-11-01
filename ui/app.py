@@ -96,7 +96,7 @@ def index():
 
 @main.route('/logout')
 def logout():
-    session = None
+    session.pop('id_token', None)
     redirect(url_for('main.index'))
 
 
