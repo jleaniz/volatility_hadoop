@@ -176,6 +176,10 @@ def login():
         response.set_cookie('auth_state', auth_state)
         return response
 
+@main.route('/logout')
+def logout():
+    session = None
+    redirect(url_for('main.index'))
 
 @main.route('/login/callback', methods=['GET','POST'])
 def login_callback():
