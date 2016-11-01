@@ -96,10 +96,10 @@ def login_callback():
 def logout():
     session.pop('id_token', None)
     session.pop('auth_state', None)
-    return redirect('https://login.microsoftonline.com/{}/oauth2/logout?post_logout_redirect_uri={}').format(
+    return redirect('https://login.microsoftonline.com/{}/oauth2/logout?post_logout_redirect_uri={}'.format(
         adal_parameters['clientId'],
         adal_parameters['redirect_uri'],
-    )
+    ))
 
 
 def access_token_required(func):
