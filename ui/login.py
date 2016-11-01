@@ -78,7 +78,6 @@ def login():
 def login_callback():
         # Verify AAD id_token
         id_token = request.form['id_token']
-        code = request.form['code']
 
         if id_token:
                 if validate_id_token(id_token):
