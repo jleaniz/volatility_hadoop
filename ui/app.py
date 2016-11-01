@@ -87,8 +87,6 @@ def validate_id_token(id_token):
     cert_obj = load_pem_x509_certificate(cert_str, default_backend())
     public_key = cert_obj.public_key()
 
-    print public_key
-
     try:
         print id_token
         token = jwt.decode(id_token,
@@ -96,7 +94,7 @@ def validate_id_token(id_token):
                            algorithms=['RS256'],
                            audience=adal_parameters['clientId'])
     except Exception as e:
-        print e
+        logger.warning(e)
         return False
 
     return True
