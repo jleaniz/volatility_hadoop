@@ -20,7 +20,7 @@ from flask import (
 )
 from forms import PathForm
 from engine import analytics_engine
-from app import access_token_required
+from login import access_token_required
 mod_for = Blueprint('forensics', __name__)
 
 

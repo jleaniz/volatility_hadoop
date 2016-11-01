@@ -20,7 +20,7 @@ from flask import (
 )
 from forms import UserDateForm, DateForm
 from engine import analytics_engine
-from app import access_token_required
+from login import access_token_required
 
 mod_proxy = Blueprint('proxy', __name__)
 

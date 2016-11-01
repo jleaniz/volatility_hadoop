@@ -19,7 +19,7 @@ from flask import (
     render_template, Blueprint, redirect, url_for
 )
 from engine import analytics_engine
-from app import access_token_required
+from login import access_token_required
 
 mod_pm_dashboard = Blueprint('patch_mgmt', __name__)
 
