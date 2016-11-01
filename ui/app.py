@@ -98,6 +98,7 @@ def index():
 def logout():
     session.pop('id_token', None)
     session.pop('auth_state', None)
+    session.pop('code', None)
     return 'Logged out.'
 
 
