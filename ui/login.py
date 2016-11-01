@@ -78,6 +78,7 @@ def login():
 @mod_login.route('/login/callback', methods=['GET', 'POST'])
 def login_callback():
         # Verify AAD id_token
+
         id_token = request.form['id_token']
 
         if id_token:
@@ -97,7 +98,7 @@ def logout():
     session.pop('auth_state', None)
     return redirect('https://login.microsoftonline.com/{}/oauth2/logout?post_logout_redirect_uri={}'.format(
         adal_parameters['clientId'],
-        adal_parameters['redirect_uri'],
+        adal_parameters['index_url'],
     ))
 
 
