@@ -88,6 +88,7 @@ def validate_id_token(id_token):
     print public_key
 
     try:
+        print id_token
         token = jwt.decode(id_token,
                            public_key,
                            algorithms=['RS256'],
