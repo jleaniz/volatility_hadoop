@@ -154,6 +154,7 @@ def serve_file(filename):
 @access_token_required
 def index():
     name = session.get('id_token')['given_name']
+    print name
     return render_template('index.html', name=name)
 
 
