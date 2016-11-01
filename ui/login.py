@@ -55,9 +55,9 @@ def access_token_required(func):
     @wraps(func)
     def __decorator():
         if not session.get('id_token'):
-            return redirect(url_for('main.login'))
+            return redirect(url_for('login'))
         elif not validate_id_token(session.get('id_token')):
-            return redirect(url_for('main.login'))
+            return redirect(url_for('login'))
         return func()
 
     return __decorator
