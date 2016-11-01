@@ -97,7 +97,7 @@ def index():
 @main.route('/logout')
 def logout():
     session.pop('id_token', None)
-    redirect(url_for('main.index'))
+    return 'Logged out.'
 
 
 @main.route('/spark/clearcache')
