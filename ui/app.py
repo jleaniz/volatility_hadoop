@@ -67,7 +67,7 @@ def access_token_required(func):
     @wraps(func)
     def __decorator():
         if not session.get('id_token'):
-            return Response(json.dumps({'auth': 'error: invalid token'}), mimetype='application/json')
+            return redirect(url_for('main.login'))
         return func()
 
     return __decorator
