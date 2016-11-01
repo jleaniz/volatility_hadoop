@@ -88,7 +88,6 @@ def validate_id_token(id_token):
     public_key = cert_obj.public_key()
 
     try:
-        print id_token
         token = jwt.decode(id_token,
                            public_key,
                            algorithms=['RS256'],
@@ -154,7 +153,8 @@ def serve_file(filename):
 @main.route('/')
 @access_token_required
 def index():
-    return render_template('index.html')
+    name = session.get('id_token')['given_name']
+    return render_template('index.html', name=name)
 
 
 @main.route('/login')
