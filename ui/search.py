@@ -21,16 +21,19 @@ from flask import (
 )
 from forms import SearchForm, CustomSearchForm
 from engine import analytics_engine, buildJSON
+from app import access_token_required
 
 mod_search = Blueprint('search', __name__)
 
 
 @mod_search.route('/')
+@access_token_required
 def index():
     return render_template('search.html')
 
 
 @mod_search.route('/download/<file>')
+@access_token_required
 def download(content):
     f = gzip.open('/tmp/results.gz', 'wb')
     try:
@@ -53,6 +56,7 @@ def download(content):
 
 
 @mod_search.route('/search/<tables>/<fromdate>/<todate>/<query>/<num>')
+@access_token_required
 def search(tables, fromdate, todate, query, num):
     jsonResult = analytics_engine.getSearchResults(tables, fromdate, todate, query, num)
 
@@ -65,8 +69,8 @@ def search(tables, fromdate, todate, query, num):
     return Response(generate(), mimetype='application/json')
 
 
-
 @mod_search.route('/search/custom/<query>')
+@access_token_required
 def CustomSearch(query):
     jsonResult = analytics_engine.getCustomSearchResults(query)
 
@@ -80,6 +84,7 @@ def CustomSearch(query):
 
 
 @mod_search.route("/search", methods=('GET', 'POST'))
+@access_token_required
 def search_view():
     Lookupform = SearchForm(csrf_enabled=False)
     schemas = [
@@ -163,6 +168,7 @@ def search_view():
 
 
 @mod_search.route("/search/custom", methods=('GET', 'POST'))
+@access_token_required
 def custom_search_view():
     Search = CustomSearchForm(csrf_enabled=False)
 

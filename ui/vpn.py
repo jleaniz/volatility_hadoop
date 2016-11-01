@@ -20,11 +20,13 @@ from flask import (
 )
 from forms import UserForm
 from engine import analytics_engine
+from app import access_token_required
 
 mod_vpn = Blueprint('vpn', __name__)
 
 
 @mod_vpn.route("/api/vpn/byUser/<username>")
+@access_token_required
 def vpnJSON(username):
     if username:
         rdd = analytics_engine.getVPNLoginsByUserJSON(username)
@@ -41,6 +43,7 @@ def vpnJSON(username):
 
 
 @mod_vpn.route("/api/vpn/identifyUser/<date>/<remoteip>")
+@access_token_required
 def identifyVPNAPI(date, remoteip):
     if date and remoteip:
         rdd = analytics_engine.identifyVPNUser(remoteip, date)
@@ -57,6 +60,7 @@ def identifyVPNAPI(date, remoteip):
 
 
 @mod_vpn.route("/vpn/user", methods=('GET', 'POST'))
+@access_token_required
 def vpn_user():
     form = UserForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -67,16 +71,19 @@ def vpn_user():
 
 
 @mod_vpn.route("/vpn/activity", methods=('GET', 'POST'))
+@access_token_required
 def vpn_activity():
     json = analytics_engine.getVPNUnusualActivity()
     return render_template('DisplayTable.html', json=json)
 
 @mod_vpn.route("/vpn/geomap", methods=('GET', 'POST'))
+@access_token_required
 def vpn_geomap():
     json = analytics_engine.getVPNLoginsGeoMap()
     return render_template('DisplayGeoMap.html', json=json)
 
 
 @mod_vpn.route('/')
+@access_token_required
 def index():
     return render_template('index.html')

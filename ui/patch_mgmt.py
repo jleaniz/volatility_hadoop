@@ -19,16 +19,19 @@ from flask import (
     render_template, Blueprint, redirect, url_for
 )
 from engine import analytics_engine
+from app import access_token_required
 
 mod_pm_dashboard = Blueprint('patch_mgmt', __name__)
 
 
 @mod_pm_dashboard.route('/')
+@access_token_required
 def index():
     redirect(url_for('patch_mgmt.Dashboard'))
 
 
 @mod_pm_dashboard.route("/pm/dashboard", methods=('GET', 'POST'))
+@access_token_required
 def Dashboard():
     (json_most_vuln, json_most_vuln_ncsa, json_most_vuln_emea, json_most_vuln_apac, json_most_vuln_onbe,
      json_most_vuln_corp, json_most_vuln_func) = analytics_engine.pm_dashboard()

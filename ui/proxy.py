@@ -20,6 +20,7 @@ from flask import (
 )
 from forms import UserDateForm, DateForm
 from engine import analytics_engine
+from app import access_token_required
 
 mod_proxy = Blueprint('proxy', __name__)
 
@@ -30,6 +31,7 @@ logger = logging.getLogger(__name__)
 
 
 @mod_proxy.route("/proxy/endpoint", methods=('GET', 'POST'))
+@access_token_required
 def proxy_user():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -41,6 +43,7 @@ def proxy_user():
 
 
 @mod_proxy.route("/proxy/top/transfers", methods=('GET', 'POST'))
+@access_token_required
 def proxyTopTransfers():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -52,6 +55,7 @@ def proxyTopTransfers():
 
 
 @mod_proxy.route("/proxy/uncommon/useragent", methods=('GET', 'POST'))
+@access_token_required
 def proxyUncommonUserAgents():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -63,6 +67,7 @@ def proxyUncommonUserAgents():
 
 
 @mod_proxy.route("/proxy/endpoint/outdated", methods=('GET', 'POST'))
+@access_token_required
 def proxyOutdatedEndpoints():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -74,6 +79,7 @@ def proxyOutdatedEndpoints():
 
 
 @mod_proxy.route("/proxy/top/visited", methods=('GET', 'POST'))
+@access_token_required
 def proxyMostVisitedDomains():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -86,6 +92,7 @@ def proxyMostVisitedDomains():
 
 
 @mod_proxy.route("/proxy/top/malware", methods=('GET', 'POST'))
+@access_token_required
 def proxyMostVisitedMalwareDomains():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -98,6 +105,7 @@ def proxyMostVisitedMalwareDomains():
 
 
 @mod_proxy.route("/proxy/top/malware/feeds", methods=('GET', 'POST'))
+@access_token_required
 def proxyMalwareDomainsIntel():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():

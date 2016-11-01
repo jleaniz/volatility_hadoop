@@ -61,8 +61,6 @@ TEMPLATE_AUTHZ_URL = ('https://login.windows.net/{}/oauth2/authorize?'+
                       'state={}&nonce={}&resource={}')
 
 
-
-#access token is required in session
 def access_token_required(func):
     @wraps(func)
     def __decorator():
@@ -153,9 +151,7 @@ def serve_file(filename):
 @main.route('/')
 @access_token_required
 def index():
-    name = base64.b64decode(session.get('id_token'))['given_name']
-    logger.warning(name)
-    return render_template('index.html', name=name)
+    return render_template('index.html')
 
 
 @main.route('/login')

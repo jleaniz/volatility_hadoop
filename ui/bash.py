@@ -20,16 +20,19 @@ from flask import (
 )
 from forms import KeywordForm, UserDateForm
 from engine import analytics_engine
+from app import access_token_required
 
 mod_bash = Blueprint('bash', __name__)
 
 
 @mod_bash.route('/')
+@access_token_required
 def index():
     return render_template('index.html')
 
 
 @mod_bash.route("/bash/kmeans", methods=('GET', 'POST'))
+@access_token_required
 def bash_kmeans():
     #form = KeywordForm(csrf_enabled=False)
     #if form.validate_on_submit():
@@ -40,6 +43,7 @@ def bash_kmeans():
 
 
 @mod_bash.route("/bash/keyword", methods=('GET', 'POST'))
+@access_token_required
 def bash_keyword():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -51,6 +55,7 @@ def bash_keyword():
 
 
 @mod_bash.route("/bash/user", methods=('GET', 'POST'))
+@access_token_required
 def bash_userActivity():
     form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():

@@ -20,16 +20,19 @@ from flask import (
 )
 from forms import DateForm
 from engine import analytics_engine
+from app import access_token_required
 
 mod_firewall = Blueprint('firewall', __name__)
 
 
 @mod_firewall.route('/')
+@access_token_required
 def index():
     return render_template('search.html')
 
 
 @mod_firewall.route("/firewall/port/stats", methods=('GET', 'POST'))
+@access_token_required
 def DisplayPortStats():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -41,6 +44,7 @@ def DisplayPortStats():
 
 
 @mod_firewall.route("/firewall/ip/stats", methods=('GET', 'POST'))
+@access_token_required
 def DisplayIPStats():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -52,6 +56,7 @@ def DisplayIPStats():
 
 
 @mod_firewall.route("/firewall/malware/conns", methods=('GET', 'POST'))
+@access_token_required
 def DisplayMalwareConns():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():
@@ -63,6 +68,7 @@ def DisplayMalwareConns():
 
 
 @mod_firewall.route("/firewall/top/talkers", methods=('GET', 'POST'))
+@access_token_required
 def DisplayTopTalkers():
     form = DateForm(csrf_enabled=False)
     if form.validate_on_submit():

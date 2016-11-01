@@ -20,16 +20,18 @@ from flask import (
 )
 from forms import PathForm
 from engine import analytics_engine
-
+from app import access_token_required
 mod_for = Blueprint('forensics', __name__)
 
 
 @mod_for.route('/')
+@access_token_required
 def index():
     return render_template('forensics.html')
 
 
 @mod_for.route("/forensics/timeline", methods=('GET', 'POST'))
+@access_token_required
 def TimelineStats():
     form = PathForm(csrf_enabled=False)
     if form.validate_on_submit():
