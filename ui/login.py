@@ -58,8 +58,7 @@ def login():
                 for _ in range(48)))
 
         nonce = auth_state
-        cookie = Cookie.SimpleCookie()
-        cookie['auth_state'] = auth_state
+        #cookie = Cookie.SimpleCookie()
         authorization_url = TEMPLATE_AUTHZ_URL.format(
                 adal_parameters['tenant'],
                 adal_parameters['clientId'],
