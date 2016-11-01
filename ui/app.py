@@ -93,6 +93,7 @@ def validate_id_token(id_token):
                            algorithms=['RS256'],
                            audience=adal_parameters['clientId'])
     except Exception as e:
+        print e
         return False
 
     return True
