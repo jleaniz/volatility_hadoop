@@ -189,7 +189,7 @@ def login_callback():
         if id_token:
                 if validate_id_token(id_token):
                         session['id_token'] = id_token
-                        print session.get['id_token']
+                        print session.get('id_token')
                         return render_template('index.html')
                 else:
                         return Response(json.dumps({'auth': 'error: invalid token'}), mimetype='application/json')
