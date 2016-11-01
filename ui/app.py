@@ -94,14 +94,6 @@ def index():
     return render_template('index.html')
 
 
-@main.route('/logout')
-def logout():
-    session.pop('id_token', None)
-    session.pop('auth_state', None)
-    session.pop('code', None)
-    return 'Logged out.'
-
-
 @main.route('/spark/clearcache')
 def clearCache():
     if analytics_engine.clearcache():
