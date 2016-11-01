@@ -21,6 +21,7 @@ from flask import (
 )
 from forms import SearchForm, CustomSearchForm
 from engine import analytics_engine, buildJSON
+from app import access_token_required
 
 mod_search = Blueprint('search', __name__)
 

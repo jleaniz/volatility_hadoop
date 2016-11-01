@@ -17,7 +17,6 @@
 from paste.translogger import TransLogger
 from flask_bootstrap import Bootstrap
 from flask import Flask, render_template, Blueprint, send_from_directory, flash, redirect, url_for, Response, request, session
-from functools import wraps
 from nav import nav
 from search import mod_search
 from firewall import mod_firewall
@@ -59,18 +58,6 @@ else:
 TEMPLATE_AUTHZ_URL = ('https://login.windows.net/{}/oauth2/authorize?'+
                       'response_type=id_token+code&response_mode=form_post&client_id={}&redirect_uri={}&'+
                       'state={}&nonce={}&resource={}')
-
-
-def access_token_required(func):
-    @wraps(func)
-    def __decorator():
-        if not session.get('id_token'):
-            return redirect(url_for('main.login'))
-        elif not validate_id_token(session.get('id_token')):
-            return redirect(url_for('main.login'))
-        return func()
-
-    return __decorator
 
 
 def validate_id_token(id_token):

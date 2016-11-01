@@ -25,6 +25,20 @@ import bdsa.lib.parser as parser
 import bdsa.lib.hdfs as hdfs
 from pyspark.sql.types import *
 from pyspark.sql import Row
+from functools import wraps
+from flask import redirect, url_for, session
+from app import validate_id_token
+
+def access_token_required(func):
+    @wraps(func)
+    def __decorator():
+        if not session.get('id_token'):
+            return redirect(url_for('main.login'))
+        elif not validate_id_token(session.get('id_token')):
+            return redirect(url_for('main.login'))
+        return func()
+
+    return __decorator
 
 
 class SparkVolatility:
