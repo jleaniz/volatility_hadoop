@@ -74,9 +74,10 @@ def login():
         return response
 
 
-@mod_login.route('/login/callback', methods=['GET','POST'])
+@mod_login.route('/login/callback', methods=['POST'])
 def login_callback():
         # Verify AAD id_token
+
         id_token = request.form['id_token']
 
         if id_token:
