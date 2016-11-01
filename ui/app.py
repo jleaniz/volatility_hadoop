@@ -153,7 +153,7 @@ def serve_file(filename):
 @main.route('/')
 @access_token_required
 def index():
-    name = session.get('id_token')['given_name']
+    name = base64.b64decode(session.get('id_token'))['given_name']
     logger.warning(name)
     return render_template('index.html', name=name)
 
