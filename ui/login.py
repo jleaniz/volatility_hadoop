@@ -57,8 +57,10 @@ def login():
                 .choice(string.ascii_uppercase + string.digits)
                 for _ in range(48)))
 
-        nonce = auth_state
-        #cookie = Cookie.SimpleCookie()
+        nonce = (''.join(random.SystemRandom()
+                .choice(string.ascii_uppercase + string.digits)
+                for _ in range(48)))
+
         authorization_url = TEMPLATE_AUTHZ_URL.format(
                 adal_parameters['tenant'],
                 adal_parameters['clientId'],
