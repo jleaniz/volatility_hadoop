@@ -97,6 +97,7 @@ def index():
 @main.route('/logout')
 def logout():
     session.pop('id_token', None)
+    session.pop('auth_state', None)
     return 'Logged out.'
 
 

@@ -70,7 +70,7 @@ def login():
 
         redirect_to_AAD = redirect(authorization_url)
         response = make_response(redirect_to_AAD)
-        response.set_cookie('auth_state', auth_state)
+        session['auth_state'] = auth_state
         return response
 
 
