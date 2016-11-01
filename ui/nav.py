@@ -76,4 +76,5 @@ nav.register_element('frontend_top', Navbar(
         Link('Clear cache', '/spark/clearcache'),
         Link('Cancel jobs', '/spark/canceljobs'),
     ),
+    View('Logout', 'main.logout'),
 ))
