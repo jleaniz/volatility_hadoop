@@ -21,8 +21,6 @@ from flask_nav.elements import (
 
 from flask_nav import Nav
 
-from pyspark import SparkConf
-
 nav = Nav()
 
 # We're adding a navbar as well through flask-navbar. In our example, the
@@ -76,5 +74,5 @@ nav.register_element('frontend_top', Navbar(
         Link('Clear cache', '/spark/clearcache'),
         Link('Cancel jobs', '/spark/canceljobs'),
     ),
-    View('Logout', 'main.logout'),
+    View('Logout', 'login.logout'),
 ))
