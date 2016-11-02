@@ -54,7 +54,7 @@ def download(content):
     return response
 
 
-@mod_search.route('/search/<tables>/<fromdate>/<todate>/<query>/<num>', methods=('POST'))
+@mod_search.route('/search/<tables>/<fromdate>/<todate>/<query>/<num>')
 def search(tables, fromdate, todate, query, num):
     jsonResult = analytics_engine.getSearchResults(tables, fromdate, todate, query, num)
 
