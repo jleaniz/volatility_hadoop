@@ -83,7 +83,7 @@ def CustomSearch(query):
 
 @mod_search.route("/search", methods=('GET', 'POST'))
 @access_token_required
-def search_view(request):
+def search_view():
     Lookupform = SearchForm(csrf_enabled=False)
     schemas = [
         """bashlog
