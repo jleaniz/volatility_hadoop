@@ -45,7 +45,7 @@ class DateForm(FlaskForm):
 
 class SearchForm(FlaskForm):
     tables = SelectMultipleField(u'Tables',
-                                 choices=[('firewall', 'firewall'), ('proxysg', 'proxysg'), ('bash', 'bash'),
+                                 choices=[('fw', 'fw'), ('proxysg', 'proxysg'), ('bash', 'bash'),
                                           ('ciscovpn', 'ciscovpn'), ('sccm_vuln', 'sccm_vuln'), ('otx', 'otx'), ('c2', 'c2')],
                                  validators=[DataRequired(message='Required field')])
     fromdate = DateField(u'From', format='%Y-%m-%d',
