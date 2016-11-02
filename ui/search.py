@@ -54,10 +54,9 @@ def download(content):
     return response
 
 
-@mod_search.route('/search/p')
-def search(request):
-    if request.method == 'POST':
-        jsonResult = analytics_engine.getSearchResults(request.tables, request.fromdate, request.todate, request.query, request.num)
+@mod_search.route('/search/<tables>/<fromdate>/<todate>/<query>/<num>')
+def search(tables, fromdate, todate, query, num):
+        jsonResult = analytics_engine.getSearchResults(tables, fromdate, todate, query, num)
 
         def generate():
             yield '{"%s": [\n' % ('search')
@@ -152,18 +151,8 @@ def search_view():
     ]
     if request.method == 'POST':
         if Lookupform.validate_on_submit() and Lookupform.lookup.data:
-            #return redirect(url_for('.search/p', tables=Lookupform.tables.data, fromdate=Lookupform.fromdate.data.strftime('%Y-%m-%d'),
-            #           todate=Lookupform.todate.data.strftime('%Y-%m-%d'),query=Lookupform.query.data, num=Lookupform.num.data))
-            jsonResult = analytics_engine.getSearchResults(request.tables, request.fromdate, request.todate,
-                                                           request.query, request.num)
-
-            def generate():
-                yield '{"%s": [\n' % ('search')
-                for doc in jsonResult:
-                    yield doc + ',\n'
-                yield "{}\n]}"
-
-            return Response(generate(), mimetype='application/json')
+            return redirect(url_for('.search', tables=Lookupform.tables.data, fromdate=Lookupform.fromdate.data.strftime('%Y-%m-%d'),
+                       todate=Lookupform.todate.data.strftime('%Y-%m-%d'),query=Lookupform.query.data, num=Lookupform.num.data))
 
         if Lookupform.validate_on_submit() and Lookupform.download.data:
             data = buildJSON(Lookupform.tables.data, Lookupform.fromdate.data.strftime('%Y-%m-%d'),
