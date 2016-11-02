@@ -54,17 +54,18 @@ def download(content):
     return response
 
 
-@mod_search.route('/search/<tables>/<fromdate>/<todate>/<query>/<num>')
-def search(tables, fromdate, todate, query, num):
-    jsonResult = analytics_engine.getSearchResults(tables, fromdate, todate, query, num)
+@mod_search.route('/search/p')
+def search(request):
+    if request.method == 'POST':
+        jsonResult = analytics_engine.getSearchResults(request.tables, request.fromdate, request.todate, request.query, request.num)
 
-    def generate():
-        yield '{"%s": [\n' % ('search')
-        for doc in jsonResult:
-            yield doc + ',\n'
-        yield "{}\n]}"
+        def generate():
+            yield '{"%s": [\n' % ('search')
+            for doc in jsonResult:
+                yield doc + ',\n'
+            yield "{}\n]}"
 
-    return Response(generate(), mimetype='application/json')
+        return Response(generate(), mimetype='application/json')
 
 
 @mod_search.route('/search/custom/<query>')
@@ -82,7 +83,7 @@ def CustomSearch(query):
 
 @mod_search.route("/search", methods=('GET', 'POST'))
 @access_token_required
-def search_view():
+def search_view(request):
     Lookupform = SearchForm(csrf_enabled=False)
     schemas = [
         """bashlog
@@ -149,17 +150,17 @@ def search_view():
         |-- crit_X_cat: string (nullable = true)
         """,
     ]
+    if request.method == 'POST':
+        if Lookupform.validate_on_submit() and Lookupform.lookup.data:
+            return redirect(url_for('.search/p', tables=Lookupform.tables.data, fromdate=Lookupform.fromdate.data.strftime('%Y-%m-%d'),
+                        todate=Lookupform.todate.data.strftime('%Y-%m-%d'),query=Lookupform.query.data, num=Lookupform.num.data))
 
-    if Lookupform.validate_on_submit() and Lookupform.lookup.data:
-        return redirect(url_for('.search', tables=Lookupform.tables.data, fromdate=Lookupform.fromdate.data.strftime('%Y-%m-%d'),
-                    todate=Lookupform.todate.data.strftime('%Y-%m-%d'),query=Lookupform.query.data, num=Lookupform.num.data))
-
-    if Lookupform.validate_on_submit() and Lookupform.download.data:
-        data = buildJSON(Lookupform.tables.data, Lookupform.fromdate.data.strftime('%Y-%m-%d'),
-                         Lookupform.todate.data.strftime('%Y-%m-%d'),
-                         Lookupform.query.data, Lookupform.num.data)
-        response = download(data)
-        return response
+        if Lookupform.validate_on_submit() and Lookupform.download.data:
+            data = buildJSON(Lookupform.tables.data, Lookupform.fromdate.data.strftime('%Y-%m-%d'),
+                             Lookupform.todate.data.strftime('%Y-%m-%d'),
+                             Lookupform.query.data, Lookupform.num.data)
+            response = download(data)
+            return response
 
     return render_template("search.html", form=Lookupform, schemas=schemas)
 
