@@ -152,8 +152,18 @@ def search_view(request):
     ]
     if request.method == 'POST':
         if Lookupform.validate_on_submit() and Lookupform.lookup.data:
-            return redirect(url_for('.search/p', tables=Lookupform.tables.data, fromdate=Lookupform.fromdate.data.strftime('%Y-%m-%d'),
-                        todate=Lookupform.todate.data.strftime('%Y-%m-%d'),query=Lookupform.query.data, num=Lookupform.num.data))
+            #return redirect(url_for('.search/p', tables=Lookupform.tables.data, fromdate=Lookupform.fromdate.data.strftime('%Y-%m-%d'),
+            #           todate=Lookupform.todate.data.strftime('%Y-%m-%d'),query=Lookupform.query.data, num=Lookupform.num.data))
+            jsonResult = analytics_engine.getSearchResults(request.tables, request.fromdate, request.todate,
+                                                           request.query, request.num)
+
+            def generate():
+                yield '{"%s": [\n' % ('search')
+                for doc in jsonResult:
+                    yield doc + ',\n'
+                yield "{}\n]}"
+
+            return Response(generate(), mimetype='application/json')
 
         if Lookupform.validate_on_submit() and Lookupform.download.data:
             data = buildJSON(Lookupform.tables.data, Lookupform.fromdate.data.strftime('%Y-%m-%d'),
