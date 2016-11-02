@@ -492,7 +492,7 @@ class AnalyticsEngine(object):
 
         while(len(_parquetPaths)>0):
             try:
-                df = self.session.read.parquet(*_parquetPaths)
+                df = self.session.read.options(basePath='/data/srm/dbs/dw_srm.db/%s' % table).parquet(*_parquetPaths)
                 return df
             except AnalysisException as e:
                 logger.warning(e)
