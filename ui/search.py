@@ -17,7 +17,7 @@
 
 import gzip
 from flask import (
-    render_template, redirect, url_for, Response, make_response, Blueprint, jsonify
+    render_template, redirect, url_for, Response, make_response, Blueprint, jsonify, request
 )
 from forms import SearchForm, CustomSearchForm
 from engine import analytics_engine, buildJSON
