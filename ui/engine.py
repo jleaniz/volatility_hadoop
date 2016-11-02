@@ -1142,7 +1142,7 @@ class AnalyticsEngine(object):
         return vpn_logins
 
 def init_spark_context():
-    appConfig = conf.Config(exec_cores=2, cores_max=12, yarn_cores=8, instances=8, queue='root.llama')
+    appConfig = conf.Config(exec_cores=6, cores_max=64, yarn_cores=8, instances=10, queue='root.llama')
     sc = SparkContext(conf=appConfig.setSparkConf())
     # set resource pool
     sc.setLocalProperty("spark.scheduler.pool", "default")
