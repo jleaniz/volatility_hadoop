@@ -33,7 +33,6 @@ def index():
 
 
 @mod_search.route('/download/<file>')
-@access_token_required
 def download(content):
     f = gzip.open('/tmp/results.gz', 'wb')
     try:
@@ -56,7 +55,6 @@ def download(content):
 
 
 @mod_search.route('/search/<tables>/<fromdate>/<todate>/<query>/<num>', methods=('POST'))
-@access_token_required
 def search(tables, fromdate, todate, query, num):
     jsonResult = analytics_engine.getSearchResults(tables, fromdate, todate, query, num)
 
@@ -70,7 +68,6 @@ def search(tables, fromdate, todate, query, num):
 
 
 @mod_search.route('/search/custom/<query>')
-@access_token_required
 def CustomSearch(query):
     jsonResult = analytics_engine.getCustomSearchResults(query)
 
