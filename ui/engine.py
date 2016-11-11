@@ -530,7 +530,7 @@ class AnalyticsEngine(object):
                 self.sccm_vrsDF = self.session.read.csv(header='true',
                                                         inferSchema='true',
                                                         encoding='UTF-16',
-                                                        sep='"|"',
+                                                        sep='|',
                                                         mode='PERMISSIVE',
                                                         path='/user/jleaniz/v_R_System.csv').cache()
 
