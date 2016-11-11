@@ -978,10 +978,22 @@ class AnalyticsEngine(object):
         df_per_site_vuln = self.session.read.json('/user/jleaniz/pl_dashboard.json').collect()
 
         dataChart = []
+
+        """
+
         descriptionChart = {
             "EMEA": ("number", "EMEA"),
             "APAC": ("number", "APAC"),
             "NCSA": ("number", "NCSA"),
+        }
+        """
+
+        descriptionChart = {
+        "adobe-flash": ("string", "Adobe Flash"),
+        "adobe-rdr": ("string", "Adobe-Reader"),
+        "chrome": ("string", "Chrome"),
+        "firefox": ("string", "Firefox"),
+        "java": ("string", "Java"),
         }
 
         for i in df_per_site_vuln[0].asDict():
