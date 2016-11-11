@@ -522,6 +522,7 @@ class AnalyticsEngine(object):
 
             if 'sccm_vuln' in tables:
                 self.sccmDF = self.session.read.json('/user/jleaniz/sft_vuln_raw.json').cache()
+                self.sccmDF.createOrReplaceTempView('sccm_vuln')
 
         except Exception as e:
             logger.warning(e)
