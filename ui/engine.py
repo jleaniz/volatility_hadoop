@@ -979,7 +979,7 @@ class AnalyticsEngine(object):
         dataChart = []
         descriptionChart = {
             "software": ("string", "Software"),
-            "hits": ("number", "Vulnerable hosts")
+            "hits": ("number", "Hosts")
         }
         for row in df_most_vuln:
             dataChart.append(
