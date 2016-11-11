@@ -527,10 +527,10 @@ class AnalyticsEngine(object):
                 self.sccmDF.createOrReplaceTempView('sccm_vuln')
 
             if 'sccm_v_r_system' in tables:
-                self.sccm_vrsDF = self.session.read.csv(header='true', inferSchema='true',
+                self.sccm_vrsDF = self.session.read.csv(header='true',
+                                                        inferSchema='true',
                                                         encoding='UTF-16',
                                                         sep='|',
-                                                        quote='"',
                                                         mode='PERMISSIVE',
                                                         path='/user/jleaniz/v_R_System.csv').cache()
 
