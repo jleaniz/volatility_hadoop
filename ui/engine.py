@@ -953,9 +953,8 @@ class AnalyticsEngine(object):
 
 
     def pm_dashboard(self):
-        paths = ['/user/jleaniz/sccm/df_sys_dsA1','path2']
         try:
-            self.sccmDF = self.session.read.parquet(*paths)
+            self.sccmDF = self.session.read.json('/user/jleaniz/sft_vuln_raw.json')
         except AnalysisException as e:
             pass
 
