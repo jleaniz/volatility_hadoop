@@ -975,9 +975,28 @@ class AnalyticsEngine(object):
         df_most_vuln_corp = self.sccmDF.filter('Zone_X="Corp"').select('DisplayName0','Version0').groupBy('DisplayName0','Version0').count().orderBy(desc('count')).limit(10)\
         .select(concat(col("DisplayName0"),lit(" "),col("Version0")),"count").withColumnRenamed("concat(DisplayName0,  , Version0)", "software").collect()
         df_most_vuln_func = self.sccmDF.select('HostFn_X').groupBy('HostFn_X').count().orderBy(desc('count')).limit(10).collect()
-
         df_per_site_vuln = self.session.read.json('/user/jleaniz/pl_dashboard.json').collect()
-        json_per_site_vuln = json.dumps(df_per_site_vuln)
+
+        dataChart = []
+        descriptionChart = {
+            "EMEA": ("number", "EMEA"),
+            "APAC": ("number", "APAC"),
+            "NCSA": ("number", "NCSA"),
+        }
+
+        for i in df_per_site_vuln[0].asDict():
+            dataChart.append(
+                {
+                    "EMEA": df_per_site_vuln[0].asDict()[i].EMEA,
+                    "APAC": df_per_site_vuln[0].asDict()[i].APAC,
+                    "NCSA": df_per_site_vuln[0].asDict()[i].NCSA,
+                }
+            )
+
+        data_tableChart = gviz_api.DataTable(descriptionChart)
+        data_tableChart.LoadData(dataChart)
+
+        json_per_site_vuln = data_tableChart.ToJSon()
 
         dataChart = []
         descriptionChart = {
