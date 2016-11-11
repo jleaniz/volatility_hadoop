@@ -962,17 +962,17 @@ class AnalyticsEngine(object):
 
         self.sccmDF = self.sccmDF.filter('crit_X_cat="High"')
         df_most_vuln = self.sccmDF.select('DisplayName0','Version0').groupBy('DisplayName0','Version0').count().orderBy(desc('count')).limit(10)\
-            .select(concat(col("DisplayName0"),lit(" "),col("Version0")),"count").withColumnRenamed("concat(DisplayName0, ,Version0)", "software").collect()
+            .select(concat(col("DisplayName0"),lit(" "),col("Version0")),"count").withColumnRenamed("concat(DisplayName0,  , Version0)", "software").collect()
         df_ncsa_most_vuln = self.sccmDF.filter('Region_X="NCSA" and Zone_X="Corp"').select('DisplayName0','Version0').groupBy('DisplayName0','Version0').count().orderBy(desc('count')).limit(10)\
-            .select(concat(col("DisplayName0"),lit(" "),col("Version0")),"count").withColumnRenamed("concat(DisplayName0, ,Version0)", "software").collect()
+            .select(concat(col("DisplayName0"),lit(" "),col("Version0")),"count").withColumnRenamed("concat(DisplayName0,  , Version0)", "software").collect()
         df_emea_most_vuln = self.sccmDF.filter('Region_X="EMEA" and Zone_X="Corp"').select('DisplayName0','Version0').groupBy('DisplayName0','Version0').count().orderBy(desc('count')).limit(10)\
-            .select(concat(col("DisplayName0"),lit(" "),col("Version0")),"count").withColumnRenamed("concat(DisplayName0, ,Version0)", "software").collect()
+            .select(concat(col("DisplayName0"),lit(" "),col("Version0")),"count").withColumnRenamed("concat(DisplayName0,  , Version0)", "software").collect()
         df_apac_most_vuln = self.sccmDF.filter('Region_X="APAC" and Zone_X="Corp"').select('DisplayName0','Version0').groupBy('DisplayName0','Version0').count().orderBy(desc('count')).limit(10)\
-        .select(concat(col("DisplayName0"),lit(" "),col("Version0")),"count").withColumnRenamed("concat(DisplayName0, ,Version0)", "software").collect()
+        .select(concat(col("DisplayName0"),lit(" "),col("Version0")),"count").withColumnRenamed("concat(DisplayName0,  , Version0)", "software").collect()
         df_most_vuln_onbe = self.sccmDF.filter('Zone_X="ONBE"').select('DisplayName0','Version0').groupBy('DisplayName0','Version0').count().orderBy(desc('count')).limit(10)\
-        .select(concat(col("DisplayName0"),lit(" "),col("Version0")),"count").withColumnRenamed("concat(DisplayName0, ,Version0)", "software").collect()
+        .select(concat(col("DisplayName0"),lit(" "),col("Version0")),"count").withColumnRenamed("concat(DisplayName0,  , Version0)", "software").collect()
         df_most_vuln_corp = self.sccmDF.filter('Zone_X="Corp"').select('DisplayName0','Version0').groupBy('DisplayName0','Version0').count().orderBy(desc('count')).limit(10)\
-        .select(concat(col("DisplayName0"),lit(" "),col("Version0")),"count").withColumnRenamed("concat(DisplayName0, ,Version0)", "software").collect()
+        .select(concat(col("DisplayName0"),lit(" "),col("Version0")),"count").withColumnRenamed("concat(DisplayName0,  , Version0)", "software").collect()
         df_most_vuln_func = self.sccmDF.select('HostFn_X').groupBy('HostFn_X').count().orderBy(desc('count')).limit(10).collect()
 
 
