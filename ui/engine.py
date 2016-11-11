@@ -527,8 +527,8 @@ class AnalyticsEngine(object):
                 self.sccmDF.createOrReplaceTempView('sccm_vuln')
 
             if 'sccm_v_r_system' in tables:
-                self.sccmDF = self.session.read.csv('/user/jleaniz/v_R_System.csv').cache()
-                self.sccmDF.createOrReplaceTempView('sccm_v_r_system')
+                self.sccm_vrsDF = self.session.read.csv('/user/jleaniz/v_R_System.csv').cache()
+                self.sccm_vrsDF.createOrReplaceTempView('sccm_v_r_system')
 
         except Exception as e:
             logger.warning(e)
