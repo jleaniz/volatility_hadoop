@@ -521,8 +521,7 @@ class AnalyticsEngine(object):
                 self.bashDF.createOrReplaceTempView('bash')
 
             if 'sccm_vuln' in tables:
-                if not self.sccmDF:
-                    self.session.read.parquet('/user/jleaniz/sccm/df_sys_dsA1')
+                self.sccmDF = self.session.read.json('/user/jleaniz/sft_vuln_raw.json').cache()
 
         except Exception as e:
             logger.warning(e)
