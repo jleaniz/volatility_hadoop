@@ -954,10 +954,8 @@ class AnalyticsEngine(object):
 
 
     def pm_dashboard(self):
-        try:
-            self.sccmDF = self.session.read.json('/user/jleaniz/sft_vuln_raw.json')
-        except AnalysisException as e:
-            pass
+        if not self.sccmDF:
+            self.sccmDF = self.session.read.json('/user/jleaniz/sft_vuln_raw.json').cache()
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
