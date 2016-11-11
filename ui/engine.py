@@ -979,12 +979,12 @@ class AnalyticsEngine(object):
 
         dataChart = []
         descriptionChart = [
-            ('site', "string"),
-            ('flash', "number"),
-            ('reader', 'number'),
-            ('chrome', 'number'),
-            ('firefox', 'number'),
-            ('java', 'number')
+            ('Site', "string"),
+            ('Adobe-Flash', "number"),
+            ('Adobe-Reader', 'number'),
+            ('Chrome', 'number'),
+            ('Firefox', 'number'),
+            ('Java', 'number')
         ]
 
         mydict = df_per_site_vuln[0].asDict()
