@@ -31,6 +31,7 @@ import gviz_api
 import os
 import GeoIP
 import logging
+import json
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -975,6 +976,8 @@ class AnalyticsEngine(object):
         .select(concat(col("DisplayName0"),lit(" "),col("Version0")),"count").withColumnRenamed("concat(DisplayName0,  , Version0)", "software").collect()
         df_most_vuln_func = self.sccmDF.select('HostFn_X').groupBy('HostFn_X').count().orderBy(desc('count')).limit(10).collect()
 
+        df_per_site_vuln = self.session.read.json('/user/jleaniz/pl_dashboard.json').collect()
+        json_per_site_vuln = json.dumps(df_per_site_vuln)
 
         dataChart = []
         descriptionChart = {
@@ -1083,7 +1086,7 @@ class AnalyticsEngine(object):
             columns_order=("function","hits"),
             order_by="hits"
         )
-        return json_most_vuln,json_most_vuln_ncsa,json_most_vuln_emea,json_most_vuln_apac,json_most_vuln_onbe,json_most_vuln_corp,json_most_vuln_func
+        return json_per_site_vuln, json_most_vuln,json_most_vuln_ncsa,json_most_vuln_emea,json_most_vuln_apac,json_most_vuln_onbe,json_most_vuln_corp,json_most_vuln_func
 
     def getCmdPrediction(self):
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")

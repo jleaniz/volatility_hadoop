@@ -33,11 +33,12 @@ def index():
 @mod_pm_dashboard.route("/pm/dashboard", methods=('GET', 'POST'))
 @access_token_required
 def Dashboard():
-    (json_most_vuln, json_most_vuln_ncsa, json_most_vuln_emea, json_most_vuln_apac, json_most_vuln_onbe,
+    (json_per_site_vuln, json_most_vuln, json_most_vuln_ncsa, json_most_vuln_emea, json_most_vuln_apac, json_most_vuln_onbe,
      json_most_vuln_corp, json_most_vuln_func) = analytics_engine.pm_dashboard()
 
     return render_template('pm_dashboard.html', json_most_vuln=json_most_vuln,
                            json_most_vuln_ncsa=json_most_vuln_ncsa, json_most_vuln_emea=json_most_vuln_emea,
                            json_most_vuln_apac=json_most_vuln_apac, json_most_vuln_onbe=json_most_vuln_onbe,
-                           json_most_vuln_corp=json_most_vuln_corp, json_most_vuln_func=json_most_vuln_func)
+                           json_most_vuln_corp=json_most_vuln_corp, json_most_vuln_func=json_most_vuln_func,
+                           json_per_site_vuln=json_per_site_vuln)
     # return render_template('pm_dashboard.html')
