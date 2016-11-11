@@ -978,36 +978,29 @@ class AnalyticsEngine(object):
         df_per_site_vuln = self.session.read.json('/user/jleaniz/pl_dashboard.json').collect()
 
         dataChart = []
+        descriptionChart = [
+            ('site', "string"),
+            ('flash', "number"),
+            ('reader', 'number'),
+            ('chrome', 'number'),
+            ('firefox', 'number'),
+            ('java', 'number')
+        ]
 
-        """
+        mydict = df_per_site_vuln[0].asDict()
 
-        descriptionChart = {
-            "EMEA": ("number", "EMEA"),
-            "APAC": ("number", "APAC"),
-            "NCSA": ("number", "NCSA"),
-        }
-        """
-
-        descriptionChart = {
-        "adobe-flash": ("string", "Adobe Flash"),
-        "adobe-rdr": ("string", "Adobe-Reader"),
-        "chrome": ("string", "Chrome"),
-        "firefox": ("string", "Firefox"),
-        "java": ("string", "Java"),
-        }
-
-        for i in df_per_site_vuln[0].asDict():
-            dataChart.append(
-                {
-                    "EMEA": df_per_site_vuln[0].asDict()[i].EMEA,
-                    "APAC": df_per_site_vuln[0].asDict()[i].APAC,
-                    "NCSA": df_per_site_vuln[0].asDict()[i].NCSA,
-                }
-            )
+        dataChart.append(
+        ["APAC", mydict['adobe-flash'].APAC, mydict['adobe-rdr'].APAC, mydict['chrome'].APAC,mydict['firefox'].APAC,mydict['java'].APAC]
+        )
+        dataChart.append(
+        ["EMEA", mydict['adobe-flash'].EMEA, mydict['adobe-rdr'].EMEA, mydict['chrome'].EMEA,mydict['firefox'].EMEA,mydict['java'].EMEA]
+        )
+        dataChart.append(
+        ["NCSA", mydict['adobe-flash'].NCSA, mydict['adobe-rdr'].NCSA, mydict['chrome'].NCSA,mydict['firefox'].NCSA,mydict['java'].NCSA]
+        )
 
         data_tableChart = gviz_api.DataTable(descriptionChart)
         data_tableChart.LoadData(dataChart)
-
         json_per_site_vuln = data_tableChart.ToJSon()
 
         dataChart = []
