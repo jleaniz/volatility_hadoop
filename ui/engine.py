@@ -48,6 +48,7 @@ class AnalyticsEngine(object):
         """
         logger.info("Starting up the Analytics Engine: ")
         self.sc = sc
+        self.sccmDF = None
 
         # Create a SparkSession
         logger.info("Creating Spark SQL context:")
@@ -954,7 +955,7 @@ class AnalyticsEngine(object):
 
 
     def pm_dashboard(self):
-        if not self.sccmDF:
+        if self.sccmDF is None:
             self.sccmDF = self.session.read.json('/user/jleaniz/sft_vuln_raw.json').cache()
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
