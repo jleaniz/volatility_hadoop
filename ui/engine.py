@@ -979,7 +979,7 @@ class AnalyticsEngine(object):
 
         dataChart = []
         descriptionChart = [
-            ('Site', "string"),
+            ('Region', "string"),
             ('Adobe-Flash', "number"),
             ('Adobe-Reader', 'number'),
             ('Chrome', 'number'),
