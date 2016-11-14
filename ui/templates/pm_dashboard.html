@@ -22,7 +22,7 @@
 
 
             var pieChartOptions = {title: '', width: '100%', height: '100%'};
-            var pieChartOptionsStacked = {title: '', width: '100%', height: '100%', isStacked: true};
+            var pieChartOptionsStacked = {title: '', width: '100%', height: '100%', isStacked: true, tooltip: { trigger: 'selection' }};
 
             var json_most_vuln_statsChart = new google.charts.Bar(document.getElementById('json_most_vuln_div'));
             var json_most_vuln_ncsa_statsChart = new google.charts.Bar(document.getElementById('json_most_vuln_ncsa_div'));
@@ -32,6 +32,24 @@
             var json_most_vuln_corp_statsChart = new google.charts.Bar(document.getElementById('json_most_vuln_corp_div'));
             var json_vuln_func_statsChart = new google.charts.Bar(document.getElementById('json_vuln_func_div'));
             var json_per_site_vulnc_statsChart = new google.charts.Bar(document.getElementById('json_per_site_vuln'));
+
+            json_per_site_vulnc_statsChart.setAction({
+              id: 'sample',
+              text: 'See sample book',
+              action: function() {
+                selection = chart.getSelection();
+                switch (selection[0].row) {
+                  case 0: alert('Ender\'s Game'); break;
+                  case 1: alert('Feynman Lectures on Physics'); break;
+                  case 2: alert('Numerical Recipes in JavaScript'); break;
+                  case 3: alert('Truman'); break;
+                  case 4: alert('Freakonomics'); break;
+                  case 5: alert('The Mezzanine'); break;
+                  case 6: alert('The Color of Magic'); break;
+                  case 7: alert('The Law of Superheroes'); break;
+                }
+              }
+            });
 
             json_most_vuln_statsChart.draw(json_most_vuln_statsData, pieChartOptions);
             json_most_vuln_ncsa_statsChart.draw(json_most_vuln_ncsa_statsData, pieChartOptions);
