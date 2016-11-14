@@ -676,10 +676,15 @@ class AnalyticsEngine(object):
         return fw_port_stats
 
     def getfwIPStats(self, fromdate, todate):
-
-        self.fwDF = self.buildParquetFileList('fw', fromdate, todate)
-        self.fwDF.createOrReplaceTempView('fw')
-        #self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
+        try:
+            if self.fwDF:
+                logger.info("Already loaded this DataFrame")
+                pass
+        except:
+            logger.info("Loading new DataFrame")
+            self.fwDF = self.buildParquetFileList('fw', fromdate, todate)
+            self.fwDF.createOrReplaceTempView('fw')
+            self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
