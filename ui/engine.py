@@ -49,6 +49,7 @@ class AnalyticsEngine(object):
         logger.info("Starting up the Analytics Engine: ")
         self.sc = sc
         self.sccmDF = None
+        self.fwDF = None
 
         # Create a SparkSession
         logger.info("Creating Spark SQL context:")
@@ -804,10 +805,10 @@ class AnalyticsEngine(object):
 
 
     def getfwStats(self, fromdate, todate):
-
-        self.fwDF = self.buildParquetFileList('fw', fromdate, todate).cache()
-        self.fwDF.createOrReplaceTempView('fw')
-        #self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
+        if self.fwDF is None:
+            self.fwDF = self.buildParquetFileList('fw', fromdate, todate)
+            self.fwDF.createOrReplaceTempView('fw')
+            self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
         fw_port_stats = self.getfwPortStats(fromdate, todate)
