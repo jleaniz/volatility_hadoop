@@ -27,11 +27,11 @@ nav = Nav()
 # navbar has an usual amount of Link-Elements, more commonly you will have a
 # lot more View instances.
 nav.register_element('frontend_top', Navbar(
-    View('BDSA (0.1a)', 'main.index'),
+    View('BDSA', 'main.index'),
     Subgroup(
         'Dashboards',
-        Link('Firewall stats', 'dashboard.dashboard'),
-        Link('Patch Mgmt.', 'patch_mgmt.Dashboard')
+        Link('Firewall stats', 'dashboard.fw_dashboard'),
+        Link('Patch Mgmt.', 'dashboard.pm_dashboard')
     ),
     Subgroup(
         'Analytics',

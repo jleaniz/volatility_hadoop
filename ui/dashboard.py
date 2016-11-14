@@ -24,15 +24,23 @@ from login import access_token_required
 mod_dashboard = Blueprint('dashboard', __name__)
 
 
-@mod_dashboard.route('/')
+@mod_dashboard.route("/fw/dashboard", methods=('GET', 'POST'))
 @access_token_required
-def index():
-    redirect(url_for('dashboard.Dashboard'))
-
-
-@mod_dashboard.route("/dashboard", methods=('GET', 'POST'))
-@access_token_required
-def Dashboard():
+def fw_dashboard():
     (fw_port_stats, fw_dstip_stats, fw_srcip_stats) = analytics_engine.GenerateDashboard()
-    return render_template('dashboard.html', fw_port_stats=fw_port_stats, fw_dstip_stats=fw_dstip_stats,
+    return render_template('fw_dashboard.html', fw_port_stats=fw_port_stats, fw_dstip_stats=fw_dstip_stats,
                            fw_srcip_stats=fw_srcip_stats)
+
+
+@mod_dashboard.route("/pm/dashboard", methods=('GET', 'POST'))
+@access_token_required
+def pm_dashboard():
+    (json_per_site_vuln, json_most_vuln, json_most_vuln_ncsa, json_most_vuln_emea, json_most_vuln_apac, json_most_vuln_onbe,
+     json_most_vuln_corp, json_most_vuln_func) = analytics_engine.pm_dashboard()
+
+    return render_template('pm_dashboard.html', json_most_vuln=json_most_vuln,
+                           json_most_vuln_ncsa=json_most_vuln_ncsa, json_most_vuln_emea=json_most_vuln_emea,
+                           json_most_vuln_apac=json_most_vuln_apac, json_most_vuln_onbe=json_most_vuln_onbe,
+                           json_most_vuln_corp=json_most_vuln_corp, json_most_vuln_func=json_most_vuln_func,
+                           json_per_site_vuln=json_per_site_vuln)
+    # return render_template('pm_dashboard.html')
