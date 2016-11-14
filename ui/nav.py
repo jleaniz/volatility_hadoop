@@ -28,8 +28,11 @@ nav = Nav()
 # lot more View instances.
 nav.register_element('frontend_top', Navbar(
     View('BDSA (0.1a)', 'main.index'),
-    View('Dashboard', 'dashboard.Dashboard'),
-    View('Patch Management', 'patch_mgmt.Dashboard'),
+    Subgroup(
+        'Dashboards',
+        Link('Firewall stats', 'dashboard.dashboard'),
+        Link('Patch Mgmt.', 'patch_mgmt.Dashboard')
+    ),
     Subgroup(
         'Analytics',
         Text('VPN'),
