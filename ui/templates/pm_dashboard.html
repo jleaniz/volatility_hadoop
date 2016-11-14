@@ -8,7 +8,7 @@
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
-        google.charts.load('current', {'packages':['bar']});
+        google.charts.load('current', {'packages':['corechart']});
         google.charts.setOnLoadCallback(drawChart);
         function drawChart() {
             var json_most_vuln_statsData = new google.visualization.DataTable({{ json_most_vuln|safe }});
@@ -31,7 +31,7 @@
             var json_most_vuln_onbe_statsChart = new google.charts.Bar(document.getElementById('json_most_vuln_onbe_div'));
             var json_most_vuln_corp_statsChart = new google.charts.Bar(document.getElementById('json_most_vuln_corp_div'));
             var json_vuln_func_statsChart = new google.charts.Bar(document.getElementById('json_vuln_func_div'));
-            var json_per_site_vulnc_statsChart = new google.charts.Bar(document.getElementById('json_per_site_vuln'));
+            var json_per_site_vulnc_statsChart = new google.visualization.BarChart(document.getElementById('json_per_site_vuln'));
 
             json_per_site_vulnc_statsChart.setAction({
               id: 'sample',
