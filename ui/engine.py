@@ -684,7 +684,7 @@ class AnalyticsEngine(object):
             logger.info("Loading new DataFrame")
             self.fwDF = self.buildParquetFileList('fw', fromdate, todate)
             self.fwDF.createOrReplaceTempView('fw')
-            self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
+            #self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
@@ -814,7 +814,7 @@ class AnalyticsEngine(object):
         if self.fwDF is None:
             self.fwDF = self.buildParquetFileList('fw', fromdate, todate)
             self.fwDF.createOrReplaceTempView('fw')
-            self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
+            #self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
         fw_port_stats = self.getfwPortStats(fromdate, todate)
@@ -846,11 +846,11 @@ class AnalyticsEngine(object):
         :return:
         '''
         today = date.today()
-        start = today - td(today.day + 1)
+        #start = today - td(today.day + 1)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
         str_today = today.strftime('%Y-%m-%d')
-        str_start = start.strftime('%Y-%m-%d')
-        (fw_port_stats, fw_dstip_stats, fw_srcip_stats) = self.getfwStats(str_start, str_today)
+        #str_start = start.strftime('%Y-%m-%d')
+        (fw_port_stats, fw_dstip_stats, fw_srcip_stats) = self.getfwStats(str_today, str_today)
         # proxy_top_transfers = self.getTopTransfersProxy(str_start, str_today)
 
         return (fw_port_stats, fw_dstip_stats, fw_srcip_stats)
