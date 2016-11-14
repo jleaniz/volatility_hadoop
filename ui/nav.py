@@ -30,8 +30,8 @@ nav.register_element('frontend_top', Navbar(
     View('BDSA', 'main.index'),
     Subgroup(
         'Dashboards',
-        Link('Firewall stats', 'dashboard.fw_dashboard'),
-        Link('Patch Mgmt.', 'dashboard.pm_dashboard')
+        Link('Firewall stats', '/dashboard/fw'),
+        Link('Patch Mgmt.', '/dashboard/pm')
     ),
     Subgroup(
         'Analytics',
