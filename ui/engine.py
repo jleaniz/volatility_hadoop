@@ -646,7 +646,8 @@ class AnalyticsEngine(object):
             logger.info("Loading new DataFrame")
             self.fwDF = self.buildParquetFileList('fw', fromdate, todate)
             self.fwDF.createOrReplaceTempView('fw')
-            #self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
+            self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
+
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
         PortStats = self.session.sql(
@@ -840,7 +841,7 @@ class AnalyticsEngine(object):
         :return:
         '''
         today = date.today()
-        start = today - td(today.day + 40)
+        start = today - td(today.day + 1)
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
         str_today = today.strftime('%Y-%m-%d')
         str_start = start.strftime('%Y-%m-%d')
