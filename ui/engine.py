@@ -805,7 +805,7 @@ class AnalyticsEngine(object):
 
     def getfwStats(self, fromdate, todate):
 
-        self.fwDF = self.buildParquetFileList('fw', fromdate, todate)
+        self.fwDF = self.buildParquetFileList('fw', fromdate, todate).cache()
         self.fwDF.createOrReplaceTempView('fw')
         #self.fwDF.persist(StorageLevel.MEMORY_ONLY_SER)
 
