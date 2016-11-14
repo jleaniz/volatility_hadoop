@@ -26,7 +26,6 @@ from proxy import mod_proxy
 from dashboard import mod_dashboard
 from engine import analytics_engine
 from forensics import mod_for
-from patch_mgmt import mod_pm_dashboard
 from login import access_token_required, mod_login
 import logging
 import cherrypy
@@ -131,7 +130,6 @@ if __name__ == "__main__":
     app.register_blueprint(mod_proxy)
     app.register_blueprint(mod_dashboard)
     app.register_blueprint(mod_for)
-    app.register_blueprint(mod_pm_dashboard)
     app.register_blueprint(mod_login)
     # Initialize nav bar
     nav.init_app(app)
