@@ -24,7 +24,7 @@ from login import access_token_required
 mod_dashboard = Blueprint('dashboard', __name__)
 
 
-@mod_dashboard.route("/fw/dashboard", methods=('GET', 'POST'))
+@mod_dashboard.route("/dashboard/fw", methods=('GET', 'POST'))
 @access_token_required
 def fw_dashboard():
     (fw_port_stats, fw_dstip_stats, fw_srcip_stats) = analytics_engine.GenerateDashboard()
@@ -32,7 +32,7 @@ def fw_dashboard():
                            fw_srcip_stats=fw_srcip_stats)
 
 
-@mod_dashboard.route("/pm/dashboard", methods=('GET', 'POST'))
+@mod_dashboard.route("/dashboard/pm", methods=('GET', 'POST'))
 @access_token_required
 def pm_dashboard():
     (json_per_site_vuln, json_most_vuln, json_most_vuln_ncsa, json_most_vuln_emea, json_most_vuln_apac, json_most_vuln_onbe,
