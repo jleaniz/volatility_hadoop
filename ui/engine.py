@@ -1144,7 +1144,7 @@ class AnalyticsEngine(object):
         for host in hosts:
             data.append(
                 {
-                    "host": host.Nmae0,
+                    "host": host.Name0,
                 }
             )
 
