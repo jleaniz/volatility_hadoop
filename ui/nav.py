@@ -63,16 +63,6 @@ nav.register_element('frontend_top', Navbar(
         Link('Keyword search', '/bash/keyword'),
         Link('User activity', '/bash/user'),
     ),
-    '''
-    Subgroup(
-        'Forensics',
-        Link('Timeline analysis', '/forensics/timeline'),
-    ),
-    Subgroup(
-        'ML Predictions',
-        Link('Bash commands clusters', '/bash/kmeans'),
-    ),
-    '''
     Link('Search', '/search'),
     Subgroup(
         'Spark',
