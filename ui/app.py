@@ -60,7 +60,7 @@ def run_server(app):
         'response.timeout': 3600,
         'server.ssl_module': 'pyOpenSSL',
         'tools.secureheaders.on': True,
-        'server.socket_port': 5433,
+        'server.socket_port': 5432,
         'server.socket_host': '0.0.0.0'
     })
 
