@@ -1135,10 +1135,10 @@ class AnalyticsEngine(object):
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
         hosts = self.sccmDF.filter('Region_X="{}"'.format(region.upper()))\
+            .filter('Exclude_X <> "patch_exclude"')\
             .filter('DisplayName0 like "%{}%"'.format(sft.capitalize()))\
             .select('Name0').collect()
-        logger.info(hosts)
-        logger.info(sft.capitalize())
+
         data = []
         description = {
             "host": ("string", "Host"),
