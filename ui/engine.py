@@ -1138,7 +1138,7 @@ class AnalyticsEngine(object):
             .filter('DisplayName0 like "%{}%"'.format(sft.capitalize()))\
             .select('Name0').collect()
         logger.info(hosts)
-
+        logger.info(sft.capitalize())
         data = []
         description = {
             "host": ("string", "Host"),
