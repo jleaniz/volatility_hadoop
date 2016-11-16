@@ -37,8 +37,8 @@
               id: 'sample',
               text: 'See sample book',
               action: function() {
-                selection = json_per_site_vulnc_statsChart.getSelection()[1];
-                alert('selected ' + json_per_site_vuln_statsData.getValue(selection.row, 0));
+                selection = json_per_site_vulnc_statsChart.getSelection()[0];
+                alert('selected ' + json_per_site_vuln_statsData.getValue(selection.item, 0));
               }
             });
 
