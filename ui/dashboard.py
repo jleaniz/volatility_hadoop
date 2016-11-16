@@ -44,3 +44,10 @@ def pm_dashboard():
                            json_most_vuln_corp=json_most_vuln_corp, json_most_vuln_func=json_most_vuln_func,
                            json_per_site_vuln=json_per_site_vuln)
     # return render_template('pm_dashboard.html')
+
+
+@mod_dashboard.route("/dashboard/pm/java", methods=('GET', 'POST'))
+@access_token_required
+def pm_dashboard_java():
+    json = analytics_engine.pm_get_java_hosts()
+    return render_template('DisplayTable.html', json=json)

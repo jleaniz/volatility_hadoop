@@ -1128,6 +1128,33 @@ class AnalyticsEngine(object):
         )
         return json_per_site_vuln, json_most_vuln,json_most_vuln_ncsa,json_most_vuln_emea,json_most_vuln_apac,json_most_vuln_onbe,json_most_vuln_corp,json_most_vuln_func
 
+    def pm_get_java_hosts(self):
+        if self.sccmDF is None:
+            self.sccmDF = self.session.read.json('/user/jleaniz/sft_vuln_raw.json').cache()
+
+        self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
+
+        hosts = self.sccmDF.filter('t_cve_name like "%java%"').select('Name0').collect()
+
+        data = []
+        description = {
+            "host": ("string", "Host"),
+        }
+
+        for host in hosts:
+            data.append(
+                {
+                    "host": host.Nmae0,
+                }
+            )
+
+        data_table = gviz_api.DataTable(description)
+        data_table.LoadData(data)
+        # Creating a JSon string
+        json = data_table.ToJSon()
+        return json
+
+
     def getCmdPrediction(self):
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
