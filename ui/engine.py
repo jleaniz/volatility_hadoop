@@ -1135,7 +1135,7 @@ class AnalyticsEngine(object):
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
         hosts = self.sccmDF.filter('Region_X="{}"'.format(region.upper()))\
-            .filter('DisplayName0 like %{}%'.format(sft))\
+            .filter('DisplayName0 like "%{}%"'.format(sft))\
             .select('Name0').collect()
         logger.info(hosts)
 
