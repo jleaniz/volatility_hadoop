@@ -95,6 +95,27 @@
 </script>
 
 <div class="container" style="width: 100%; height: 100%;">
+        <div class="panel panel-default">
+        <div class="panel-heading"><center><strong>Hosts missing critical updates</strong><font color="red"> - HIGH risk only</font></center></div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Number of vulnerable machines per function</div>
+                    <div class="panel-body">
+                        <div id="json_vuln_func_div" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+                <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Hosts with vuln. software per region</div>
+                    <div class="panel-body">
+                        <div id="json_per_site_vuln" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="panel panel-default">
         <div class="panel-heading"><center><strong>Most Vulnerable Software (3rd party)</strong><font color="red"> - HIGH risk only</font></center></div>
         <div class="row">
@@ -143,27 +164,6 @@
                     <div class="panel-heading">Most vulnerable Software (Corp only)</div>
                     <div class="panel-body">
                         <div id="json_most_vuln_corp_div" style="width: 100%; height: 380px;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading"><center><strong>Hosts missing critical updates</strong><font color="red"> - HIGH risk only</font></center></div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Number of vulnerable machines per function</div>
-                    <div class="panel-body">
-                        <div id="json_vuln_func_div" style="width: 100%; height: 380px;"></div>
-                    </div>
-                </div>
-            </div>
-                <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Hosts with vuln. software per region</div>
-                    <div class="panel-body">
-                        <div id="json_per_site_vuln" style="width: 100%; height: 380px;"></div>
                     </div>
                 </div>
             </div>
