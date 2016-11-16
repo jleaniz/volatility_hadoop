@@ -1134,7 +1134,7 @@ class AnalyticsEngine(object):
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
-        hosts = self.sccmDF.filter('t_cve_name like "%java%"').select('Name0').collect()
+        hosts = self.sccmDF.filter('DisplayName0 like "%Java%"').select('Name0').collect()
         logger.info(hosts)
 
         data = []
