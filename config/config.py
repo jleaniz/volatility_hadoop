@@ -30,7 +30,7 @@ class Config(object):
         :return:
         '''
         self.master = 'yarn'
-        self.appName = 'BDSA 0.1 beta'
+        self.appName = 'BDSA 0.1-dev'
         self.spark_driver_cores = '8'
         self.spark_driver_maxResultSize = '512m'
         self.spark_driver_memory = '10g'
