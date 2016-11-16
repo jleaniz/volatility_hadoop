@@ -1,14 +1,19 @@
 from functools import wraps
 from cryptography.x509 import load_pem_x509_certificate
 from cryptography.hazmat.backends import default_backend
-import Cookie
+import logging
 import json
 import sys
 import os
 import random
 import string
+import requests
 import jwt
+import base64
 from flask import Blueprint, redirect, url_for, Response, request, session, make_response
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 mod_login = Blueprint('login', __name__)
 
@@ -28,7 +33,17 @@ TEMPLATE_AUTHZ_URL = ('https://login.windows.net/{}/oauth2/authorize?'+
                       'state={}&nonce={}&resource={}')
 
 
+def get_AAD_pub_cert(x5t):
+    response = requests.get('https://login.windows.net/common/discovery/keys')
+    keys = response.json().items()[0][1]
+
+    for key in keys:
+        if key['x5t'] == x5t:
+            pub_cert = '-----BEGIN CERTIFICATE-----\r\n{}\r\n-----END CERTIFICATE-----'.format(key['x5c'][0])
+            return pub_cert
+
 def validate_id_token(id_token):
+    '''
     try:
         f = open(adal_parameters['idp_cert'], 'r')
         cert_str = f.read()
@@ -36,7 +51,10 @@ def validate_id_token(id_token):
     except IOError as e:
         print('Unable to open PEM certificate')
         return False
-
+    '''
+    header = id_token.split('.')[0]
+    x5t = json.loads(base64.b64decode(header))['x5t']
+    cert_str = get_AAD_pub_cert(x5t)
     cert_obj = load_pem_x509_certificate(cert_str, default_backend())
     public_key = cert_obj.public_key()
 
