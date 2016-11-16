@@ -109,6 +109,6 @@ def access_token_required(func):
             return redirect(url_for('login.login'))
         elif not validate_id_token(session.get('id_token')):
             return redirect(url_for('login.login'))
-        return func()
+        return func(*args, **kwargs)
 
     return __decorator
