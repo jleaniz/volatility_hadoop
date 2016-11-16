@@ -43,17 +43,10 @@
                   for (var i = 0; i < selection.length; i++) {
                     var item = selection[i];
                     if (item.row != null && item.column != null) {
-                      message += '{row:' + item.row + ',column:' + item.column + '}';
-                    } else if (item.row != null) {
-                      message += '{row:' + item.row + '}';
-                    } else if (item.column != null) {
-                      message += '{column:' + item.column + '}';
-                    }
+                      row = item.row;
+                      column = item.column;
                   }
-                  if (message == '') {
-                    message = 'nothing';
-                  }
-                  alert('You selected ' + message);
+                  alert('You selected ' + json_per_site_vuln_statsData.getValue(row, column));
               }
             });
 
