@@ -1128,13 +1128,15 @@ class AnalyticsEngine(object):
         )
         return json_per_site_vuln, json_most_vuln,json_most_vuln_ncsa,json_most_vuln_emea,json_most_vuln_apac,json_most_vuln_onbe,json_most_vuln_corp,json_most_vuln_func
 
-    def pm_get_java_hosts(self):
+    def pm_get_java_hosts(self, region, sft):
         if self.sccmDF is None:
             self.sccmDF = self.session.read.json('/user/jleaniz/sft_vuln_raw.json').cache()
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
-        hosts = self.sccmDF.filter('DisplayName0 like "%Java%"').select('Name0').collect()
+        hosts = self.sccmDF.filter('Region_X=%s' % region)\
+            .filter('DisplayName0 like %{}%'.format(sft))\
+            .select('Name0').collect()
         logger.info(hosts)
 
         data = []

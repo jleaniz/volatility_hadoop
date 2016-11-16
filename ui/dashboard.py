@@ -46,8 +46,8 @@ def pm_dashboard():
     # return render_template('pm_dashboard.html')
 
 
-@mod_dashboard.route("/dashboard/pm/java", methods=('GET', 'POST'))
+@mod_dashboard.route("/dashboard/pm/<region>/<sft>", methods=('GET', 'POST'))
 @access_token_required
-def pm_dashboard_java():
-    json = analytics_engine.pm_get_java_hosts()
+def pm_dashboard_hosts(region, sft):
+    json = analytics_engine.pm_get_java_hosts(region, sft)
     return render_template('DisplayTable.html', json=json)
