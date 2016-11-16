@@ -47,7 +47,9 @@
                       column = item.column;
                     }
                   }
-                  alert('You selected ' + json_per_site_vuln_statsData.getColumnLabel(column));
+                  sft = json_per_site_vuln_statsData.getColumnLabel(column));
+                  region = json_per_site_vuln_statsData.getValue(row, 0));
+                  alert(sft + region);
               }
             });
 
