@@ -39,7 +39,7 @@ def get_AAD_pub_cert(x5t):
 
     for key in keys:
         if key['x5t'] == x5t:
-            pub_cert = '-----BEGIN CERTIFICATE-----\r\n{}-----END CERTIFICATE-----\r\n'.format(key['x5c'])
+            pub_cert = '-----BEGIN CERTIFICATE-----\r\n{}-----END CERTIFICATE-----\r\n'.format(key['x5c'][0])
             logger.info(pub_cert)
             return pub_cert
 
