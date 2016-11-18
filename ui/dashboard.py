@@ -27,7 +27,7 @@ mod_dashboard = Blueprint('dashboard', __name__)
 
 @mod_dashboard.route("/dashboard/birdseye", methods=('GET', 'POST'))
 @access_token_required
-def fw_dashboard():
+def birdseye():
     Lookupform = UserForm(csrf_enabled=False)
     if request.method == 'POST':
         if Lookupform.validate_on_submit() and Lookupform.lookup.data:
