@@ -16,12 +16,26 @@
 #
 
 from flask import (
-    render_template, Blueprint, redirect, url_for
+    render_template, Blueprint, request, Response
 )
 from engine import analytics_engine
 from login import access_token_required
+from forms import UserForm
 
 mod_dashboard = Blueprint('dashboard', __name__)
+
+
+@mod_dashboard.route("/dashboard/birdseye", methods=('GET', 'POST'))
+@access_token_required
+def fw_dashboard():
+    Lookupform = UserForm(csrf_enabled=False)
+    if request.method == 'POST':
+        if Lookupform.validate_on_submit() and Lookupform.lookup.data:
+            (fw_data, proxy_data, bash_data, vpn_activtiy, patch_data) = analytics_engine.birdseye(
+                request.form.get('name')
+            )
+
+            return Response((fw_data,proxy_data,bash_data,vpn_activtiy,patch_data), mimetype='application/json')
 
 
 @mod_dashboard.route("/dashboard/fw", methods=('GET', 'POST'))

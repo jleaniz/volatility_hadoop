@@ -1213,6 +1213,40 @@ class AnalyticsEngine(object):
         )
         return vpn_logins
 
+
+    def birdseye(self, keyword):
+        today = date.today().strftime('%Y-%m-%d')
+        self.sc.setLocalProperty("spark.scheduler.pool", "default")
+
+        fwDF = self.buildParquetFileList('fw', today, today)
+        proxyDF = self.buildParquetFileList('proxysg', today, today)
+
+        fw_data = self.fwDF.select(fwDF.srcip,
+                                   fwDF.dstip,
+                                   fwDF.dstport,
+                                   fwDF.proto)\
+            .filter('srcip="10.163.2.28"')\
+            .groupBy(fwDF.srcip,
+                     fwDF.dstip,
+                     fwDF.dstport,
+                     fwDF.proto)\
+            .count().orderBy(desc('count')).limit(20).toJSON().collect()
+
+        proxy_data = proxyDF.select(proxyDF.username,
+                                         proxyDF.clientip,
+                                         proxyDF.host)\
+            .filter('clientip="10.163.2.28"')\
+            .groupBy(proxyDF.clientip,
+                     proxyDF.host,
+                     proxyDF.username)\
+            .count().orderBy(desc('count')).limit(20).toJSON().collect()
+
+        bash_data = self.bashUserActivity('jleaniz',today,today)
+        vpn_activtiy = self.getVPNLoginsByUserGoogle(keyword)
+        patch_data = self.sccmDF.filter('Name0="TOR-WKS-Ab099').toJSON().collect()
+
+        return (fw_data,proxy_data,bash_data,vpn_activtiy,patch_data)
+
 def init_spark_context():
     appConfig = conf.Config(exec_cores=6, cores_max=64, yarn_cores=8, instances=10, queue='root.llama')
     sc = SparkContext(conf=appConfig.setSparkConf())
