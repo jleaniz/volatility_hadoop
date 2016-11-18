@@ -37,6 +37,7 @@ def birdseye():
 
             return Response((fw_data,proxy_data,bash_data,vpn_activtiy,patch_data), mimetype='application/json')
 
+    return render_template("vpn.html", form=Lookupform)
 
 @mod_dashboard.route("/dashboard/fw", methods=('GET', 'POST'))
 @access_token_required
