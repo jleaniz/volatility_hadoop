@@ -1220,8 +1220,9 @@ class AnalyticsEngine(object):
 
         fwDF = self.buildParquetFileList('fw', today, today)
         proxyDF = self.buildParquetFileList('proxysg', today, today)
+        sccmDF = self.session.read.json('/user/jleaniz/sft_vuln_raw.json')
 
-        fw_data = self.fwDF.select(fwDF.srcip,
+        fw_data = fwDF.select(fwDF.srcip,
                                    fwDF.dstip,
                                    fwDF.dstport,
                                    fwDF.proto)\
@@ -1243,7 +1244,7 @@ class AnalyticsEngine(object):
 
         bash_data = self.bashUserActivity('jleaniz',today,today)
         vpn_activtiy = self.getVPNLoginsByUserGoogle(keyword)
-        patch_data = self.sccmDF.filter('Name0="TOR-WKS-Ab099').toJSON().collect()
+        patch_data = sccmDF.filter('Name0="TOR-WKS-Ab099').toJSON().collect()
 
         return (fw_data,proxy_data,bash_data,vpn_activtiy,patch_data)
 
