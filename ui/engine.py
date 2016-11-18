@@ -1244,7 +1244,7 @@ class AnalyticsEngine(object):
 
         bash_data = self.bashUserActivity('jleaniz',today,today)
         vpn_activtiy = self.getVPNLoginsByUserGoogle(keyword)
-        patch_data = sccmDF.filter('Name0="TOR-WKS-Ab099').toJSON().collect()
+        patch_data = sccmDF.filter('Name0="TOR-WKS-Ab099"').toJSON().collect()
 
         return (fw_data,proxy_data,bash_data,vpn_activtiy,patch_data)
 
