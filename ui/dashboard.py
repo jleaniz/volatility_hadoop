@@ -34,8 +34,12 @@ def birdseye():
             (fw_data, proxy_data, bash_data, vpn_activtiy, patch_data) = analytics_engine.birdseye(
                 request.form.get('name')
             )
+            def generate():
+                yield '{"%s": [\n' % ('birdseye')
+                yield fw_data,proxy_data,bash_data,vpn_activtiy,patch_data + ',\n'
+                yield "{}\n]}"
 
-            return Response((fw_data,proxy_data,bash_data,vpn_activtiy,patch_data), mimetype='application/json')
+            return Response(generate(), mimetype='application/json')
 
     return render_template("vpn.html", form=Lookupform)
 
