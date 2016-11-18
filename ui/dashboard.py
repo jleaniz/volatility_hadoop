@@ -36,7 +36,11 @@ def birdseye():
             )
             def generate():
                 yield '{"%s": [\n' % ('birdseye')
-                yield fw_data,proxy_data,bash_data,vpn_activtiy,patch_data
+                yield str(fw_data) + '\n'
+                yield str(proxy_data)+ '\n'
+                yield str(bash_data)+ '\n'
+                yield str(vpn_activtiy)+ '\n'
+                yield str(patch_data)+ '\n'
                 yield "{}\n]}"
 
             return Response(generate(), mimetype='application/json')
