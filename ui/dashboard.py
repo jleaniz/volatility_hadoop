@@ -31,13 +31,13 @@ def birdseye():
     Lookupform = UserForm(csrf_enabled=False)
     if request.method == 'POST':
         if Lookupform.validate_on_submit() and Lookupform.lookup.data:
-            (json_fw_data, json_proxy_data, bash_data, vpn_activtiy, patch_data) = analytics_engine.birdseye(
+            (json_fw_data, json_proxy_data, json_bash_data, vpn_activtiy, patch_data) = analytics_engine.birdseye(
                 request.form.get('name')
             )
 
-            return render_template('birdseye.html', json_proxy_data=json_proxy_data, json_fw_data=json_fw_data)
+            return render_template('birdseye.html', json_proxy_data=json_proxy_data, json_fw_data=json_fw_data, json_bash_data=json_bash_data)
 
-    return render_template("vpn.html", form=Lookupform)
+    return render_template("dateForm.html", form=Lookupform)
 
 @mod_dashboard.route("/dashboard/fw", methods=('GET', 'POST'))
 @access_token_required

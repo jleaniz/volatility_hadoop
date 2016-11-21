@@ -16,13 +16,15 @@
 
             var json_proxyData = new google.visualization.DataTable({{ json_proxy_data|safe }});
             var json_fwData = new google.visualization.DataTable({{ json_fw_data|safe }});
+            var json_bashData = new google.visualization.DataTable({{ json_bash_data|safe }});
 
             var json_proxy_table = new google.visualization.Table(document.getElementById('json_proxy_table_div'));
             var json_fw_Chart = new google.visualization.BarChart(document.getElementById('json_fw_chart_div'));
+            var json_bash_table = new google.visualization.BarChart(document.getElementById('json_bash_table_div'));
 
             json_proxy_table.draw(json_proxyData, tableOptions);
             json_fw_Chart.draw(json_fwData, pieChartOptions);
-
+            json_bash_table.draw(json_bashData, tableOptions);
         }
 </script>
 
@@ -40,20 +42,15 @@
             </div>
                 <div class="col-md-4">
                 <div class="panel panel-default">
-                    <div class="panel-heading"></div>
+                    <div class="panel-heading">Firewall</div>
                     <div class="panel-body">
                         <div id="json_fw_chart_div" style="width: 100%; height: 380px;"></div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading"><center><strong>Most Vulnerable Software (3rd party)</strong><font color="red"> - HIGH risk only | With exclusion group</font></center></div>
-        <div class="row">
-            <div class="col-md-4">
+                <div class="col-md-4">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Most vulnerable Software (NCSA Corp)</div>
+                    <div class="panel-heading">Firewall</div>
                     <div class="panel-body">
                         <div id="json_fw_chart_div" style="width: 100%; height: 380px;"></div>
                     </div>
