@@ -687,11 +687,7 @@ class AnalyticsEngine(object):
         return fw_port_stats
 
     def getfwIPStats(self, srcip, fromdate, todate):
-        try:
-            if self.fwDF:
-                logger.info("Already loaded this DataFrame")
-                pass
-        except:
+        if self.fwDF is None:
             logger.info("Loading new DataFrame")
             self.fwDF = self.buildParquetFileList('fw', fromdate, todate)
             self.fwDF.createOrReplaceTempView('fw')
