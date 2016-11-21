@@ -1239,9 +1239,6 @@ class AnalyticsEngine(object):
     def elint(self, keyword):
         today = date.today().strftime('%Y-%m-%d')
         self.sc.setLocalProperty("spark.scheduler.pool", "default")
-
-        fwDF = self.buildParquetFileList('fw', today, today)
-        proxyDF = self.buildParquetFileList('proxysg', today, today)
         sccmDF = self.session.read.json('/user/jleaniz/sft_vuln_raw.json')
 
         '''
