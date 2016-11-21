@@ -20,7 +20,7 @@ from flask import (
 )
 from engine import analytics_engine
 from login import access_token_required
-from forms import UserForm
+from forms import UserShortForm
 
 mod_dashboard = Blueprint('dashboard', __name__)
 
@@ -28,7 +28,7 @@ mod_dashboard = Blueprint('dashboard', __name__)
 @mod_dashboard.route("/dashboard/birdseye", methods=('GET', 'POST'))
 @access_token_required
 def birdseye():
-    Lookupform = UserForm(csrf_enabled=False)
+    Lookupform = UserShortForm(csrf_enabled=False)
     if request.method == 'POST':
         if Lookupform.validate_on_submit() and Lookupform.lookup.data:
             (json_fw_data, json_proxy_data, json_bash_data, vpn_activtiy, patch_data) = analytics_engine.birdseye(

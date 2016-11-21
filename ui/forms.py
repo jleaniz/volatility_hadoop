@@ -25,6 +25,9 @@ class UserForm(FlaskForm):
     name = StringField(u'VPN Username', validators=[Email(message="Invalid input. Ex: srm-ais@email.com")])
     lookup = SubmitField(u'Lookup')
 
+class UserShortForm(FlaskForm):
+    name = StringField(u'Username')
+    lookup = SubmitField(u'Lookup')
 
 class UserDateForm(FlaskForm):
     fromdate = DateField(u'From', format='%Y-%m-%d',
