@@ -705,7 +705,7 @@ class AnalyticsEngine(object):
             )
         else:
             dstIPStats = self.session.sql(
-                'select dstip, dstport, proto, count(*) as hits from fw where action="DENY" and where srcip="{}" group by dstip, dstport, proto order by hits desc limit 10'.format(srcip)
+                'select dstip, dstport, proto, count(*) as hits from fw where action="DENY" and srcip="{}" group by dstip, dstport, proto order by hits desc limit 10'.format(srcip)
             )
         entries = dstIPStats.collect()
 
