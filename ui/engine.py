@@ -325,7 +325,7 @@ class AnalyticsEngine(object):
 
         return jsonTable
 
-    def getMostVisitedDomains(self, fromdate, todate):
+    def getMostVisitedDomains(self, username, fromdate, todate):
         '''
         :return:
         '''
@@ -334,11 +334,18 @@ class AnalyticsEngine(object):
         self.proxyDF.createOrReplaceTempView('proxysg')
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
 
-        visitedDomains = self.session.sql(
-            'select host, count(*) as hits from proxysg '
-            'group by host order by hits desc limit 15'
-        )
+        if username is None:
+            visitedDomains = self.session.sql(
+                'select host, count(*) as hits from proxysg '
+                'group by host order by hits desc limit 10'
+            )
+        else:
+            visitedDomains = self.session.sql(
+                'select host, count(*) as hits from proxysg where username="{}"'
+                'group by host order by hits desc limit 10'.format(username)
+            )
         entries = visitedDomains.collect()
+
 
         # Build json object for the table
         data = []
@@ -679,7 +686,7 @@ class AnalyticsEngine(object):
 
         return fw_port_stats
 
-    def getfwIPStats(self, fromdate, todate):
+    def getfwIPStats(self, srcip, fromdate, todate):
         try:
             if self.fwDF:
                 logger.info("Already loaded this DataFrame")
@@ -692,9 +699,14 @@ class AnalyticsEngine(object):
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
 
-        dstIPStats = self.session.sql(
-            'select dstip, dstport, proto, count(*) as hits from fw where action="DENY" group by dstip, dstport, proto order by hits desc limit 10'
-        )
+        if srcip is None:
+            dstIPStats = self.session.sql(
+                'select dstip, dstport, proto, count(*) as hits from fw where action="DENY" group by dstip, dstport, proto order by hits desc limit 10'
+            )
+        else:
+            dstIPStats = self.session.sql(
+                'select dstip, dstport, proto, count(*) as hits from fw where action="DENY" and where srcip="{}" group by dstip, dstport, proto order by hits desc limit 10'.format(srcip)
+            )
         entries = dstIPStats.collect()
 
         # Build json object for the table
@@ -1253,8 +1265,8 @@ class AnalyticsEngine(object):
                      proxyDF.username)\
             .count().orderBy(desc('count')).limit(20).toJSON().collect()
         '''
-        proxy_data = self.getProxyUserMalwareHits('jleaniz', today, today)
-        fw_data = self.getfwMalwareConns('10.163.2.28',today,today)
+        proxy_data = self.getMostVisitedDomains('jleaniz', today, today)
+        fw_data = self.getfwIPStats('10.163.2.28',today,today)
         bash_data = self.bashUserActivity('jleaniz',today,today)
         vpn_activtiy = self.getVPNLoginsByUserGoogle(keyword)
         patch_data = sccmDF.filter('Name0="TOR-WKS-Ab099"').toJSON().collect()

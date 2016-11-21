@@ -18,8 +18,8 @@
             var json_fwData = new google.visualization.DataTable({{ json_fw_data|safe }});
             var json_bashData = new google.visualization.DataTable({{ json_bash_data|safe }});
 
-            var json_proxy_table = new google.visualization.Table(document.getElementById('json_proxy_table_div'));
-            var json_fw_Chart = new google.visualization.BarChart(document.getElementById('json_fw_chart_div'));
+            var json_proxy_table = new google.visualization.BarChart(document.getElementById('json_proxy_table_div'));
+            var json_fw_Chart = new google.visualization.PieChart(document.getElementById('json_fw_chart_div'));
             var json_bash_table = new google.visualization.Table(document.getElementById('json_bash_table_div'));
 
             json_proxy_table.draw(json_proxyData, tableOptions);
