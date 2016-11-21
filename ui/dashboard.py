@@ -35,7 +35,7 @@ def birdseye():
                 request.form.get('name')
             )
 
-            return render_template('birdseye.html', json_proxy_data=json_proxy_data, json_fw_data=json_fw_data, json_bash_data=json_bash_data.decode('utf9'))
+            return render_template('birdseye.html', json_proxy_data=json_proxy_data, json_fw_data=json_fw_data, json_bash_data=json_bash_data.decode('utf-8'))
 
     return render_template("bash.html", form=Lookupform)
 
