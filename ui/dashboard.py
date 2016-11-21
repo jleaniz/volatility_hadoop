@@ -37,7 +37,7 @@ def birdseye():
 
             return render_template('birdseye.html', json_proxy_data=json_proxy_data, json_fw_data=json_fw_data, json_bash_data=json_bash_data)
 
-    return render_template("dateForm.html", form=Lookupform)
+    return render_template("bash.html", form=Lookupform)
 
 @mod_dashboard.route("/dashboard/fw", methods=('GET', 'POST'))
 @access_token_required
