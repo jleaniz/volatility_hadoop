@@ -756,8 +756,8 @@ class AnalyticsEngine(object):
             fwotx = self.session.sql('select fw.dstip from fw join otx on otx.ip=fw.dstip')
             fwc2 = self.session.sql('select fw.dstip from fw join c2 on c2.host=fw.dstip')
         else:
-            fwotx = self.session.sql('select fw.srcip,fw.dstip from fw where srcip="{}" join otx on otx.ip=fw.dstip'.format(srcip))
-            fwc2 = self.session.sql('select fw.srcip,fw.dstip from fw where srcip="{}" join c2 on c2.host=fw.dstip'.format(srcip))
+            fwotx = self.session.sql('select fw.srcip,fw.dstip from fw join otx on otx.ip=fw.dstip where srcip="{}" '.format(srcip))
+            fwc2 = self.session.sql('select fw.srcip,fw.dstip from fw join c2 on c2.host=fw.dstip where srcip="{}"'.format(srcip))
 
         fwall = fwotx.unionAll(fwc2)
 
