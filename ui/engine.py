@@ -1258,9 +1258,9 @@ class AnalyticsEngine(object):
                      proxyDF.username)\
             .count().orderBy(desc('count')).limit(20).toJSON().collect()
         '''
-        proxy_data = self.getMostVisitedDomains('jleaniz', today, today)
+        proxy_data = self.getMostVisitedDomains(keyword, today, today)
         fw_data = self.getfwIPStats('10.163.2.28',today,today)
-        bash_data = self.bashUserActivity('jleaniz',today,today)
+        bash_data = self.bashUserActivity(keyword,today,today)
         vpn_activtiy = self.getVPNLoginsByUserGoogle(keyword)
         patch_data = sccmDF.filter('Name0="TOR-WKS-Ab099"').toJSON().collect()
 
