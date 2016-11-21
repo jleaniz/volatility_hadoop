@@ -21,8 +21,11 @@ from flask import (
 from engine import analytics_engine
 from login import access_token_required
 from forms import UserShortForm
+import logging
 
 mod_dashboard = Blueprint('dashboard', __name__)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 @mod_dashboard.route("/dashboard/birdseye", methods=('GET', 'POST'))
@@ -34,7 +37,7 @@ def birdseye():
             (json_fw_data, json_proxy_data, json_bash_data, vpn_activtiy, patch_data) = analytics_engine.birdseye(
                 request.form.get('name')
             )
-
+            logger.info(json_bash_data)
             return render_template('birdseye.html', json_proxy_data=json_proxy_data, json_fw_data=json_fw_data, json_bash_data=json_bash_data.decode('utf-8'))
 
     return render_template("bash.html", form=Lookupform)
