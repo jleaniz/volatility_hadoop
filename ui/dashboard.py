@@ -31,19 +31,11 @@ def birdseye():
     Lookupform = UserForm(csrf_enabled=False)
     if request.method == 'POST':
         if Lookupform.validate_on_submit() and Lookupform.lookup.data:
-            (fw_data, proxy_data, bash_data, vpn_activtiy, patch_data) = analytics_engine.birdseye(
+            (json_fw_data, json_proxy_data, bash_data, vpn_activtiy, patch_data) = analytics_engine.birdseye(
                 request.form.get('name')
             )
-            def generate():
-                yield '{"%s": [\n' % ('birdseye')
-                yield str(fw_data) + '\n'
-                yield str(proxy_data)+ '\n'
-                yield str(bash_data)+ '\n'
-                yield str(vpn_activtiy)+ '\n'
-                yield str(patch_data)+ '\n'
-                yield "{}\n]}"
 
-            return Response(generate(), mimetype='application/json')
+            return render_template('birdseye.html', json_proxy_data=json_proxy_data, json_fw_data=json_fw_data)
 
     return render_template("vpn.html", form=Lookupform)
 

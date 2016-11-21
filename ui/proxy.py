@@ -45,9 +45,9 @@ def proxy_user():
 @mod_proxy.route("/proxy/top/transfers", methods=('GET', 'POST'))
 @access_token_required
 def proxyTopTransfers():
-    form = DateForm(csrf_enabled=False)
+    form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
-        (jsonTable, jsonChart) = analytics_engine.getTopTransfersProxy(form.fromdate.data.strftime('%Y-%m-%d'),
+        (jsonTable, jsonChart) = analytics_engine.getTopTransfersProxy(form.name.data, form.fromdate.data.strftime('%Y-%m-%d'),
                                                                        form.todate.data.strftime('%Y-%m-%d'))
         return render_template('DisplayTableAndCharts.html', jsonTable=jsonTable, jsonChart=jsonChart)
 

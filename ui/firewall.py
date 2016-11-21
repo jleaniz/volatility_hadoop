@@ -18,7 +18,7 @@
 from flask import (
     render_template, Blueprint
 )
-from forms import DateForm
+from forms import UserDateForm, DateForm
 from engine import analytics_engine
 from login import access_token_required
 
@@ -58,9 +58,9 @@ def DisplayIPStats():
 @mod_firewall.route("/firewall/malware/conns", methods=('GET', 'POST'))
 @access_token_required
 def DisplayMalwareConns():
-    form = DateForm(csrf_enabled=False)
+    form = UserDateForm(csrf_enabled=False)
     if form.validate_on_submit():
-        jsonChart = analytics_engine.getfwMalwareConns(form.fromdate.data.strftime('%Y-%m-%d'),
+        jsonChart = analytics_engine.getfwMalwareConns(form.name.data, form.fromdate.data.strftime('%Y-%m-%d'),
                                                              form.todate.data.strftime('%Y-%m-%d'))
         return render_template('DisplayTableAndCharts.html', jsonTable=jsonChart, jsonChart=jsonChart)
 

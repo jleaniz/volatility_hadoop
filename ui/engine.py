@@ -230,7 +230,7 @@ class AnalyticsEngine(object):
 
         return json
 
-    def getTopTransfersProxy(self, fromdate, todate):
+    def getTopTransfersProxy(self, username, fromdate, todate):
         '''
         :return:
         '''
@@ -239,10 +239,14 @@ class AnalyticsEngine(object):
         self.proxyDF.createOrReplaceTempView('proxysg')
 
         #self.proxyDF.persist(StorageLevel.MEMORY_AND_DISK_SER)
-
-        topTransfers = self.session.sql(
-            'select clientip, host, cast(csbytes as Double) as bytes from proxysg group by clientip, host, cast(csbytes as Double) order by bytes desc limit 10'
-        )
+        if username is None:
+            topTransfers = self.session.sql(
+                'select clientip, host, cast(csbytes as Double) as bytes from proxysg group by clientip, host, cast(csbytes as Double) order by bytes desc limit 10'
+            )
+        else:
+            topTransfers = self.session.sql(
+                'select clientip, host, cast(csbytes as Double) as bytes from proxysg where username="{}" group by clientip, host, cast(csbytes as Double) order by bytes desc limit 10'.format(username)
+            )
         entries = topTransfers.collect()
 
         # Build json object for the table
@@ -738,7 +742,7 @@ class AnalyticsEngine(object):
         return (fw_srcip_stats, fw_dstip_stats)
 
 
-    def getfwMalwareConns(self, fromdate, todate):
+    def getfwMalwareConns(self, srcip, fromdate, todate):
 
         self.fwDF = self.buildParquetFileList('fw', fromdate, todate)
         self.fwDF.createOrReplaceTempView('fw')
@@ -747,8 +751,14 @@ class AnalyticsEngine(object):
         self.session.read.parquet('/data/srm/dbs/dw_srm.db/c2').createOrReplaceTempView('c2')
 
         self.sc.setLocalProperty("spark.scheduler.pool", "dashboard")
-        fwotx = self.session.sql('select fw.dstip from fw join otx on otx.ip=fw.dstip')
-        fwc2 = self.session.sql('select fw.dstip from fw join c2 on c2.host=fw.dstip')
+
+        if srcip is None:
+            fwotx = self.session.sql('select fw.dstip from fw join otx on otx.ip=fw.dstip')
+            fwc2 = self.session.sql('select fw.dstip from fw join c2 on c2.host=fw.dstip')
+        else:
+            fwotx = self.session.sql('select fw.srcip,fw.dstip from fw where srcip="{}" join otx on otx.ip=fw.dstip').format(srcip)
+            fwc2 = self.session.sql('select fw.srcip,fw.dstip from fw where srcip="{}" join c2 on c2.host=fw.dstip').format(srcip)
+
         fwall = fwotx.unionAll(fwc2)
 
         groupcnt = fwall.groupBy(fwall.dstip).count().orderBy(desc('count'))
@@ -1222,6 +1232,7 @@ class AnalyticsEngine(object):
         proxyDF = self.buildParquetFileList('proxysg', today, today)
         sccmDF = self.session.read.json('/user/jleaniz/sft_vuln_raw.json')
 
+        '''
         fw_data = fwDF.select(fwDF.srcip,
                                    fwDF.dstip,
                                    fwDF.dstport,
@@ -1241,7 +1252,9 @@ class AnalyticsEngine(object):
                      proxyDF.host,
                      proxyDF.username)\
             .count().orderBy(desc('count')).limit(20).toJSON().collect()
-
+        '''
+        proxy_data = self.getProxyUserMalwareHits('jleaniz', today, today)
+        fw_data = self.getfwMalwareConns('10.163.2.28',today,today)
         bash_data = self.bashUserActivity('jleaniz',today,today)
         vpn_activtiy = self.getVPNLoginsByUserGoogle(keyword)
         patch_data = sccmDF.filter('Name0="TOR-WKS-Ab099"').toJSON().collect()

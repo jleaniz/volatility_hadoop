@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% import "bootstrap/utils.html" as util %}
+
+{% block content %}
+{{ util.flashed_messages(dismissible=True) }}
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart', 'bar']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var tableOptions = {showRowNumber: false, width: '100%', height: '100%'};
+            var pieChartOptions = {title: '', width: '100%', height: '100%'};
+
+            var json_proxyData = new google.visualization.DataTable({{ json_proxy_data|safe }});
+            var json_fwData = new google.visualization.DataTable({{ json_fw_data|safe }});
+
+            var json_proxy_table = new google.visualization.Table(document.getElementById('json_proxy_table_div'));
+            var json_fw_Chart = new google.visualization.BarChart(document.getElementById('json_fw_chart_div'));
+
+            json_proxy_table.draw(json_proxyData, tableOptions);
+            json_fw_Chart.draw(json_fwData, pieChartOptions);
+
+        }
+</script>
+
+<div class="container" style="width: 100%; height: 100%;">
+        <div class="panel panel-default">
+        <div class="panel-heading">BirdsEye</div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Proxy</div>
+                    <div class="panel-body">
+                        <div id="json_proxy_table_div" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+                <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading"></div>
+                    <div class="panel-body">
+                        <div id="json_fw_chart_div" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading"><center><strong>Most Vulnerable Software (3rd party)</strong><font color="red"> - HIGH risk only | With exclusion group</font></center></div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Most vulnerable Software (NCSA Corp)</div>
+                    <div class="panel-body">
+                        <div id="json_fw_chart_div" style="width: 100%; height: 380px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
