@@ -1224,7 +1224,7 @@ class AnalyticsEngine(object):
         return vpn_logins
 
 
-    def birdseye(self, keyword):
+    def elint(self, keyword):
         today = date.today().strftime('%Y-%m-%d')
         self.sc.setLocalProperty("spark.scheduler.pool", "default")
 

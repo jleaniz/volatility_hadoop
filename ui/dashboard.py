@@ -26,16 +26,16 @@ mod_dashboard = Blueprint('dashboard', __name__)
 
 
 
-@mod_dashboard.route("/dashboard/birdseye", methods=('GET', 'POST'))
+@mod_dashboard.route("/dashboard/elint", methods=('GET', 'POST'))
 @access_token_required
 def birdseye():
     Lookupform = UserShortForm(csrf_enabled=False)
     if request.method == 'POST':
         if Lookupform.validate_on_submit() and Lookupform.lookup.data:
-            (json_fw_data, json_proxy_data, json_bash_data, vpn_activtiy, patch_data) = analytics_engine.birdseye(
+            (json_fw_data, json_proxy_data, json_bash_data, vpn_activtiy, patch_data) = analytics_engine.elint(
                 request.form.get('name')
             )
-            return render_template('birdseye.html', json_proxy_data=json_proxy_data, json_fw_data=json_fw_data, json_bash_data=json_bash_data.decode('utf-8'))
+            return render_template('elint.html', json_proxy_data=json_proxy_data, json_fw_data=json_fw_data, json_bash_data=json_bash_data.decode('utf-8'))
 
     return render_template("bash.html", form=Lookupform)
 
