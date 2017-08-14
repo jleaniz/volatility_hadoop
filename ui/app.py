@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with BDSA.  If not, see <http://www.gnu.org/licenses/>.
 #
-from paste.translogger import TransLogger
+#from paste.translogger import TransLogger
 from flask_bootstrap import Bootstrap
 from flask import Flask, render_template, Blueprint, send_from_directory, flash, redirect, url_for, Response, request, session
 from nav import nav
@@ -46,10 +46,10 @@ def secureheaders():
 
 def run_server(app):
     # Enable WSGI access logging via Paste
-    app_logged = TransLogger(app)
+    #app_logged = TransLogger(app)
 
     # Mount the WSGI callable object (app) on the root directory
-    cherrypy.tree.graft(app_logged, '/')
+    cherrypy.tree.graft(app, '/')
     cherrypy.tools.secureheaders = cherrypy.Tool('before_finalize', secureheaders, priority=60)
 
     # Set the configuration of the web server
