@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with BDSA.  If not, see <http://www.gnu.org/licenses/>.
 #
-from paste.translogger import TransLogger
+from paste import translogger
 from flask_bootstrap import Bootstrap
 from flask import Flask, render_template, Blueprint, send_from_directory, flash, redirect, url_for, Response, request, session
 from nav import nav
