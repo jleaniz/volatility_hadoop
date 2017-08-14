@@ -54,6 +54,8 @@ class Config(object):
         self.spark_shuffle_service_enabled = 'false'
         self.spark_scheduler_allocation_file = 'pool.xml'
         self.spark_yarn_queue = queue
+        self.spark_yarn_appmasterenv = '/srv/python/anaconda2/bin/python'
+        self.spark_yarn_driverpython = '/srv/python/anaconda2/bin/python'
 
 
     def setSparkConf(self):
@@ -88,6 +90,9 @@ class Config(object):
                 .set('spark.yarn.am.memory', '4g')
                 .set('spark.yarn.executor.memoryOverhead', '1024')
                 .set('spark.yarn.queue', self.spark_yarn_queue)
+                .set('spark.yarn.appMasterEnv.PYSPARK_PYTHON', self.spark_yarn_appmasterenv)
+                .set('spark.yarn.appMasterEnv.PYSPARK_DRIVER_PYTHON', self.spark_yarn_driverpython)
+
                 )
 
         return conf
